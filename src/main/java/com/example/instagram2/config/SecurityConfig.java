@@ -5,7 +5,9 @@ import com.example.instagram2.security.filter.ApiLoginFilter;
 import com.example.instagram2.security.handler.ApiLoginFailHandler;
 import com.example.instagram2.security.handler.LoginSuccessHandler;
 import com.example.instagram2.security.service.InstaUserDetailsService;
+import com.example.instagram2.security.util.AuthUtil;
 import com.example.instagram2.security.util.JWTUtil;
+import com.example.instagram2.security.util.PasswordUtil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -28,9 +30,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private InstaUserDetailsService userDetailsService;
-
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -39,6 +38,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public JWTUtil jwtUtil() {
         return new JWTUtil();
+    }
+
+    @Bean
+    public PasswordUtil passwordUtil() { return new PasswordUtil(); }
+
+    @Bean
+    public AuthUtil authUtil() {
+        return new AuthUtil(passwordEncoder(), passwordUtil());
     }
 
     @Bean
@@ -56,6 +63,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         return apiLoginFilter;
     }
+
+    @Autowired
+    private InstaUserDetailsService userDetailsService;
 
     @Bean
     public LoginSuccessHandler successHandler() {

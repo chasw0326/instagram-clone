@@ -24,12 +24,9 @@ import java.util.List;
 @RestController
 @Log4j2
 @RequiredArgsConstructor
-public class PostController {
+public class ImageController {
 
     private final ImageService imageService;
-    private final ReplyService replyService;
-    private final MemberService memberService;
-
 
     @GetMapping("/")
     public ResponseEntity<?> getFeedImages(@AuthenticationPrincipal AuthMemberDTO authMember,
@@ -57,28 +54,13 @@ public class PostController {
 
     @GetMapping("/{username}/explore")
     public ResponseEntity<?> getPopularPicture(@PathVariable String username) {
-        try{
+        try {
             List<Image> images = imageService.getPopularImageList(username);
             return ResponseEntity.ok().body(images);
-        } catch (Exception e){
+        } catch (Exception e) {
             String error = e.getMessage();
-            return ResponseEntity.badRequest().body(e);
+            return ResponseEntity.badRequest().body(error);
         }
     }
-
-
-
-    @PostMapping("/{username}/{imageId}/reply")
-    public ResponseEntity<?> replyRegister(@PathVariable String username,
-                                           @PathVariable Long imageId,
-                                           @RequestBody ReplyReqDTO dto,
-                                           @AuthenticationPrincipal AuthMemberDTO authMember) {
-
-        dto.setIno(imageId);
-        Long rno = replyService.register(dto, authMember);
-        return ResponseEntity.ok().body(rno);
-    }
-
-
 }
 

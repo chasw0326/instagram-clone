@@ -9,6 +9,8 @@ import lombok.Data;
 public class PasswordDTO {
 
     Long mno;
+    String imgUrl;
+    String username;
     String oldPw;
     String newPw;
     String checkNewPw;

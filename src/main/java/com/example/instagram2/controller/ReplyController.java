@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ReplyController {
 
-    private final ReplyService service;
+    private final ReplyService replyService;
 
     @PostMapping(value = "")
     public ResponseEntity<?> register(@RequestBody ReplyReqDTO replyDTO, @AuthenticationPrincipal AuthMemberDTO authMember) {
@@ -25,7 +25,7 @@ public class ReplyController {
         log.info(replyDTO);
         try {
             replyDTO.setMno(authMember.getId());
-            Long num = service.register(replyDTO, authMember);
+            Long num = replyService.register(replyDTO, authMember);
             return ResponseEntity.ok().body(num);
         } catch (Exception e) {
             String error = e.getMessage();
@@ -40,7 +40,7 @@ public class ReplyController {
     public ResponseEntity<?> getList(Long ino){
         log.info("----------getList----------");
         log.info(ino);
-        return ResponseEntity.ok().body(service.getList(ino));
+        return ResponseEntity.ok().body(replyService.getList(ino));
     }
 
     @DeleteMapping("{rno}")
@@ -48,7 +48,7 @@ public class ReplyController {
         log.info("----------remove----------");
         log.info(rno);
         try {
-            service.remove(rno, authMember.getId());
+            replyService.remove(rno, authMember.getId());
             return ResponseEntity.ok().body("removed");
         } catch (Exception e) {
             String error = e.getMessage();
@@ -61,13 +61,14 @@ public class ReplyController {
         }
     }
 
-//    @PutMapping("/{num}")
-//    public ResponseEntity<?> modify(@RequestBody ReplyReqDTO replyDTO, @AuthenticationPrincipal AuthMemberDTO authMember){
-//        log.info("----------modify----------");
-//        log.info(replyDTO);
-//
-//        service.modify(replyDTO, authMember);
-//
-//        return ResponseEntity.ok().body("modified");
-//    }
+    @PostMapping("/{username}/{imageId}/reply")
+    public ResponseEntity<?> replyRegister(@PathVariable String username,
+                                           @PathVariable Long imageId,
+                                           @RequestBody ReplyReqDTO dto,
+                                           @AuthenticationPrincipal AuthMemberDTO authMember) {
+
+        dto.setIno(imageId);
+        Long rno = replyService.register(dto, authMember);
+        return ResponseEntity.ok().body(rno);
+    }
 }

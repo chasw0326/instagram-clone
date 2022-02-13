@@ -16,7 +16,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SearchServiceImpl {
 
-    private final TagRepository tagRepository;
     private final MemberRepository memberRepository;
 
     @Transactional

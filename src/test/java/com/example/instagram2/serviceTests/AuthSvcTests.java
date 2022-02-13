@@ -1,27 +1,18 @@
 package com.example.instagram2.serviceTests;
 
 
-import com.example.instagram2.dto.PasswordDTO;
 import com.example.instagram2.dto.SignUpDTO;
-import com.example.instagram2.entity.Member;
 import com.example.instagram2.repository.MemberRepository;
-import com.example.instagram2.service.serviceImpl.AuthService;
-import org.junit.jupiter.api.DisplayName;
+import com.example.instagram2.security.util.AuthUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class AuthSvcTests {
 
     @Autowired
-    private AuthService authService;
+    private AuthUtil authService;
 
     @Autowired
     private MemberRepository repository;

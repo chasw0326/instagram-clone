@@ -24,7 +24,7 @@ public class UploadServiceImpl implements UploadService {
 
         if (!uploadFile.getContentType().startsWith("image")) {
             log.warn("이 파일은 이미지 타입이 아닙니다.");
-            return "이 파일은 이미지 타입이 아닙니다.";
+            throw new IllegalArgumentException("이 파일은 이미지 타입이 아닙니다.");
         }
 
         // 브라우저에서 전체 경로가 들어오므로, 실제파일 이름

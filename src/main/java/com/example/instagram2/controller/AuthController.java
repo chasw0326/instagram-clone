@@ -1,27 +1,29 @@
 package com.example.instagram2.controller;
 
+import com.example.instagram2.dto.PasswordDTO;
 import com.example.instagram2.dto.ResponseDTO;
 import com.example.instagram2.dto.SignUpDTO;
 import com.example.instagram2.entity.Member;
+import com.example.instagram2.security.dto.AuthMemberDTO;
 import com.example.instagram2.security.util.JWTUtil;
-import com.example.instagram2.service.serviceImpl.AuthService;
+import com.example.instagram2.service.MemberService;
+import com.example.instagram2.security.util.AuthUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @Log4j2
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthService authService;
-
-    private final JWTUtil jwtUtil;
+    private final AuthUtil authService;
+    private final MemberService memberService;
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignUpDTO signUpDTO) {
@@ -43,6 +45,38 @@ public class AuthController {
                     .build();
             return ResponseEntity.badRequest().body(responseDTO);
         }
+    }
+
+    @GetMapping("/accounts/password/change")
+    public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal AuthMemberDTO authMember){
+        try {
+            Object userInfo = memberService.getProfileImgUrlAndUsernameById(authMember.getId());
+            Object[] result = (Object[]) userInfo;
+            String imgUrl = (String) result[0];
+            String username = (String) result[1];
+            PasswordDTO dto = PasswordDTO.builder()
+                    .imgUrl(imgUrl)
+                    .username(username)
+                    .build();
+            return ResponseEntity.ok().body(dto);
+        }catch (Exception e){
+            String error = e.getMessage();
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
+
+    @PostMapping("/accounts/password/change")
+    public ResponseEntity<?> changePassword(@RequestBody PasswordDTO passwordDTO,
+                                            @AuthenticationPrincipal AuthMemberDTO authMember){
+        try{
+            passwordDTO.setMno(authMember.getId());
+            authService.changePassword(passwordDTO);
+            return ResponseEntity.ok().body("change");
+        }catch (Exception e){
+            String error = e.getMessage();
+            return ResponseEntity.badRequest().body(error);
+        }
+
     }
 }
 

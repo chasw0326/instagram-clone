@@ -7,12 +7,10 @@ import com.example.instagram2.entity.Member;
 import com.example.instagram2.repository.FollowRepository;
 import com.example.instagram2.repository.ImageRepository;
 import com.example.instagram2.repository.MemberRepository;
-import com.example.instagram2.security.dto.AuthMemberDTO;
 import com.example.instagram2.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -68,6 +66,14 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Transactional
+    public Object getProfileImgUrlAndUsernameById(Long userId) {
+        Object result = memberRepository.getProfileImagAndUsernameById(userId);
+//        String profileImg = (String) arr[0];
+//        String username = (String) arr[1];
+        return (Object[]) result;
+    }
+
+    @Transactional
     public void modifyMemberInfo(Long userId, UserUpdateReqDTO dto) {
         Optional<Member> result = memberRepository.findById(userId);
         if (result.isPresent()) {
@@ -103,7 +109,7 @@ public class MemberServiceImpl implements MemberService {
         if (mno.equals(visitorId)) {
             userProfileRespDTO.setFollowState(false);
             userProfileRespDTO.setMyself(true);
-        }else {
+        } else {
             userProfileRespDTO.setFollowState(followState == 1);
             userProfileRespDTO.setMyself(false);
         }

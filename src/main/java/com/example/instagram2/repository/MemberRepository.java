@@ -20,6 +20,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query("SELECT m FROM Member m WHERE m.username =:username")
     Optional<Member> findByUsername(@Param("username") String username);
 
+    @Query("SELECT m.profileImageUrl ,m.username FROM Member m WHERE m.mno=:mno")
+    Object getProfileImagAndUsernameById(@Param("mno") Long mno);
+
     @Query("SELECT m FROM Member m WHERE m.username LIKE %:keyword% OR m.intro LIKE %:keyword%")
     List<Member> findMembersSearch(@Param("keyword") String keyword);
 

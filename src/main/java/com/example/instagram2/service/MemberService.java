@@ -15,6 +15,8 @@ public interface MemberService {
 
     UserUpdateReqDTO getMemberInfo(Long userId);
 
+    Object getProfileImgUrlAndUsernameById(Long userId);
+
     void modifyMemberInfo(Long userId, UserUpdateReqDTO dto);
 
     Long getMemberIdByUsername(String username);

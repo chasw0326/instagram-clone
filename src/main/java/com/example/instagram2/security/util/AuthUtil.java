@@ -1,16 +1,13 @@
-package com.example.instagram2.service.serviceImpl;
+package com.example.instagram2.security.util;
 
 import com.example.instagram2.dto.PasswordDTO;
 import com.example.instagram2.dto.SignUpDTO;
 import com.example.instagram2.entity.Member;
 import com.example.instagram2.entity.MemberRole;
-import com.example.instagram2.repository.FollowRepository;
-import com.example.instagram2.repository.ImageRepository;
 import com.example.instagram2.repository.MemberRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -19,15 +16,20 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 
-@Service
 @Log4j2
-@RequiredArgsConstructor
-public class AuthService {
+public class AuthUtil {
 
-    private final MemberRepository memberRepository;
+    @Autowired
+    private MemberRepository memberRepository;
     // BCryptPasswordEncoder
     private final PasswordEncoder passwordEncoder;
-    private final PasswordService passwordService;
+    private final PasswordUtil passwordUtil;
+
+    public AuthUtil(PasswordEncoder passwordEncoder,
+                    PasswordUtil passwordUtil){
+        this.passwordEncoder = passwordEncoder;
+        this.passwordUtil = passwordUtil;
+    }
 
     @Transactional
     public Member signUp(SignUpDTO dto) {
@@ -38,7 +40,7 @@ public class AuthService {
 
         checkArgument(dto);
 
-        if (passwordService.meter(rawPw) == PasswordStrength.STRONG) {
+        if (passwordUtil.meter(rawPw) == PasswordStrength.STRONG) {
             enPw = passwordEncoder.encode(rawPw);
         } else {
             log.warn("Password strength is too weak");
@@ -83,7 +85,7 @@ public class AuthService {
         if (result.isPresent()) {
             Member member = result.get();
             if (passwordEncoder.matches(dto.getOldPw(), member.getPassword())) {
-                if (passwordService.meter(dto.getNewPw()) == PasswordStrength.STRONG) {
+                if (passwordUtil.meter(dto.getNewPw()) == PasswordStrength.STRONG) {
                     if (dto.getNewPw().equals(dto.getCheckNewPw())) {
                         member.setPassword(passwordEncoder.encode(dto.getNewPw()));
                         memberRepository.save(member);

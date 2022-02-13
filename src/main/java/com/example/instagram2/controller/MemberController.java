@@ -9,7 +9,6 @@ import com.example.instagram2.service.FollowService;
 import com.example.instagram2.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -34,41 +33,6 @@ public class MemberController {
     private final MemberService memberService;
     private final FollowService followService;
 
-
-    @GetMapping("/{pageUserId}/followerList")
-    public ResponseEntity<?> getFollowerList(@AuthenticationPrincipal AuthMemberDTO authMember,
-                                             @PathVariable Long pageUserId,
-                                             @PageableDefault(
-                                                     size = 10,
-                                                     sort = "regDate",
-                                                     direction = Sort.Direction.DESC) Pageable pageable) {
-
-        try {
-            List<FollowRespDTO> followerList = followService.getFollowerList(authMember.getId(), pageUserId, pageable);
-
-            return ResponseEntity.ok().body(followerList);
-        } catch (Exception e) {
-            String error = e.getMessage();
-            return ResponseEntity.badRequest().body(error);
-        }
-    }
-
-    @GetMapping("/{pageUserId}/followList")
-    public ResponseEntity<?> getFollowList(@AuthenticationPrincipal AuthMemberDTO authMember,
-                                           @PathVariable Long pageUserId,
-                                           @PageableDefault(
-                                                   size = 10,
-                                                   sort = "regDate",
-                                                   direction = Sort.Direction.DESC) Pageable pageable) {
-        try {
-            List<FollowRespDTO> followList = followService.getFollowList(authMember.getId(), pageUserId, pageable);
-
-            return ResponseEntity.ok().body(followList);
-        } catch (Exception e) {
-            String error = e.getMessage();
-            return ResponseEntity.badRequest().body(error);
-        }
-    }
 
     @GetMapping("/{username}")
     public ResponseEntity<?> getProfile(@PathVariable String username,
@@ -131,4 +95,40 @@ public class MemberController {
             return ResponseEntity.badRequest().body(error);
         }
     }
+
+    @GetMapping("/{pageUserId}/followerList")
+    public ResponseEntity<?> getFollowerList(@AuthenticationPrincipal AuthMemberDTO authMember,
+                                             @PathVariable Long pageUserId,
+                                             @PageableDefault(
+                                                     size = 10,
+                                                     sort = "regDate",
+                                                     direction = Sort.Direction.DESC) Pageable pageable) {
+
+        try {
+            List<FollowRespDTO> followerList = followService.getFollowerList(authMember.getId(), pageUserId, pageable);
+
+            return ResponseEntity.ok().body(followerList);
+        } catch (Exception e) {
+            String error = e.getMessage();
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
+
+    @GetMapping("/{pageUserId}/followList")
+    public ResponseEntity<?> getFollowList(@AuthenticationPrincipal AuthMemberDTO authMember,
+                                           @PathVariable Long pageUserId,
+                                           @PageableDefault(
+                                                   size = 10,
+                                                   sort = "regDate",
+                                                   direction = Sort.Direction.DESC) Pageable pageable) {
+        try {
+            List<FollowRespDTO> followList = followService.getFollowList(authMember.getId(), pageUserId, pageable);
+
+            return ResponseEntity.ok().body(followList);
+        } catch (Exception e) {
+            String error = e.getMessage();
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
+
 }

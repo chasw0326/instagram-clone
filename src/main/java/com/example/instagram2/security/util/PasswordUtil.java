@@ -1,11 +1,11 @@
-package com.example.instagram2.service.serviceImpl;
+package com.example.instagram2.security.util;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
-@Service
+
 @Log4j2
-public class PasswordService {
+public class PasswordUtil {
 
     public PasswordStrength meter(String s) {
         if (s == null || s.trim().isEmpty()) return PasswordStrength.INVALID;
