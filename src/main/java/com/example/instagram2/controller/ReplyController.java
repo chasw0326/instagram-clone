@@ -5,7 +5,6 @@ import com.example.instagram2.dto.ReplyReqDTO;
 import com.example.instagram2.dto.ResponseDTO;
 import com.example.instagram2.security.dto.AuthMemberDTO;
 import com.example.instagram2.service.ReplyService;
-import com.example.instagram2.service.serviceImpl.ReplyServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +24,7 @@ public class ReplyController {
         log.info("----------register----------");
         log.info(replyDTO);
         try {
+            replyDTO.setMno(authMember.getId());
             Long num = service.register(replyDTO, authMember);
             return ResponseEntity.ok().body(num);
         } catch (Exception e) {
@@ -43,12 +43,12 @@ public class ReplyController {
         return ResponseEntity.ok().body(service.getList(ino));
     }
 
-    @DeleteMapping("{num}")
-    public ResponseEntity<?> remove(@PathVariable Long num, @AuthenticationPrincipal AuthMemberDTO authMember) {
+    @DeleteMapping("{rno}")
+    public ResponseEntity<?> remove(@PathVariable Long rno, @AuthenticationPrincipal AuthMemberDTO authMember) {
         log.info("----------remove----------");
-        log.info(num);
+        log.info(rno);
         try {
-            service.remove(num, authMember.getId());
+            service.remove(rno, authMember.getId());
             return ResponseEntity.ok().body("removed");
         } catch (Exception e) {
             String error = e.getMessage();
@@ -61,13 +61,13 @@ public class ReplyController {
         }
     }
 
-    @PutMapping("/{num}")
-    public ResponseEntity<?> modify(@RequestBody ReplyReqDTO replyDTO, @AuthenticationPrincipal AuthMemberDTO authMember){
-        log.info("----------modify----------");
-        log.info(replyDTO);
-
-        service.modify(replyDTO, authMember);
-
-        return ResponseEntity.ok().body("modified");
-    }
+//    @PutMapping("/{num}")
+//    public ResponseEntity<?> modify(@RequestBody ReplyReqDTO replyDTO, @AuthenticationPrincipal AuthMemberDTO authMember){
+//        log.info("----------modify----------");
+//        log.info(replyDTO);
+//
+//        service.modify(replyDTO, authMember);
+//
+//        return ResponseEntity.ok().body("modified");
+//    }
 }

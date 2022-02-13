@@ -1,6 +1,8 @@
 package com.example.instagram2.service.serviceImpl;
 
+import com.example.instagram2.entity.Member;
 import com.example.instagram2.repository.LikesRepository;
+import com.example.instagram2.repository.MemberRepository;
 import com.example.instagram2.service.ImageService;
 import com.example.instagram2.dto.ImageReqDTO;
 import com.example.instagram2.entity.Image;
@@ -30,6 +32,7 @@ public class ImageServiceImpl implements ImageService{
     private final TagRepository tagRepository;
     private final UploadService uploadService;
     private final LikesRepository likesRepository;
+    private final MemberRepository memberRepository;
 
     @Value("${instagram.upload.path}")
     private String uploadPath;
@@ -68,9 +71,15 @@ public class ImageServiceImpl implements ImageService{
     }
 
     @Override
-    public List<Image> getPopularImageList(Long userId){
-        List<Image> images = imageRepository.getPopularPictureList(userId);
-        return images;
+    public List<Image> getPopularImageList(String username){
+        try {
+            Member member = memberRepository.getByUsername(username);
+            Long userId = member.getMno();
+            List<Image> images = imageRepository.getPopularPictureList(userId);
+            return images;
+        }catch (Exception e){
+            throw new IllegalArgumentException("wrong username");
+        }
     }
 
     // 나중에 따로 분리해서 private으로 해야함

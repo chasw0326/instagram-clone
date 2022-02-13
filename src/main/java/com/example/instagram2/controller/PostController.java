@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,56 +34,49 @@ public class PostController {
     @GetMapping("/")
     public ResponseEntity<?> getFeedImages(@AuthenticationPrincipal AuthMemberDTO authMember,
                                            @PageableDefault(
-                                                   size = 5,
+                                                   size = 10,
                                                    sort = "regDate",
                                                    direction = Sort.Direction.DESC) Pageable pageable) {
+
         Page<Image> images = imageService.getFeedImage(authMember.getId(), pageable);
         return ResponseEntity.ok().body(images);
     }
 
-    @PostMapping("/{username}/upload")
-    public ResponseEntity<?> upload(@PathVariable String username,
-                                    @RequestBody ImageReqDTO imageReqDTO,
+    @PostMapping("/create/style")
+    public ResponseEntity<?> upload(@RequestBody ImageReqDTO imageReqDTO,
                                     @AuthenticationPrincipal AuthMemberDTO authMember) {
         try {
-            Long mno = memberService.getMemberIdByUsername(username);
-            if (mno.equals(authMember.getId())) {
-                Long ino = imageService.uploadPicture(imageReqDTO, authMember);
-                return ResponseEntity.ok().body("id: " + ino);
-            }
-        }catch (Exception e){
+            Long ino = imageService.uploadPicture(imageReqDTO, authMember);
+            return ResponseEntity.ok().body("id: " + ino);
+        } catch (Exception e) {
             String error = e.getMessage();
             return ResponseEntity.badRequest().body(error);
         }
-        return ResponseEntity.badRequest().body("wrong id");
     }
+
 
     @GetMapping("/{username}/explore")
-    public ResponseEntity<?> getPopularPicture(@PathVariable String username,
-                                               @AuthenticationPrincipal AuthMemberDTO authMember) {
-
-        Long mno = memberService.getMemberIdByUsername(username);
-        if (mno.equals(authMember.getId())) {
-            List<Image> images = imageService.getPopularImageList(authMember.getId());
+    public ResponseEntity<?> getPopularPicture(@PathVariable String username) {
+        try{
+            List<Image> images = imageService.getPopularImageList(username);
             return ResponseEntity.ok().body(images);
-        } else {
-            return ResponseEntity.badRequest().body("wrong id");
+        } catch (Exception e){
+            String error = e.getMessage();
+            return ResponseEntity.badRequest().body(e);
         }
-
     }
 
-    @PostMapping("/{username}/{imageId}/comment")
+
+
+    @PostMapping("/{username}/{imageId}/reply")
     public ResponseEntity<?> replyRegister(@PathVariable String username,
                                            @PathVariable Long imageId,
                                            @RequestBody ReplyReqDTO dto,
                                            @AuthenticationPrincipal AuthMemberDTO authMember) {
 
-        if (!authMember.isEnabled()) {
-            return ResponseEntity.ok().body("wrong id");
-        }
+        dto.setIno(imageId);
         Long rno = replyService.register(dto, authMember);
-        dto.setRno(rno);
-        return ResponseEntity.ok().body(dto);
+        return ResponseEntity.ok().body(rno);
     }
 
 

@@ -18,14 +18,14 @@ public class LikesController {
 
     private final LikesService likesService;
 
-    @PostMapping("/image/{imageId}/likes")
+    @PostMapping("/{username}/{imageId}/likes")
     public ResponseEntity<?> like(@AuthenticationPrincipal AuthMemberDTO authMember,
                                   @PathVariable Long imageId){
         likesService.like(imageId, authMember.getId());
         return ResponseEntity.ok().body("like");
     }
 
-    @DeleteMapping("/image/{imageId}/likes")
+    @DeleteMapping("/{username}/{imageId}/likes")
     public ResponseEntity<?> unlike(@AuthenticationPrincipal AuthMemberDTO authMember,
                                     @PathVariable Long imageId){
         likesService.undoLike(imageId, authMember.getId());

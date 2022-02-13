@@ -18,7 +18,7 @@ public interface ImageService {
 
     List<Tag> makeTagList(String tags, Image image);
 
-    List<Image> getPopularImageList(Long userId);
+    List<Image> getPopularImageList(String username);
 
     default Image dtoToEntity(ImageReqDTO imageDTO, AuthMemberDTO authMemberDTO){
         return Image.builder()
