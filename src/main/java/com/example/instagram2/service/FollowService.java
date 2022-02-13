@@ -9,17 +9,14 @@ import java.util.List;
 
 public interface FollowService {
 
-    Page<FollowRespDTO> getFollowList(Long visitorId, Long pageMemberId,
+    List<FollowRespDTO> getFollowList(Long visitorId, Long pageMemberId,
                                              Pageable pageable);
-    Page<FollowRespDTO> getFollowerList(Long visitorId, Long pageMemberId, Pageable pageable);
+    List<FollowRespDTO> getFollowerList(Long visitorId, Long pageMemberId, Pageable pageable);
+
+    List<FollowRespDTO> getEachFollowState(Long visitorId, List<Object[]> followData);
 
     void follow(Long fromMemberId, Long toMemberId);
 
     void unFollow(Long fromMemberId, Long toMemberId);
 
-//    default FollowRespDTO dtoToEntity(Follow follow) {
-//
-//
-//
-//    }
 }

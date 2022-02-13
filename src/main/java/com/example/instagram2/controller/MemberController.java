@@ -44,7 +44,7 @@ public class MemberController {
                                                      direction = Sort.Direction.DESC) Pageable pageable) {
 
         try {
-            Page<FollowRespDTO> followerList = followService.getFollowerList(authMember.getId(), pageUserId, pageable);
+            List<FollowRespDTO> followerList = followService.getFollowerList(authMember.getId(), pageUserId, pageable);
 
             return ResponseEntity.ok().body(followerList);
         } catch (Exception e) {
@@ -61,7 +61,7 @@ public class MemberController {
                                                    sort = "regDate",
                                                    direction = Sort.Direction.DESC) Pageable pageable) {
         try {
-            Page<FollowRespDTO> followList = followService.getFollowList(authMember.getId(), pageUserId, pageable);
+            List<FollowRespDTO> followList = followService.getFollowList(authMember.getId(), pageUserId, pageable);
 
             return ResponseEntity.ok().body(followList);
         } catch (Exception e) {

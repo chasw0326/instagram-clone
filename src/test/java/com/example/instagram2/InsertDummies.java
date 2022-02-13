@@ -5,11 +5,13 @@ import com.example.instagram2.repository.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.UUID;
 import java.util.stream.IntStream;
 
 @SpringBootTest
+@WebAppConfiguration
 public class InsertDummies {
 
     @Autowired
@@ -26,6 +28,9 @@ public class InsertDummies {
 
     @Autowired
     private ReplyRepository replyRepository;
+
+    @Autowired
+    private TagRepository tagRepository;
 
     @Test
     public void insertMember() {
@@ -128,6 +133,21 @@ public class InsertDummies {
                     .build();
             likesRepository.save(like);
         });
+    }
+
+    @Test
+    public void InsertDummyTags(){
+        IntStream.rangeClosed(1,50).forEach(i->{
+            Long ino = (long)(Math.random()*150) + 1;
+            Tag tag = Tag.builder()
+                    .image(Image.builder()
+                            .ino(ino)
+                            .build())
+                    .name("태그" + i)
+                    .build();
+            tagRepository.save(tag);
+        });
+
     }
 
 

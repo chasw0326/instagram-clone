@@ -25,20 +25,29 @@ public class FollowServiceImpl implements FollowService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<FollowRespDTO> getFollowerList(Long visitorId, Long pageMemberId, Pageable pageable) {
-        Page<Object[]> followerData = followRepository.getFollowerData(pageMemberId);
-        return getEachFollowState(visitorId, pageable, followerData);
+    public List<FollowRespDTO> getFollowerList(Long visitorId,
+                                               Long pageMemberId,
+                                               Pageable pageable) {
+        
+        Page<Object[]> followerData = followRepository.getFollowerData(pageMemberId, pageable);
+        List<Object[]> result = followerData.getContent();
+        return getEachFollowState(visitorId, result);
+
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<FollowRespDTO> getFollowList(Long visitorId, Long pageMemberId,
+    public List<FollowRespDTO> getFollowList(Long visitorId,
+                                             Long pageMemberId,
                                              Pageable pageable) {
-        Page<Object[]> followData = followRepository.getFollowData(pageMemberId);
-        return getEachFollowState(visitorId, pageable, followData);
+        Page<Object[]> followData = followRepository.getFollowData(pageMemberId, pageable);
+        List<Object[]> result = followData.getContent();
+        return getEachFollowState(visitorId, result);
     }
 
-    private Page<FollowRespDTO> getEachFollowState(Long visitorId, Pageable pageable, Page<Object[]> followData) {
+    @Override
+    @Transactional
+    public List<FollowRespDTO> getEachFollowState(Long visitorId, List<Object[]> followData) {
         List<FollowRespDTO> result = new ArrayList<>();
 
         followData.forEach((data -> {
@@ -59,10 +68,7 @@ public class FollowServiceImpl implements FollowService {
             result.add(dto);
         }));
 
-        final int start = (int)pageable.getOffset();
-        final int end = Math.min((start + pageable.getPageSize()), result.size());
-        final Page<FollowRespDTO> page = new PageImpl<>(result.subList(start, end), pageable, result.size());
-        return page;
+        return result;
     }
 
 

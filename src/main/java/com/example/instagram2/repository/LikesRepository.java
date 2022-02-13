@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface LikesRepository extends JpaRepository<Likes, Long> {
 
-    //지울 것
+    //필요 없음
     @Modifying
     @Transactional
     @Query(value = "INSERT INTO likes(image, member) VALUES(:imageId, :memberId)", nativeQuery = true)

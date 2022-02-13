@@ -7,6 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -141,7 +144,8 @@ public class FollowRepoTests {
 
     @Test
     public void followerListTest(){
-        List<Object[]> result = repository.getFollowerData(43L);
+        Pageable pageable = PageRequest.of(0,10, Sort.by("regDate").descending());
+        Page<Object[]> result = repository.getFollowerData(43L, pageable);
 
         System.out.println("---------------------------팔로워 정보---------------------------");
         for (Object[] arr : result){
@@ -151,7 +155,8 @@ public class FollowRepoTests {
 
     @Test
     public void followeeListTest(){
-        Page<Object[]> result = repository.getFollowData(28L);
+        Pageable pageable = PageRequest.of(0,10, Sort.by("regDate").descending());
+        Page<Object[]> result = repository.getFollowData(28L, pageable);
 
         System.out.println("---------------------------내가 팔로우하는사람 정보---------------------------");
         for (Object[] arr : result){

@@ -99,6 +99,7 @@ public class MemberServiceImpl implements MemberService {
         Long imgCnt = imageRepository.getImageCount(mno);
         List<String> imageUrlList = imageRepository.getImageUrlList(mno);
 
+
         if (mno.equals(visitorId)) {
             userProfileRespDTO.setFollowState(false);
             userProfileRespDTO.setMyself(true);
