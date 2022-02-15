@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @Log4j2
 @RequiredArgsConstructor
@@ -48,18 +51,19 @@ public class AuthController {
     }
 
     @GetMapping("/accounts/password/change")
-    public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal AuthMemberDTO authMember){
+    public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal AuthMemberDTO authMember) {
+        System.out.println("who are you" + authMember);
         try {
             Object userInfo = memberService.getProfileImgUrlAndUsernameById(authMember.getId());
             Object[] result = (Object[]) userInfo;
-            String imgUrl = (String) result[0];
-            String username = (String) result[1];
-            PasswordDTO dto = PasswordDTO.builder()
-                    .imgUrl(imgUrl)
-                    .username(username)
+            List<String> dtos = new ArrayList<>();
+            dtos.add((String) result[0]);
+            dtos.add((String) result[1]);
+            ResponseDTO<String> responseDTO = ResponseDTO.<String>builder()
+                    .data(dtos)
                     .build();
-            return ResponseEntity.ok().body(dto);
-        }catch (Exception e){
+            return ResponseEntity.ok().body(responseDTO);
+        } catch (Exception e) {
             String error = e.getMessage();
             return ResponseEntity.badRequest().body(error);
         }
@@ -67,12 +71,12 @@ public class AuthController {
 
     @PostMapping("/accounts/password/change")
     public ResponseEntity<?> changePassword(@RequestBody PasswordDTO passwordDTO,
-                                            @AuthenticationPrincipal AuthMemberDTO authMember){
-        try{
+                                            @AuthenticationPrincipal AuthMemberDTO authMember) {
+        try {
             passwordDTO.setMno(authMember.getId());
             authService.changePassword(passwordDTO);
             return ResponseEntity.ok().body("change");
-        }catch (Exception e){
+        } catch (Exception e) {
             String error = e.getMessage();
             return ResponseEntity.badRequest().body(error);
         }

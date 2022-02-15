@@ -2,7 +2,7 @@ package com.example.instagram2.config;
 
 import com.example.instagram2.security.filter.ApiCheckFilter;
 import com.example.instagram2.security.filter.ApiLoginFilter;
-import com.example.instagram2.security.handler.ApiLoginFailHandler;
+import com.example.instagram2.security.handler.LoginFailHandler;
 import com.example.instagram2.security.handler.LoginSuccessHandler;
 import com.example.instagram2.security.service.InstaUserDetailsService;
 import com.example.instagram2.security.util.AuthUtil;
@@ -19,16 +19,17 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.DefaultRedirectStrategy;
-import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
-//@EnableWebSecurity
+@EnableWebSecurity
 @Configuration
 @Log4j2
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private InstaUserDetailsService userDetailsService;
 
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -50,8 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public ApiCheckFilter apiCheckFilter() {
-
-        return new ApiCheckFilter("/**", jwtUtil());
+        return new ApiCheckFilter("/accounts/password/change", jwtUtil());
     }
 
     @Bean
@@ -59,13 +59,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         ApiLoginFilter apiLoginFilter = new ApiLoginFilter
                 ("/login", jwtUtil());
         apiLoginFilter.setAuthenticationManager(authenticationManager());
-        apiLoginFilter.setAuthenticationFailureHandler(new ApiLoginFailHandler());
+        apiLoginFilter.setAuthenticationFailureHandler(new LoginFailHandler());
 
         return apiLoginFilter;
     }
-
-    @Autowired
-    private InstaUserDetailsService userDetailsService;
 
     @Bean
     public LoginSuccessHandler successHandler() {
@@ -78,6 +75,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/login").permitAll();
 
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.httpBasic().disable();
         http.formLogin().disable();
         http.csrf().disable();
         http.logout();
@@ -87,7 +86,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(apiLoginFilter(),
                 UsernamePasswordAuthenticationFilter.class);
-    }
 
+    }
 }
 

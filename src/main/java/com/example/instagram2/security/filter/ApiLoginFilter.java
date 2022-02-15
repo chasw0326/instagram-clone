@@ -10,6 +10,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 
 import javax.servlet.FilterChain;
@@ -63,6 +65,7 @@ public class ApiLoginFilter extends AbstractAuthenticationProcessingFilter {
         log.info("------------ApiLoginFilter------------");
         log.info("SuccessfulAuthentication: " + authentication);
         log.info(authentication.getPrincipal());
+
 
         String email = ((AuthMemberDTO)authentication.getPrincipal()).getUsername();
         String token = null;

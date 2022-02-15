@@ -136,7 +136,7 @@ public class AuthUtil {
         if (memberRepository.existsByPhoneNum(phone)) {
             log.warn("PhoneNum already exists {}", phone);
             errMsg.add("PhoneNum already exists");
-//                throw new RuntimeException("PhoneNum already exists");
+                throw new RuntimeException("PhoneNum already exists");
         }
         return errMsg;
     }

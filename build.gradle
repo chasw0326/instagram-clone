@@ -25,6 +25,9 @@ dependencies {
     // https://mvnrepository.com/artifact/org.qlrm/qlrm
     implementation group: 'org.qlrm', name: 'qlrm', version: '3.0.1'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    // https://mvnrepository.com/artifact/javax.validation/validation-api
+    implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+
 }
 
 test {

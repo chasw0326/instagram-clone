@@ -5,6 +5,8 @@ import com.example.instagram2.security.dto.AuthMemberDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
@@ -34,7 +36,9 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         log.info("----------------------------------------------");
         log.info("onAuthenticationSuccess 시작");
 
+
         AuthMemberDTO authMember = (AuthMemberDTO) authentication.getPrincipal();
+
 
         boolean fromSocial = authMember.isFromSocial();
 

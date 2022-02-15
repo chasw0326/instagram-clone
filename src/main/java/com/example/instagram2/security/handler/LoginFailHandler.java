@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @Log4j2
-public class ApiLoginFailHandler implements AuthenticationFailureHandler {
+public class LoginFailHandler implements AuthenticationFailureHandler {
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request,

@@ -27,16 +27,16 @@ public class MemberRepoTests {
         }
     }
 
-    @Test
-    public void getProfileImgAndUsername(){
-        Object result = repository.getUsernameById(1L);
-
-        Object[] arr = (Object[]) result;
-        System.out.println((String)arr[0]);
-        System.out.println((String)arr[1]);
-        assertEquals("aa3670f2-7c01-485d-a19a-5e65bfdcfc39", (String)arr[0]);
-        assertEquals("1번이름", (String)arr[1]);
-    }
+//    @Test
+//    public void getProfileImgAndUsername(){
+//        Object result = repository.getUsernameById(1L);
+//
+//        Object[] arr = (Object[]) result;
+//        System.out.println((String)arr[0]);
+//        System.out.println((String)arr[1]);
+//        assertEquals("aa3670f2-7c01-485d-a19a-5e65bfdcfc39", (String)arr[0]);
+//        assertEquals("1번이름", (String)arr[1]);
+//    }
 
     @Test
     public void findByEmail(){

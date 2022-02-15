@@ -1,8 +1,15 @@
 package com.example.instagram2.security.filter;
 
+import com.example.instagram2.security.service.InstaUserDetailsService;
 import com.example.instagram2.security.util.JWTUtil;
 import lombok.extern.log4j.Log4j2;
 import net.minidev.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -20,6 +27,9 @@ public class ApiCheckFilter extends OncePerRequestFilter {
     private AntPathMatcher antPathMatcher;
     private String pattern;
     private JWTUtil jwtUtil;
+
+    @Autowired
+    private InstaUserDetailsService userDetailsService;
 
     public ApiCheckFilter(String pattern, JWTUtil jwtUtil) {
         this.antPathMatcher = new AntPathMatcher();
@@ -42,9 +52,15 @@ public class ApiCheckFilter extends OncePerRequestFilter {
             log.info("ApiCheckFilter......................................");
             log.info("ApiCheckFilter......................................");
 
-            boolean checkHeader = checkAuthHeader(request);
 
-            if (checkHeader) {
+            String email = checkAuthHeader(request);
+
+            if (email.length() > 0) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
                 filterChain.doFilter(request, response);
                 return;
             } else {
@@ -55,6 +71,7 @@ public class ApiCheckFilter extends OncePerRequestFilter {
                 json.put("code", "403");
                 json.put("message", message);
 
+
                 PrintWriter out = response.getWriter();
                 out.print(json);
                 return;
@@ -63,9 +80,10 @@ public class ApiCheckFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private boolean checkAuthHeader(HttpServletRequest request) {
+    private String checkAuthHeader(HttpServletRequest request) {
 
-        boolean checkResult = false;
+//        boolean checkResult = false;
+        String email = "";
 
         String authHeader = request.getHeader("Authorization");
 
@@ -73,13 +91,14 @@ public class ApiCheckFilter extends OncePerRequestFilter {
             log.info("Authorization exist: " + authHeader);
 
             try{
-                String email = jwtUtil.validateAndExtract(authHeader.substring(7));
+                email = jwtUtil.validateAndExtract(authHeader.substring(7));
                 log.info("validate result: " + email);
-                checkResult = email.length() > 0;
+                return email;
+//                checkResult = email.length() > 0;
             } catch (Exception e){
                 e.printStackTrace();
             }
         }
-        return checkResult;
+        return email;
     }
 }

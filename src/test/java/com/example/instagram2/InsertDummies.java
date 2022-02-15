@@ -5,6 +5,7 @@ import com.example.instagram2.repository.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.UUID;
@@ -13,6 +14,9 @@ import java.util.stream.IntStream;
 @SpringBootTest
 @WebAppConfiguration
 public class InsertDummies {
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -150,5 +154,15 @@ public class InsertDummies {
 
     }
 
-
+    @Test
+    public void insertDummyMember(){
+        Member member = Member.builder()
+                .email("aaa@naver.com")
+                .fromSocial(false)
+                .username("hehe")
+                .profileImageUrl("imgUrlsfjkslfsdkfjl")
+                .password(passwordEncoder.encode("1234"))
+                .build();
+        memberRepository.save(member);
+    }
 }
