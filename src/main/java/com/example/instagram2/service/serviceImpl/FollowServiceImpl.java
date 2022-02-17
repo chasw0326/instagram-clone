@@ -1,5 +1,6 @@
 package com.example.instagram2.service.serviceImpl;
 
+import com.example.instagram2.repository.MemberRepository;
 import com.example.instagram2.service.FollowService;
 import com.example.instagram2.dto.FollowRespDTO;
 import com.example.instagram2.entity.Follow;
@@ -8,7 +9,6 @@ import com.example.instagram2.repository.FollowRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,15 +22,23 @@ import java.util.List;
 public class FollowServiceImpl implements FollowService {
 
     private final FollowRepository followRepository;
+    private final MemberRepository memberRepository;
 
     @Override
     @Transactional(readOnly = true)
     public List<FollowRespDTO> getFollowerList(Long visitorId,
-                                               Long pageMemberId,
+                                               String pageMemberName,
                                                Pageable pageable) {
-        
-        Page<Object[]> followerData = followRepository.getFollowerData(pageMemberId, pageable);
+        log.info("VisitorId: {}", visitorId);
+        log.info("PageMemberId: {}", pageMemberName);
+
+        if(!memberRepository.existsByUsername(pageMemberName)){
+            throw new IllegalArgumentException("pageUsername does not exist");
+        }
+
+        Page<Object[]> followerData = followRepository.getFollowerData(pageMemberName, pageable);
         List<Object[]> result = followerData.getContent();
+
         return getEachFollowState(visitorId, result);
 
     }
@@ -38,9 +46,9 @@ public class FollowServiceImpl implements FollowService {
     @Override
     @Transactional(readOnly = true)
     public List<FollowRespDTO> getFollowList(Long visitorId,
-                                             Long pageMemberId,
+                                             String pageMemberName,
                                              Pageable pageable) {
-        Page<Object[]> followData = followRepository.getFollowData(pageMemberId, pageable);
+        Page<Object[]> followData = followRepository.getFollowData(pageMemberName, pageable);
         List<Object[]> result = followData.getContent();
         return getEachFollowState(visitorId, result);
     }

@@ -1,8 +1,9 @@
 package com.example.instagram2.service.serviceImpl;
 
 
+import com.example.instagram2.dto.PasswordDTO;
 import com.example.instagram2.dto.UserProfileRespDTO;
-import com.example.instagram2.dto.UserUpdateReqDTO;
+import com.example.instagram2.dto.UserEditDTO;
 import com.example.instagram2.entity.Member;
 import com.example.instagram2.repository.FollowRepository;
 import com.example.instagram2.repository.ImageRepository;
@@ -36,6 +37,9 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void changeProfilePicture(MultipartFile uploadFile, Long userId) {
 
+        if(uploadFile == null){
+            throw new IllegalArgumentException("uploadFile is null");
+        }
         String fileName = uploadService.uploadFile(uploadFile, uploadPath);
 
         Optional<Member> result = memberRepository.findById(userId);
@@ -47,45 +51,35 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Transactional
-    public UserUpdateReqDTO getMemberInfo(Long userId) {
+    public UserEditDTO getMemberInfo(Long userId) {
         Optional<Member> result = memberRepository.findById(userId);
         if (!result.isPresent()) {
             throw new RuntimeException("no user");
         }
         Member member = result.get();
-        UserUpdateReqDTO dto = UserUpdateReqDTO.builder()
-                .name(member.getName())
-                .username(member.getUsername())
-                .website(member.getWebsite())
-                .intro(member.getIntro())
-                .email(member.getEmail())
-                .phone(member.getPhoneNum())
-                .gender(member.getGender())
-                .build();
+        UserEditDTO dto = entityToDto(member);
         return dto;
     }
 
     @Transactional
-    public Object getProfileImgUrlAndUsernameById(Long userId) {
-        Object result = memberRepository.getProfileImagAndUsernameById(userId);
-//        String profileImg = (String) arr[0];
-//        String username = (String) arr[1];
-        return (Object[]) result;
+    public PasswordDTO getProfileImgUrlAndUsernameById(Long userId) {
+        Object[] arr = (Object[]) memberRepository.getProfileImagAndUsernameById(userId);
+        String profileImg = (String) arr[0];
+        String username = (String) arr[1];
+        return PasswordDTO.builder()
+                .imgUrl(profileImg)
+                .username(username)
+                .build();
     }
 
     @Transactional
-    public void modifyMemberInfo(Long userId, UserUpdateReqDTO dto) {
+    public void modifyMemberInfo(Long userId, UserEditDTO dto) {
         Optional<Member> result = memberRepository.findById(userId);
         if (result.isPresent()) {
             Member member = result.get();
-            member.setName(dto.getName());
-            member.setUsername(dto.getUsername());
-            member.setWebsite(dto.getWebsite());
-            member.setIntro(dto.getIntro());
-            member.setEmail(dto.getEmail());
-            member.setPhoneNum(dto.getPhone());
-            member.setGender(dto.getGender());
-            memberRepository.save(member);
+            dto.setMno(member.getMno());
+            Member mem = dtoToEntity(dto);
+            memberRepository.save(mem);
         }
     }
 
@@ -121,6 +115,12 @@ public class MemberServiceImpl implements MemberService {
 
 
         return userProfileRespDTO;
+    }
+
+    @Override
+    @Transactional
+    public String getProfileImg(Long mno){
+        return memberRepository.getProfileImageById(mno);
     }
 
     @Override

@@ -16,19 +16,19 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
     @Query(value ="SELECT m.mno, m.username, m.profileImageUrl " +
             "FROM Member m " +
             "WHERE m.mno IN " +
-            "(SELECT f.fromMember.mno FROM Follow f WHERE f.toMember.mno =:toMemberId )" +
+            "(SELECT f.fromMember.mno FROM Follow f WHERE f.toMember.username =:toUsername )" +
             "ORDER BY m.mno",
             countQuery = "SELECT COUNT(m) FROM Member m")
-    Page<Object[]> getFollowerData(@Param("toMemberId") Long toMemberId, Pageable pageable);
+    Page<Object[]> getFollowerData(@Param("toUsername") String toUsername, Pageable pageable);
 
     @Transactional
     @Query(value ="SELECT m.mno, m.username, m.profileImageUrl " +
             "FROM Member m " +
             "WHERE m.mno IN " +
-            "(SELECT f.toMember.mno FROM Follow f WHERE f.fromMember.mno =:fromMemberId )" +
+            "(SELECT f.toMember.mno FROM Follow f WHERE f.fromMember.username =:fromUsername )" +
             "ORDER BY m.mno",
             countQuery = "SELECT COUNT(m) FROM Member m")
-    Page<Object[]> getFollowData(@Param("fromMemberId") Long fromMemberId, Pageable pageable);
+    Page<Object[]> getFollowData(@Param("fromUsername") String username, Pageable pageable);
 
     @Modifying
     @Transactional

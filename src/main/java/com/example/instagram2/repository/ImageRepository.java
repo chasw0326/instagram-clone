@@ -35,6 +35,7 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
     @Query("SELECT COUNT(i) FROM Image i WHERE i.member.mno =:memberId")
     Long getImageCount(@Param("memberId") Long memberId);
 
+    boolean existsByIno(Long ino);
 }
 
 

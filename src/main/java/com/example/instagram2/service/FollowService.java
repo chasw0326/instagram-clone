@@ -9,9 +9,12 @@ import java.util.List;
 
 public interface FollowService {
 
-    List<FollowRespDTO> getFollowList(Long visitorId, Long pageMemberId,
-                                             Pageable pageable);
-    List<FollowRespDTO> getFollowerList(Long visitorId, Long pageMemberId, Pageable pageable);
+    List<FollowRespDTO> getFollowList(Long visitorId,
+                                      String pageMemberName,
+                                      Pageable pageable);
+    List<FollowRespDTO> getFollowerList(Long visitorId,
+                                        String pageMemberName,
+                                        Pageable pageable);
 
     List<FollowRespDTO> getEachFollowState(Long visitorId, List<Object[]> followData);
 

@@ -6,14 +6,15 @@ import com.example.instagram2.entity.Image;
 import com.example.instagram2.entity.Member;
 import com.example.instagram2.entity.Reply;
 import com.example.instagram2.security.dto.AuthMemberDTO;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface ReplyService {
 
-    public Long register(ReplyReqDTO replyReqDTO, AuthMemberDTO authMember);
+    Long register(ReplyReqDTO replyReqDTO, AuthMemberDTO authMember);
 
-    List<ReplyReqDTO> getList(Long ino);
+    List<ReplyReqDTO> getList(Long ino, Pageable pageable);
 
 //    void modify(ReplyReqDTO replyReqDTO, AuthMemberDTO authMember);
 

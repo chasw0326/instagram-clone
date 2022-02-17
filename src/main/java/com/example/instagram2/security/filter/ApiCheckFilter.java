@@ -24,9 +24,9 @@ import java.io.PrintWriter;
 @Log4j2
 public class ApiCheckFilter extends OncePerRequestFilter {
 
-    private AntPathMatcher antPathMatcher;
-    private String pattern;
-    private JWTUtil jwtUtil;
+    private final AntPathMatcher antPathMatcher;
+    private final String pattern;
+    private final JWTUtil jwtUtil;
 
     @Autowired
     private InstaUserDetailsService userDetailsService;
@@ -71,7 +71,6 @@ public class ApiCheckFilter extends OncePerRequestFilter {
                 json.put("code", "403");
                 json.put("message", message);
 
-
                 PrintWriter out = response.getWriter();
                 out.print(json);
                 return;
@@ -82,7 +81,6 @@ public class ApiCheckFilter extends OncePerRequestFilter {
 
     private String checkAuthHeader(HttpServletRequest request) {
 
-//        boolean checkResult = false;
         String email = "";
 
         String authHeader = request.getHeader("Authorization");
@@ -94,7 +92,6 @@ public class ApiCheckFilter extends OncePerRequestFilter {
                 email = jwtUtil.validateAndExtract(authHeader.substring(7));
                 log.info("validate result: " + email);
                 return email;
-//                checkResult = email.length() > 0;
             } catch (Exception e){
                 e.printStackTrace();
             }

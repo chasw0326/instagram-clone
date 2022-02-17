@@ -145,7 +145,7 @@ public class FollowRepoTests {
     @Test
     public void followerListTest(){
         Pageable pageable = PageRequest.of(0,10, Sort.by("regDate").descending());
-        Page<Object[]> result = repository.getFollowerData(43L, pageable);
+        Page<Object[]> result = repository.getFollowerData("63번이름", pageable);
 
         System.out.println("---------------------------팔로워 정보---------------------------");
         for (Object[] arr : result){
@@ -156,7 +156,7 @@ public class FollowRepoTests {
     @Test
     public void followeeListTest(){
         Pageable pageable = PageRequest.of(0,10, Sort.by("regDate").descending());
-        Page<Object[]> result = repository.getFollowData(28L, pageable);
+        Page<Object[]> result = repository.getFollowData("63번이름", pageable);
 
         System.out.println("---------------------------내가 팔로우하는사람 정보---------------------------");
         for (Object[] arr : result){

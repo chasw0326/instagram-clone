@@ -5,6 +5,7 @@ import com.example.instagram2.security.filter.ApiLoginFilter;
 import com.example.instagram2.security.handler.LoginFailHandler;
 import com.example.instagram2.security.handler.LoginSuccessHandler;
 import com.example.instagram2.security.service.InstaUserDetailsService;
+import com.example.instagram2.exception.ArgumentCheckUtil;
 import com.example.instagram2.security.util.AuthUtil;
 import com.example.instagram2.security.util.JWTUtil;
 import com.example.instagram2.security.util.PasswordUtil;
@@ -37,9 +38,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public JWTUtil jwtUtil() {
-        return new JWTUtil();
-    }
+    public JWTUtil jwtUtil() { return new JWTUtil(); }
+
+    @Bean
+    public ArgumentCheckUtil argumentCheckUtil() { return new ArgumentCheckUtil(); }
 
     @Bean
     public PasswordUtil passwordUtil() { return new PasswordUtil(); }
@@ -51,7 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public ApiCheckFilter apiCheckFilter() {
-        return new ApiCheckFilter("/accounts/password/change", jwtUtil());
+        return new ApiCheckFilter("/**", jwtUtil());
     }
 
     @Bean

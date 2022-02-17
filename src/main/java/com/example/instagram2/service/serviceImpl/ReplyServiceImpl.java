@@ -8,6 +8,8 @@ import com.example.instagram2.entity.Reply;
 import com.example.instagram2.repository.ReplyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,12 +28,12 @@ public class ReplyServiceImpl implements ReplyService {
     @Transactional
     public Long register(ReplyReqDTO dto, AuthMemberDTO authMember) {
         log.info(dto);
-        try{
-        Reply reply = dtoToEntity(dto, authMember);
-        log.info(reply);
-        repository.save(reply);
-        return reply.getRno();
-        } catch (Exception e){
+        try {
+            Reply reply = dtoToEntity(dto, authMember);
+            log.info(reply);
+            repository.save(reply);
+            return reply.getRno();
+        } catch (Exception e) {
             log.error("error deleting reply");
             throw new RuntimeException("error deleting reply");
         }
@@ -39,9 +41,11 @@ public class ReplyServiceImpl implements ReplyService {
 
     @Override
     @Transactional
-    public List<ReplyReqDTO> getList(Long ino) {
+    public List<ReplyReqDTO> getList(Long ino, Pageable pageable) {
+
         List<Reply> result = repository
-                .getRepliesByImageOrderByRegDate(Image.builder().ino(ino).build());
+                .getRepliesByImageOrderByRegDate(Image.builder().ino(ino).build(),
+                                                pageable);
 
         log.info(result.toString());
 
@@ -71,7 +75,7 @@ public class ReplyServiceImpl implements ReplyService {
                     repository.deleteById(rno);
                 }
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             log.error("error deleting reply");
             throw new RuntimeException("error deleting reply");
         }

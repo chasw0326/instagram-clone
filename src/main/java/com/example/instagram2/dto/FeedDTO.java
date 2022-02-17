@@ -1,25 +1,20 @@
 package com.example.instagram2.dto;
 
-
+import com.example.instagram2.entity.Image;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+import org.springframework.data.domain.Page;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
-public class FollowRespDTO {
+public class FeedDTO {
 
-    private Long userId;
+    String profileImgUrl;
 
-    private String username;
+    Page<Image> images;
 
-    private String profileImageUrl;
-
-    private int followState;
-
-    private int f4fState;
 }

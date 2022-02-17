@@ -308,9 +308,9 @@ public class AuthSvcTests {
 //
     @Test
     public void dummy(){
-        String email = "tttt@naver.com";
+        String email = "asd@naver.com";
         String name = "핫식스";
-        String username = "hehe";
+        String username = "who";
         String password = "abcABC123";
         SignUpDTO dto = SignUpDTO.builder()
                 .email(email)

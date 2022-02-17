@@ -44,10 +44,9 @@ public class ApiLoginFilter extends AbstractAuthenticationProcessingFilter {
         ObjectNode objectNode = objectMapper.readValue(request.getInputStream(), ObjectNode.class);
         String email = objectNode.get("email").asText();
         String password = objectNode.get("password").asText();
-//      String email = request.getParameter("email");
-//      String password = request.getParameter("password");
+
         log.info("email: " + email);
-        log.info("password: " + password);
+//        log.info("password: " + password);
         UsernamePasswordAuthenticationToken authToken =
                 new UsernamePasswordAuthenticationToken(email, password);
 
