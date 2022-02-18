@@ -7,20 +7,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Log4j2
+@RequestMapping("/likes/")
 @RequiredArgsConstructor
 public class LikesController {
 
     private final LikesService likesService;
     private final ArgumentCheckUtil argumentCheckUtil;
 
-    @PostMapping("/{username}/{imageId}/likes")
+    @PostMapping("{username}/{imageId}")
     public ResponseEntity<?> like(@PathVariable String username,
                                   @AuthenticationPrincipal AuthMemberDTO authMember,
                                   @PathVariable Long imageId){
@@ -31,7 +29,7 @@ public class LikesController {
         return ResponseEntity.ok().body("like");
     }
 
-    @DeleteMapping("/{username}/{imageId}/likes")
+    @DeleteMapping("{username}/{imageId}")
     public ResponseEntity<?> unlike(@PathVariable String username,
                                     @AuthenticationPrincipal AuthMemberDTO authMember,
                                     @PathVariable Long imageId){

@@ -52,22 +52,11 @@ public class ReplyServiceImpl implements ReplyService {
         return result.stream().map(reply -> entityToDTO(reply)).collect(Collectors.toList());
     }
 
-    // 권한 수정해야함
-//    @Override
-//    public void modify(ReplyReqDTO replyReqDTO, AuthMemberDTO authMemberDTO) {
-//
-//        Reply reply = dtoToEntity(replyReqDTO, authMemberDTO);
-//
-//        log.info(reply);
-//
-//        repository.save(reply);
-//    }
-
     @Override
     @Transactional
     public void remove(Long rno, Long userId) {
-        Optional<Reply> result = repository.findById(userId);
         try {
+            Optional<Reply> result = repository.findById(userId);
             if (result.isPresent()) {
                 Reply reply = result.get();
                 log.info(reply);

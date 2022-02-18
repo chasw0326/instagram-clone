@@ -32,9 +32,6 @@ public class FollowServiceImpl implements FollowService {
         log.info("VisitorId: {}", visitorId);
         log.info("PageMemberId: {}", pageMemberName);
 
-        if(!memberRepository.existsByUsername(pageMemberName)){
-            throw new IllegalArgumentException("pageUsername does not exist");
-        }
 
         Page<Object[]> followerData = followRepository.getFollowerData(pageMemberName, pageable);
         List<Object[]> result = followerData.getContent();

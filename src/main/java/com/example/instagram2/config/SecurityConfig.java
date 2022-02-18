@@ -6,7 +6,7 @@ import com.example.instagram2.security.handler.LoginFailHandler;
 import com.example.instagram2.security.handler.LoginSuccessHandler;
 import com.example.instagram2.security.service.InstaUserDetailsService;
 import com.example.instagram2.exception.ArgumentCheckUtil;
-import com.example.instagram2.security.util.AuthUtil;
+import com.example.instagram2.service.serviceImpl.AuthUtil;
 import com.example.instagram2.security.util.JWTUtil;
 import com.example.instagram2.security.util.PasswordUtil;
 import lombok.extern.log4j.Log4j2;
@@ -53,7 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public ApiCheckFilter apiCheckFilter() {
-        return new ApiCheckFilter("/**", jwtUtil());
+        return new ApiCheckFilter("/**", "/accounts/signup", jwtUtil());
     }
 
     @Bean

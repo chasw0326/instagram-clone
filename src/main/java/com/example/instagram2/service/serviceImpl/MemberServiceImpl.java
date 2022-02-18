@@ -5,6 +5,7 @@ import com.example.instagram2.dto.PasswordDTO;
 import com.example.instagram2.dto.UserProfileRespDTO;
 import com.example.instagram2.dto.UserEditDTO;
 import com.example.instagram2.entity.Member;
+import com.example.instagram2.exception.myException.IllegalFileException;
 import com.example.instagram2.repository.FollowRepository;
 import com.example.instagram2.repository.ImageRepository;
 import com.example.instagram2.repository.MemberRepository;
@@ -38,7 +39,7 @@ public class MemberServiceImpl implements MemberService {
     public void changeProfilePicture(MultipartFile uploadFile, Long userId) {
 
         if(uploadFile == null){
-            throw new IllegalArgumentException("uploadFile is null");
+            throw new IllegalFileException("uploadFile is null");
         }
         String fileName = uploadService.uploadFile(uploadFile, uploadPath);
 
@@ -67,6 +68,7 @@ public class MemberServiceImpl implements MemberService {
         String profileImg = (String) arr[0];
         String username = (String) arr[1];
         return PasswordDTO.builder()
+                .mno(userId)
                 .imgUrl(profileImg)
                 .username(username)
                 .build();
@@ -122,6 +124,7 @@ public class MemberServiceImpl implements MemberService {
     public String getProfileImg(Long mno){
         return memberRepository.getProfileImageById(mno);
     }
+
 
     @Override
     @Transactional

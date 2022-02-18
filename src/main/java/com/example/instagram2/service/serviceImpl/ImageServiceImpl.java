@@ -26,7 +26,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Log4j2
-public class ImageServiceImpl implements ImageService{
+public class ImageServiceImpl implements ImageService {
 
     private final ImageRepository imageRepository;
     private final TagRepository tagRepository;
@@ -49,10 +49,11 @@ public class ImageServiceImpl implements ImageService{
         imageRepository.save(image);
         tagRepository.saveAll(tags);
         return image.getIno();
-}
+    }
+
     @Transactional
     @Override
-    public Page<Image> getFeedImage(Long userId, Pageable pageable){
+    public Page<Image> getFeedImage(Long userId, Pageable pageable) {
         Page<Image> images = imageRepository.getFollowFeed(userId, pageable);
 
         images.forEach((image -> {
@@ -60,8 +61,8 @@ public class ImageServiceImpl implements ImageService{
             Long likeCnt = likesRepository.getLikesCntByImageId(ino);
             image.setLikeCnt(likeCnt);
             List<Long> mnoList = likesRepository.getMemberIdByImageId(ino);
-            for(Long mno : mnoList){
-                if(mno.equals(userId)){
+            for (Long mno : mnoList) {
+                if (mno.equals(userId)) {
                     image.setLikeState(true);
                 }
             }
@@ -71,15 +72,12 @@ public class ImageServiceImpl implements ImageService{
     }
 
     @Override
-    public List<Image> getPopularImageList(String username){
-        try {
-            Member member = memberRepository.getByUsername(username);
-            Long userId = member.getMno();
-            List<Image> images = imageRepository.getPopularPictureList(userId);
-            return images;
-        }catch (Exception e){
-            throw new IllegalArgumentException("wrong username");
-        }
+    public List<Image> getPopularImageList(String username) {
+
+        Member member = memberRepository.getByUsername(username);
+        Long userId = member.getMno();
+        List<Image> images = imageRepository.getPopularPictureList(userId);
+        return images;
     }
 
     // 나중에 따로 분리해서 private으로 해야함

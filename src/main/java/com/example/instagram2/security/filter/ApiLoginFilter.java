@@ -42,6 +42,11 @@ public class ApiLoginFilter extends AbstractAuthenticationProcessingFilter {
         }
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode objectNode = objectMapper.readValue(request.getInputStream(), ObjectNode.class);
+
+        if(objectNode.get("email") == null || objectNode.get("password") == null){
+            throw new BadCredentialsException("이메일이나 비밀번호를 확인하세요.");
+        }
+
         String email = objectNode.get("email").asText();
         String password = objectNode.get("password").asText();
 

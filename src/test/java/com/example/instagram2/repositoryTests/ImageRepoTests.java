@@ -38,6 +38,12 @@ public class ImageRepoTests {
     }
 
     @Test
+    public void getImgUrlListTest(){
+        List<String> result = repository.getImageUrlList(2L);
+        System.out.println(result);
+    }
+
+    @Test
     public void getPopularImageTest() {
         List<Image> popularImgList = repository.getPopularPictureList(11L);
 

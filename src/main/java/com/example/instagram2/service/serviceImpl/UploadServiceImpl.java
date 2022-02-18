@@ -1,6 +1,6 @@
 package com.example.instagram2.service.serviceImpl;
 
-import com.example.instagram2.exception.IllegalFileException;
+import com.example.instagram2.exception.myException.IllegalFileException;
 import com.example.instagram2.service.UploadService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,9 @@ public class UploadServiceImpl implements UploadService {
     @Override
     public String uploadFile(MultipartFile uploadFile, String uploadPath) {
 
-
+        if (uploadFile == null) {
+            throw new IllegalFileException("uploadFile이 없습니다.");
+        }
         if (!uploadFile.getContentType().startsWith("image")) {
             log.warn("이 파일은 이미지 타입이 아닙니다.");
             throw new IllegalFileException("이 파일은 이미지 타입이 아닙니다.");
@@ -57,6 +59,7 @@ public class UploadServiceImpl implements UploadService {
                 DateTimeFormatter.ofPattern("yyyy/MM/dd"));
 
         String folderPath = str.replace("/", File.separator);
+
 
         File uploadPathFolder = new File(uploadPath, folderPath);
 

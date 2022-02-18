@@ -18,13 +18,14 @@ import javax.validation.Valid;
 
 @RestController
 @Log4j2
+@RequestMapping("/reply/")
 @RequiredArgsConstructor
 public class ReplyController {
 
     private final ReplyService replyService;
     private final ArgumentCheckUtil argumentCheckUtil;
 
-    @GetMapping("/{username}/{imageId}/reply")
+    @GetMapping("{username}/{imageId}")
     public ResponseEntity<?> getAllReply(@PathVariable String username,
                                           @PathVariable Long imageId,
                                           @PageableDefault(
@@ -41,7 +42,7 @@ public class ReplyController {
         return ResponseEntity.ok().body(replyService.getList(imageId, pageable));
     }
 
-    @DeleteMapping("/{username}/{imageId}/reply")
+    @DeleteMapping("{username}/{imageId}")
     public ResponseEntity<?> remove(@PathVariable String username,
                                     @PathVariable Long imageId,
                                     @RequestParam Long rno,
@@ -56,7 +57,7 @@ public class ReplyController {
 
     }
 
-    @PostMapping("/{username}/{imageId}/reply")
+    @PostMapping("{username}/{imageId}")
     public ResponseEntity<?> replyRegister(@PathVariable String username,
                                            @PathVariable Long imageId,
                                            @RequestBody @Valid ReplyReqDTO dto,

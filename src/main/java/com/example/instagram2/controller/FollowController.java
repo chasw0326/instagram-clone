@@ -22,7 +22,7 @@ public class FollowController {
     @PostMapping("{toMemberId}")
     public ResponseEntity<?> follow(@AuthenticationPrincipal AuthMemberDTO authMember,
                                     @PathVariable Long toMemberId) {
-
+        log.info("follow");
         argumentCheckUtil.existByMemberId(toMemberId);
         followService.follow(authMember.getId(), toMemberId);
         return ResponseEntity.ok().body("follow");
@@ -32,6 +32,7 @@ public class FollowController {
     public ResponseEntity<?> unfollow(@AuthenticationPrincipal AuthMemberDTO authMember,
                                       @PathVariable Long toMemberId){
 
+        log.info("unfollow");
         argumentCheckUtil.existByMemberId(toMemberId);
         followService.unFollow(authMember.getId(), toMemberId);
         return ResponseEntity.ok().body("unfollow");

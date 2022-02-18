@@ -3,6 +3,7 @@ package com.example.instagram2.controller;
 import com.example.instagram2.dto.FeedDTO;
 import com.example.instagram2.dto.ImageReqDTO;
 import com.example.instagram2.entity.Image;
+import com.example.instagram2.exception.ArgumentCheckUtil;
 import com.example.instagram2.security.dto.AuthMemberDTO;
 import com.example.instagram2.service.ImageService;
 import com.example.instagram2.service.MemberService;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -26,8 +28,9 @@ public class ImageController {
 
     private final ImageService imageService;
     private final MemberService memberService;
+    private final ArgumentCheckUtil argumentCheckUtil;
 
-    @GetMapping("/")
+    @GetMapping({"/", "/image"})
     public ResponseEntity<?> getFeedImages(@AuthenticationPrincipal AuthMemberDTO authMember,
                                            @PageableDefault(
                                                    size = 15,
@@ -45,25 +48,22 @@ public class ImageController {
         return ResponseEntity.ok().body(dto);
     }
 
-    @PostMapping("/create/style")
+    @PostMapping("/image/create/style")
     public ResponseEntity<?> upload(@RequestBody @Valid ImageReqDTO imageReqDTO,
                                     @AuthenticationPrincipal AuthMemberDTO authMember) {
-
+        log.info("upload");
         Long ino = imageService.uploadPicture(imageReqDTO, authMember);
         return ResponseEntity.ok().body("id: " + ino);
 
     }
 
 
-    @GetMapping("/{username}/explore")
+    @GetMapping("/image/{username}/explore")
     public ResponseEntity<?> getPopularPicture(@PathVariable String username) {
-        try {
-            List<Image> images = imageService.getPopularImageList(username);
-            return ResponseEntity.ok().body(images);
-        } catch (Exception e) {
-            String error = e.getMessage();
-            return ResponseEntity.badRequest().body(error);
-        }
+        log.info("getPopularPicture");
+        argumentCheckUtil.existByUsername(username);
+        List<Image> images = imageService.getPopularImageList(username);
+        return ResponseEntity.ok().body(images);
     }
 }
 

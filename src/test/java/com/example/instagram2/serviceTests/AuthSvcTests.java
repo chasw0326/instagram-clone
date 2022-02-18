@@ -3,7 +3,7 @@ package com.example.instagram2.serviceTests;
 
 import com.example.instagram2.dto.SignUpDTO;
 import com.example.instagram2.repository.MemberRepository;
-import com.example.instagram2.security.util.AuthUtil;
+import com.example.instagram2.service.serviceImpl.AuthUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

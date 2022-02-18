@@ -17,17 +17,17 @@ public class LoginFailHandler implements AuthenticationFailureHandler {
     @Override
     public void onAuthenticationFailure(HttpServletRequest request,
                                        HttpServletResponse response,
-                                       AuthenticationException exception)
+                                       AuthenticationException ex)
             throws IOException, ServletException{
 
         log.info("onAuthenticationFailure 시작");
         log.info("Login fail handler........................");
-        log.info(exception.getMessage());
+        log.info(ex.getMessage());
 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json;charset=utf-8");
         JSONObject json = new JSONObject();
-        String message = exception.getMessage();
+        String message = ex.getMessage();
         json.put("code", "401");
         json.put("message", message);
 

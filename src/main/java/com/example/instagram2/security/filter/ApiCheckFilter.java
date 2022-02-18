@@ -6,7 +6,6 @@ import lombok.extern.log4j.Log4j2;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -27,14 +26,16 @@ public class ApiCheckFilter extends OncePerRequestFilter {
     private final AntPathMatcher antPathMatcher;
     private final String pattern;
     private final JWTUtil jwtUtil;
+    private final String exclude;
 
     @Autowired
     private InstaUserDetailsService userDetailsService;
 
-    public ApiCheckFilter(String pattern, JWTUtil jwtUtil) {
+    public ApiCheckFilter(String pattern, String excludes, JWTUtil jwtUtil) {
         this.antPathMatcher = new AntPathMatcher();
         this.pattern = pattern;
         this.jwtUtil = jwtUtil;
+        this.exclude = excludes;
     }
 
     @Override
@@ -43,15 +44,16 @@ public class ApiCheckFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
+
         log.info("------------ApiCheckFilter in progress------------");
         log.info("RequestURI: " + request.getRequestURI());
-        log.info("토큰확인 해야하는지: " + antPathMatcher.match(pattern, request.getRequestURI()));
+        boolean needToCheckToken = (antPathMatcher.match(pattern, request.getRequestURI()) && !antPathMatcher.match(exclude, request.getRequestURI()));
+        log.info("토큰확인 해야하는지: " + needToCheckToken);
 
-        if (antPathMatcher.match(pattern, request.getRequestURI())) {
+        if (needToCheckToken) {
             log.info("ApiCheckFilter......................................");
             log.info("ApiCheckFilter......................................");
             log.info("ApiCheckFilter......................................");
-
 
             String email = checkAuthHeader(request);
 
@@ -88,11 +90,11 @@ public class ApiCheckFilter extends OncePerRequestFilter {
         if (StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")) {
             log.info("Authorization exist: " + authHeader);
 
-            try{
+            try {
                 email = jwtUtil.validateAndExtract(authHeader.substring(7));
                 log.info("validate result: " + email);
                 return email;
-            } catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

@@ -1,4 +1,4 @@
-package com.example.instagram2.exception;
+package com.example.instagram2.exception.myException;
 
 
 public class IllegalFileException extends IllegalArgumentException{

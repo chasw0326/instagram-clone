@@ -1,19 +1,18 @@
-package com.example.instagram2.security.util;
+package com.example.instagram2.service.serviceImpl;
 
 import com.example.instagram2.dto.PasswordDTO;
 import com.example.instagram2.dto.SignUpDTO;
 import com.example.instagram2.entity.Member;
 import com.example.instagram2.entity.MemberRole;
+import com.example.instagram2.exception.myException.DuplicationException;
 import com.example.instagram2.repository.MemberRepository;
+import com.example.instagram2.security.util.PasswordUtil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 
 @Log4j2
@@ -37,10 +36,10 @@ public class AuthUtil {
         String email = dto.getEmail();
 
         if (memberRepository.existsByUsername(dto.getUsername())) {
-            throw new RuntimeException("Duplicated username");
+            throw new DuplicationException("Duplicated username");
         }
         if (memberRepository.existsByEmail(dto.getEmail())) {
-            throw new RuntimeException("Duplicated email");
+            throw new DuplicationException("Duplicated email");
         }
 
         Member newMember = Member.builder()
@@ -55,6 +54,16 @@ public class AuthUtil {
         memberRepository.save(newMember);
 
         return newMember;
+    }
+
+    @Transactional
+    public SignUpDTO entityToDTO(Member member){
+        return SignUpDTO.builder()
+                .id(member.getMno())
+                .email(member.getEmail())
+                .name(member.getName())
+                .username(member.getUsername())
+                .build();
     }
 
 //    @Transactional
