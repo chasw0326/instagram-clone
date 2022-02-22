@@ -5,6 +5,7 @@ import com.example.instagram2.dto.PasswordDTO;
 import com.example.instagram2.dto.UserProfileRespDTO;
 import com.example.instagram2.dto.UserEditDTO;
 import com.example.instagram2.entity.Member;
+import com.example.instagram2.exception.myException.DuplicationException;
 import com.example.instagram2.exception.myException.IllegalFileException;
 import com.example.instagram2.repository.FollowRepository;
 import com.example.instagram2.repository.ImageRepository;
@@ -79,6 +80,11 @@ public class MemberServiceImpl implements MemberService {
         Optional<Member> result = memberRepository.findById(userId);
         if (result.isPresent()) {
             Member member = result.get();
+            if (!member.getUsername().equals(dto.getUsername())) {
+                if (memberRepository.existsByUsername(dto.getUsername())) {
+                    throw new DuplicationException("중복된 사용자 이름 입니다.");
+                }
+            }
             dto.setMno(member.getMno());
             Member mem = dtoToEntity(dto);
             memberRepository.save(mem);

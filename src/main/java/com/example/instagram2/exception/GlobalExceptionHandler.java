@@ -21,7 +21,7 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler({DuplicationException.class})
-    public ResponseEntity<?> DuplicateValue(DuplicationException e) {
+    public ResponseEntity<?> DuplicatedArgs(DuplicationException e) {
         log.error("DuplicationException: {}", e.getMessage());
         e.printStackTrace();
         ErrorRespDTO dto = errorToDTO(e);

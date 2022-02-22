@@ -53,7 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public ApiCheckFilter apiCheckFilter() {
-        return new ApiCheckFilter("/**", "/accounts/signup", jwtUtil());
+        return new ApiCheckFilter("/**", new String[]{"/accounts/signup", "/login"}, jwtUtil());
     }
 
     @Bean

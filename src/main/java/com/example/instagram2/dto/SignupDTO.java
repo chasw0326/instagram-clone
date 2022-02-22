@@ -8,14 +8,13 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SignUpDTO {
+public class SignupDTO {
 
     @NotEmpty(message = "이메일은 필수값입니다.")
     @Email(message = "이메일 형식이 아닙니다.")
@@ -37,8 +36,8 @@ public class SignUpDTO {
 
     private Long id;
 
-    public SignUpDTO entityToDTO(Member member){
-        return SignUpDTO.builder()
+    public SignupDTO entityToDTO(Member member){
+        return SignupDTO.builder()
                 .id(member.getMno())
                 .email(member.getEmail())
                 .name(member.getName())

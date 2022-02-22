@@ -1,7 +1,7 @@
 package com.example.instagram2.service.serviceImpl;
 
 import com.example.instagram2.dto.PasswordDTO;
-import com.example.instagram2.dto.SignUpDTO;
+import com.example.instagram2.dto.SignupDTO;
 import com.example.instagram2.entity.Member;
 import com.example.instagram2.entity.MemberRole;
 import com.example.instagram2.exception.myException.DuplicationException;
@@ -31,7 +31,8 @@ public class AuthUtil {
     }
 
     @Transactional
-    public Member signUp(final SignUpDTO dto) {
+    public Member signup(final SignupDTO dto) {
+        log.info("signup email: {}", dto.getEmail());
         String rawPw = dto.getPassword();
         String email = dto.getEmail();
 
@@ -57,24 +58,14 @@ public class AuthUtil {
     }
 
     @Transactional
-    public SignUpDTO entityToDTO(Member member){
-        return SignUpDTO.builder()
+    public SignupDTO entityToDTO(Member member){
+        return SignupDTO.builder()
                 .id(member.getMno())
                 .email(member.getEmail())
                 .name(member.getName())
                 .username(member.getUsername())
                 .build();
     }
-
-//    @Transactional
-//    public Member getByCredentials(final String email, final String password) {
-//        final Member originalMember = memberRepository.getByEmail(email);
-//
-//        if (originalMember != null && passwordEncoder.matches(password, originalMember.getPassword())) {
-//            return originalMember;
-//        }
-//        return null;
-//    }
 
 
     @Transactional

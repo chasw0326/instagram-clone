@@ -1,4 +1,4 @@
-package com.example.instagram2.security;
+package com.example.instagram2.securityTests;
 
 
 import org.junit.jupiter.api.Test;

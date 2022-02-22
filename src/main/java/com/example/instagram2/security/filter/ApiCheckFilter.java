@@ -26,16 +26,16 @@ public class ApiCheckFilter extends OncePerRequestFilter {
     private final AntPathMatcher antPathMatcher;
     private final String pattern;
     private final JWTUtil jwtUtil;
-    private final String exclude;
+    private final String[] excludes;
 
     @Autowired
     private InstaUserDetailsService userDetailsService;
 
-    public ApiCheckFilter(String pattern, String excludes, JWTUtil jwtUtil) {
+    public ApiCheckFilter(String pattern, String[] excludes, JWTUtil jwtUtil) {
         this.antPathMatcher = new AntPathMatcher();
         this.pattern = pattern;
         this.jwtUtil = jwtUtil;
-        this.exclude = excludes;
+        this.excludes = excludes;
     }
 
     @Override
@@ -47,7 +47,15 @@ public class ApiCheckFilter extends OncePerRequestFilter {
 
         log.info("------------ApiCheckFilter in progress------------");
         log.info("RequestURI: " + request.getRequestURI());
-        boolean needToCheckToken = (antPathMatcher.match(pattern, request.getRequestURI()) && !antPathMatcher.match(exclude, request.getRequestURI()));
+
+        boolean needToCheckToken = antPathMatcher.match(pattern, request.getRequestURI());
+
+        for (String exclude : excludes){
+            if(antPathMatcher.match(exclude, request.getRequestURI())){
+                needToCheckToken = false;
+            }
+        }
+
         log.info("토큰확인 해야하는지: " + needToCheckToken);
 
         if (needToCheckToken) {
@@ -58,9 +66,9 @@ public class ApiCheckFilter extends OncePerRequestFilter {
             String email = checkAuthHeader(request);
 
             if (email.length() > 0) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+                UserDetails principal = userDetailsService.loadUserByUsername(email);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
+                        principal, principal.getPassword(), principal.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 filterChain.doFilter(request, response);

@@ -25,32 +25,27 @@ public class ReplyController {
     private final ReplyService replyService;
     private final ArgumentCheckUtil argumentCheckUtil;
 
-    @GetMapping("{username}/{imageId}")
-    public ResponseEntity<?> getAllReply(@PathVariable String username,
-                                          @PathVariable Long imageId,
-                                          @PageableDefault(
+    @GetMapping("{imageId}")
+    public ResponseEntity<?> getAllReply(@PathVariable Long imageId,
+                                         @PageableDefault(
                                                   size = 10,
                                                   sort = "regDate",
                                                   direction = Sort.Direction.DESC) Pageable pageable) {
 
         log.info("----------getReplyList----------");
 
-        argumentCheckUtil.existByUsername(username);
         argumentCheckUtil.existByImageId(imageId);
-        log.info("username: {}", username);
         log.info("imageId: {}", imageId);
         return ResponseEntity.ok().body(replyService.getList(imageId, pageable));
     }
 
-    @DeleteMapping("{username}/{imageId}")
-    public ResponseEntity<?> remove(@PathVariable String username,
-                                    @PathVariable Long imageId,
+    @DeleteMapping("{imageId}")
+    public ResponseEntity<?> remove(@PathVariable Long imageId,
                                     @RequestParam Long rno,
                                     @AuthenticationPrincipal AuthMemberDTO authMember) {
         log.info("----------remove----------");
         log.info(rno);
 
-        argumentCheckUtil.existByUsername(username);
         argumentCheckUtil.existByImageId(imageId);
         replyService.remove(rno, authMember.getId());
         return ResponseEntity.ok().body("removed");

@@ -165,4 +165,22 @@ public class InsertDummies {
                 .build();
         memberRepository.save(member);
     }
+
+    @Test
+    public void garbage(){
+        Member member = Member.builder()
+                .mno(223L)
+                .email("chasw@naver.com")
+                .profileImageUrl("testingImgUrl")
+                .phoneNum("01075319842")
+                .gender("남자")
+                .intro("나는 누구인가")
+                .name("로니콜먼")
+                .password(passwordEncoder.encode("abcABC123!@#"))
+                .username("john")
+                .website("www.myInfo.com")
+                .build();
+
+        memberRepository.save(member);
+    }
 }

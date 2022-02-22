@@ -1,7 +1,7 @@
 package com.example.instagram2.serviceTests;
 
 
-import com.example.instagram2.dto.SignUpDTO;
+import com.example.instagram2.dto.SignupDTO;
 import com.example.instagram2.repository.MemberRepository;
 import com.example.instagram2.service.serviceImpl.AuthUtil;
 import org.junit.jupiter.api.Test;
@@ -312,14 +312,14 @@ public class AuthSvcTests {
         String name = "핫식스";
         String username = "who";
         String password = "abcABC123";
-        SignUpDTO dto = SignUpDTO.builder()
+        SignupDTO dto = SignupDTO.builder()
                 .email(email)
                 .name(name)
                 .username(username)
                 .password(password)
                 .build();
 
-        authService.signUp(dto);
+        authService.signup(dto);
 //        System.out.println(errorState);
     }
 }

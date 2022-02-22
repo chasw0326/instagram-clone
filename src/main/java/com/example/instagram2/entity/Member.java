@@ -45,10 +45,6 @@ public class Member extends BaseEntity {
 
     private boolean fromSocial;
 
-//    @Builder.Default
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
-//    private List<Image> images = new ArrayList<>();
-
     @ElementCollection(fetch = FetchType.LAZY)
     @Builder.Default
     @JsonIgnore

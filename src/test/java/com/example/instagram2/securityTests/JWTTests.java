@@ -1,4 +1,4 @@
-package com.example.instagram2.security;
+package com.example.instagram2.securityTests;
 
 import com.example.instagram2.security.util.JWTUtil;
 import io.jsonwebtoken.ExpiredJwtException;

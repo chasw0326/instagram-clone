@@ -23,6 +23,7 @@ public interface MemberService {
 
     Long getMemberIdByUsername(String username);
 
+
     default Member dtoToEntity(UserEditDTO dto) {
         return Member.builder()
                 .mno(dto.getMno())
