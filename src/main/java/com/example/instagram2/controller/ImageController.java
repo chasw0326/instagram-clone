@@ -58,7 +58,7 @@ public class ImageController {
     }
 
 
-    @GetMapping("/image/{username}/explore")
+    @GetMapping("/image/explore/{username}")
     public ResponseEntity<?> getPopularPicture(@PathVariable String username) {
         log.info("getPopularPicture");
         argumentCheckUtil.existByUsername(username);

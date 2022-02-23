@@ -45,7 +45,7 @@ public class MemberController {
 
     @PutMapping("{username}/changePicture")
     public ResponseEntity<?> changeProfilePicture(@PathVariable String username,
-                                                  @RequestParam MultipartFile imageFile,
+                                                  @RequestParam("image") MultipartFile imageFile,
                                                   @AuthenticationPrincipal AuthMemberDTO authMember) {
 
         argumentCheckUtil.existByUsername(username);

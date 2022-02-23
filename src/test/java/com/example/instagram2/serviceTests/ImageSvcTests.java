@@ -30,7 +30,7 @@ public class ImageSvcTests {
 
     @BeforeEach
     public void setUp() throws Exception {
-        file = new MockMultipartFile("testImage",
+       file = new MockMultipartFile("testImage",
                 "testImg.png",
                 "image/png",
                 new FileInputStream("C:\\upload\\image_storage\\abc.png"));

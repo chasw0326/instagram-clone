@@ -65,7 +65,7 @@ public class FollowControllerTests {
     void Should_ThrowException_WhenFollowNotExistUser() {
         Long toMemberId = 987654321L;
         doThrow(new IllegalArgumentException("존재하지 않는 memberId 입니다. 입력한 값:" + toMemberId))
-                .doNothing().when(mockArgumentCheckUtil).existByMemberId(toMemberId);
+                .when(mockArgumentCheckUtil).existByMemberId(toMemberId);
 
         webTestClient.post().uri("/follow/987654321")
                 .headers(http -> http.setBearerAuth(token))

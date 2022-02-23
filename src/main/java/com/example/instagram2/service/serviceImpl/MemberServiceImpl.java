@@ -42,12 +42,12 @@ public class MemberServiceImpl implements MemberService {
         if(uploadFile == null){
             throw new IllegalFileException("uploadFile is null");
         }
-        String fileName = uploadService.uploadFile(uploadFile, uploadPath);
+        String fileUrl = uploadService.uploadFile(uploadFile, uploadPath);
 
         Optional<Member> result = memberRepository.findById(userId);
         if (result.isPresent()) {
             Member member = result.get();
-            member.setProfileImageUrl(fileName);
+            member.setProfileImageUrl(fileUrl);
             memberRepository.save(member);
         }
     }

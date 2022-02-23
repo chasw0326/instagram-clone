@@ -41,9 +41,8 @@ public class ImageServiceImpl implements ImageService {
     public Long uploadPicture(ImageReqDTO imageDTO, AuthMemberDTO authMemberDTO) {
 
         MultipartFile uploadFile = imageDTO.getUploadFile();
-        uploadService.uploadFile(uploadFile, uploadPath);
-
-        Image image = dtoToEntity(imageDTO, authMemberDTO);
+        String imageUrl = uploadService.uploadFile(uploadFile, uploadPath);
+        Image image = dtoToEntity(imageDTO, imageUrl,authMemberDTO);
         List<Tag> tags = makeTagList(imageDTO.getTags(), image);
 
         imageRepository.save(image);

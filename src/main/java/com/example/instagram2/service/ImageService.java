@@ -20,10 +20,10 @@ public interface ImageService {
 
     List<Image> getPopularImageList(String username);
 
-    default Image dtoToEntity(ImageReqDTO imageDTO, AuthMemberDTO authMemberDTO){
+    default Image dtoToEntity(ImageReqDTO imageDTO,String imageUrl, AuthMemberDTO authMemberDTO){
         return Image.builder()
                 .caption(imageDTO.getCaption())
-                .ImageUrl(imageDTO.getImageUrl())
+                .ImageUrl(imageUrl)
                 .member(Member.builder()
                         .mno(authMemberDTO.getId())
                         .email(authMemberDTO.getEmail())

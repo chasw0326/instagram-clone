@@ -10,12 +10,13 @@ import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ImageReqDTO {
+public class ImageReqDTO implements Serializable {
 
     @NotNull(message = "이미지 파일은 필수 입니다.")
     private MultipartFile uploadFile;
@@ -23,6 +24,4 @@ public class ImageReqDTO {
     private String caption;
 
     private String tags;
-
-    private String imageUrl;
 }
