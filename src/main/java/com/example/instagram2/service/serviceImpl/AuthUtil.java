@@ -5,6 +5,7 @@ import com.example.instagram2.dto.SignupDTO;
 import com.example.instagram2.entity.Member;
 import com.example.instagram2.entity.MemberRole;
 import com.example.instagram2.exception.myException.DuplicationException;
+import com.example.instagram2.exception.myException.InvalidPasswordException;
 import com.example.instagram2.repository.MemberRepository;
 import com.example.instagram2.security.util.PasswordUtil;
 import lombok.extern.log4j.Log4j2;
@@ -69,7 +70,7 @@ public class AuthUtil {
 
 
     @Transactional
-    public void changePassword(final PasswordDTO dto) {
+    public void changePassword(final PasswordDTO dto) throws InvalidPasswordException {
         Long mno = dto.getMno();
         Optional<Member> result = memberRepository.findById(mno);
         if (!result.isPresent()) {
@@ -79,11 +80,11 @@ public class AuthUtil {
         Member member = result.get();
         if (!passwordEncoder.matches(dto.getOldPw(), member.getPassword())) {
             log.warn("이전 비밀번호가 다릅니다.");
-            throw new RuntimeException("이전 비밀번호가 다릅니다.");
+            throw new InvalidPasswordException("이전 비밀번호가 다릅니다.");
         }
         if (!dto.getNewPw().equals(dto.getCheckNewPw())) {
             log.warn("확인 비밀번호가 새 비밀번호와 다릅니다.");
-            throw new RuntimeException("확인 비밀번호가 새 비밀번호와 다릅니다.");
+            throw new InvalidPasswordException("확인 비밀번호가 새 비밀번호와 다릅니다.");
         }
         member.setPassword(passwordEncoder.encode(dto.getNewPw()));
         memberRepository.save(member);

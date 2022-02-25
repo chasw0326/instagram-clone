@@ -5,6 +5,7 @@ import com.example.instagram2.dto.SignupDTO;
 import com.example.instagram2.dto.UserEditDTO;
 import com.example.instagram2.entity.Member;
 import com.example.instagram2.exception.ArgumentCheckUtil;
+import com.example.instagram2.exception.myException.InvalidPasswordException;
 import com.example.instagram2.security.dto.AuthMemberDTO;
 import com.example.instagram2.service.MemberService;
 import com.example.instagram2.service.serviceImpl.AuthUtil;
@@ -43,7 +44,7 @@ public class AuthController {
 
     @PostMapping("password/change")
     public ResponseEntity<?> changePassword(@RequestBody @Valid PasswordDTO passwordDTO,
-                                            @AuthenticationPrincipal AuthMemberDTO authMember) {
+                                            @AuthenticationPrincipal AuthMemberDTO authMember) throws InvalidPasswordException {
         log.info("changePw");
         passwordDTO.setMno(authMember.getId());
         authService.changePassword(passwordDTO);

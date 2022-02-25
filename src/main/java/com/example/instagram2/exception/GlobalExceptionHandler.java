@@ -2,6 +2,7 @@ package com.example.instagram2.exception;
 
 import com.example.instagram2.exception.myException.DuplicationException;
 import com.example.instagram2.exception.myException.IllegalFileException;
+import com.example.instagram2.exception.myException.InvalidPasswordException;
 import com.example.instagram2.exception.myException.NoAuthorityException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,14 @@ public class GlobalExceptionHandler {
         e.printStackTrace();
         ErrorRespDTO dto = errorToDTO(e);
         return new ResponseEntity<>(dto, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler({InvalidPasswordException.class})
+    public ResponseEntity<?> PasswordHandler(InvalidPasswordException e){
+        log.error("DuplicationException: {}", e.getMessage());
+        e.printStackTrace();
+        ErrorRespDTO dto = errorToDTO(e);
+        return new ResponseEntity<>(dto, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({NoAuthorityException.class})
@@ -61,8 +70,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(dto, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({
-            MethodArgumentNotValidException.class,
+    @ExceptionHandler({MethodArgumentNotValidException.class,
             MethodArgumentTypeMismatchException.class,
             MethodArgumentConversionNotSupportedException.class})
     public ResponseEntity<?> validExceptionHandler(BindException e) {

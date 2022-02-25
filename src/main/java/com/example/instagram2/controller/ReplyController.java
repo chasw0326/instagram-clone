@@ -55,7 +55,7 @@ public class ReplyController {
 
     }
 
-    @PostMapping("/{imageId}")
+    @PostMapping("{imageId}")
     public ResponseEntity<?> replyRegister(@PathVariable Long imageId,
                                            @RequestBody @Valid ReplyReqDTO dto,
                                            @AuthenticationPrincipal AuthMemberDTO authMember) {

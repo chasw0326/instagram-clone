@@ -53,6 +53,17 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Transactional
+    public void deleteProfilePicture(Long userId){
+        Optional<Member> result = memberRepository.findById(userId);
+        if(result.isPresent()){
+            Member member = result.get();
+            member.setProfileImageUrl(null);
+            memberRepository.save(member);
+        }
+    }
+
+
+    @Transactional
     public UserEditDTO getMemberInfo(Long userId) {
         Optional<Member> result = memberRepository.findById(userId);
         if (!result.isPresent()) {
@@ -119,7 +130,7 @@ public class MemberServiceImpl implements MemberService {
         userProfileRespDTO.setFollowerCount(followerCount);
         userProfileRespDTO.setImageCount(imgCnt);
         userProfileRespDTO.setMember(member);
-        userProfileRespDTO.setImgList(imageUrlList);
+        userProfileRespDTO.setImgUrlList(imageUrlList);
 
 
         return userProfileRespDTO;

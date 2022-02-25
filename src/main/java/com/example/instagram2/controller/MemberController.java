@@ -61,6 +61,21 @@ public class MemberController {
         return ResponseEntity.ok().body("change");
     }
 
+    @GetMapping("/deletePicture/{username}")
+    public ResponseEntity<?> delteProfilePicture(@PathVariable String username,
+                                                 @AuthenticationPrincipal AuthMemberDTO authMember) throws NoAuthorityException {
+
+        argumentCheckUtil.existByUsername(username);
+        Long mno = memberService.getMemberIdByUsername(username);
+        if (!mno.equals(authMember.getId())) {
+            throw new NoAuthorityException("no authority to delete profile-picture");
+        }
+        memberService.deleteProfilePicture(authMember.getId());
+        return ResponseEntity.ok().body("change");
+
+    }
+
+
     @GetMapping("{username}/followerList")
     public ResponseEntity<?> getFollowerList(@AuthenticationPrincipal AuthMemberDTO authMember,
                                              @PathVariable String username,
@@ -86,7 +101,8 @@ public class MemberController {
         argumentCheckUtil.existByUsername(username);
         List<FollowRespDTO> followList = followService.getFollowList(authMember.getId(), username, pageable);
         return ResponseEntity.ok().body(followList);
-
     }
+
+
 
 }

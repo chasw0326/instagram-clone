@@ -26,7 +26,7 @@ public class UserProfileRespDTO {
 
     private Member member;
 
-    private List<String> imgList;
+    private List<String> imgUrlList;
 
     private boolean myself; //본인인지 확인
 }

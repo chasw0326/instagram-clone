@@ -15,6 +15,8 @@ public interface MemberService {
 
     UserEditDTO getMemberInfo(Long userId);
 
+    void deleteProfilePicture(Long userId);
+
     PasswordDTO getProfileImgUrlAndUsernameById(Long userId);
 
     String getProfileImg(Long mno);

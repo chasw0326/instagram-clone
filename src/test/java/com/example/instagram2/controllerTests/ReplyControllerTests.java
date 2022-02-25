@@ -1,7 +1,9 @@
 package com.example.instagram2.controllerTests;
 
+import com.example.instagram2.dto.ReplyReqDTO;
 import com.example.instagram2.exception.ArgumentCheckUtil;
 import com.example.instagram2.exception.myException.NoAuthorityException;
+import com.example.instagram2.security.dto.AuthMemberDTO;
 import com.example.instagram2.service.ReplyService;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,6 +20,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -68,50 +71,102 @@ public class ReplyControllerTests {
         System.out.println(token);
     }
 
+    @DisplayName("정상적인 댓글 가져오기 [GET]/reply/{imageId}")
     @Test
     @WithUserDetails(value = "chasw@naver.com")
-    void should_getReplies_When_NormalRequest(){
+    void should_getReplies_When_NormalRequest() {
         Long imageId = 100L;
         Pageable pageable = PageRequest.of(0, 10, Sort.by("regDate").descending());
         doNothing().when(mockArgumentCheckUtil).existByImageId(imageId);
         given(mockReplyService.getList(imageId, pageable)).willReturn(null);
 
-        webTestClient.get().uri("/reply/{imageId}" , imageId)
+        webTestClient.get().uri("/reply/{imageId}", imageId)
                 .headers(http -> http.setBearerAuth(token))
                 .exchange()
                 .expectStatus().isOk();
 
     }
 
-    @DisplayName("정상적인 댓글삭제, [GET]/user/reply/{imageId}")
+    @DisplayName("정상적인 댓글삭제, [GET]/reply/{imageId}")
     @Test
     @WithUserDetails(value = "chasw@naver.com")
     void should_DeleteReply_When_NormalRequest() throws NoAuthorityException {
         Long imageId = 100L;
-
+        Long replyId = 100L;
+        AuthMemberDTO loggedUser = (AuthMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = loggedUser.getId();
         doNothing().when(mockArgumentCheckUtil).existByImageId(imageId);
-        doNothing().when(mockReplyService).remove(imageId, 223L);
+        doNothing().when(mockReplyService).remove(imageId, userId);
 
-        webTestClient.delete().uri("/reply/{imageId}" , imageId)
+        webTestClient.delete().uri("/reply/{imageId}/{replyId}", imageId, replyId)
                 .headers(http -> http.setBearerAuth(token))
                 .exchange()
                 .expectStatus().isOk();
     }
 
-    @DisplayName("다른사람이 댓글삭제 시도, [GET]/user/reply/{imageId}")
+    @DisplayName("다른사람이 댓글삭제 시도, [GET]/reply/{imageId}")
     @Test
     @WithUserDetails(value = "chasw@naver.com")
     void should_ThrowException_When_DeleteByStranger() throws NoAuthorityException {
         Long imageId = 100L;
-
+        Long replyId = 100L;
+        AuthMemberDTO loggedUser = (AuthMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = loggedUser.getId();
         doNothing().when(mockArgumentCheckUtil).existByImageId(imageId);
-        doThrow(new NoAuthorityException("권한없음")).when(mockReplyService).remove(imageId, 2233L);
+        doThrow(new NoAuthorityException("권한없음"))
+                .when(mockReplyService).remove(replyId, userId);
 
-        webTestClient.delete().uri("/reply/{imageId}" , imageId)
+        webTestClient.delete().uri("/reply/{imageId}/{replyId}", imageId, replyId)
                 .headers(http -> http.setBearerAuth(token))
                 .exchange()
                 .expectStatus().isUnauthorized()
                 .expectBody()
                 .jsonPath("exception").isEqualTo("NoAuthorityException");
+    }
+
+    @DisplayName("정상적인 댓글작성, [POST]/reply/{imageId}")
+    @Test
+    @WithUserDetails(value = "chasw@naver.com")
+    void should_isOK_When_RegisterReply() {
+        Long imageId = 100L;
+        doNothing().when(mockArgumentCheckUtil).existByImageId(100L);
+        AuthMemberDTO loggedUser = (AuthMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        ReplyReqDTO dto = ReplyReqDTO.builder()
+                .text("나는야 댓글")
+                .build();
+
+        given(mockReplyService.register(dto, loggedUser)).willReturn(333L);
+
+        webTestClient.post().uri("/reply/{imageId}", imageId)
+                .headers(http -> http.setBearerAuth(token))
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .bodyValue(dto)
+                .exchange()
+                .expectStatus().isOk();
+    }
+
+    @DisplayName("댓글내용 없이 작성, [POST]/reply/{imageId}")
+    @Test
+    @WithUserDetails(value = "chasw@naver.com")
+    void should_ThrowException_When_RegisterWithEmptyReply() {
+        Long imageId = 100L;
+        doNothing().when(mockArgumentCheckUtil).existByImageId(100L);
+        AuthMemberDTO loggedUser = (AuthMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        ReplyReqDTO dto = ReplyReqDTO.builder()
+                .text(null)
+                .build();
+
+        given(mockReplyService.register(dto, loggedUser)).willReturn(333L);
+
+        webTestClient.post().uri("/reply/{imageId}", imageId)
+                .headers(http -> http.setBearerAuth(token))
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .bodyValue(dto)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody()
+                .jsonPath("exception").isEqualTo("MethodArgumentNotValidException");
     }
 }

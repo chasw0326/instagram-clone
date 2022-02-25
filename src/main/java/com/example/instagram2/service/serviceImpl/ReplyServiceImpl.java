@@ -56,18 +56,15 @@ public class ReplyServiceImpl implements ReplyService {
     @Override
     @Transactional
     public void remove(Long rno, Long userId) throws NoAuthorityException {
-        try {
-            Optional<Reply> result = repository.findById(userId);
-            if (result.isPresent()) {
-                Reply reply = result.get();
-                if (reply.getMember().getMno().equals(userId)) {
-                    repository.deleteById(rno);
-                }
+        Optional<Reply> result = repository.findById(userId);
+        if (result.isPresent()) {
+            Reply reply = result.get();
+            if (!reply.getMember().getMno().equals(userId)) {
+                log.error("error deleting reply by userId: {}", userId);
+                throw new NoAuthorityException("userId: " + userId + " has no Authority to delete reply");
             }
-        } catch (Exception e) {
-            log.error("error deleting reply by userId: {}", userId);
-            throw new NoAuthorityException("userId: " + userId + " has no Authority to delete reply");
+            repository.deleteById(rno);
         }
     }
-
 }
+

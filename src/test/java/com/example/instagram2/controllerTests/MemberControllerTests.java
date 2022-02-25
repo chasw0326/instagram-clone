@@ -1,6 +1,7 @@
 package com.example.instagram2.controllerTests;
 
 import com.example.instagram2.exception.ArgumentCheckUtil;
+import com.example.instagram2.security.dto.AuthMemberDTO;
 import com.example.instagram2.service.FollowService;
 import com.example.instagram2.service.MemberService;
 import org.json.JSONException;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.util.LinkedMultiValueMap;
@@ -102,6 +104,8 @@ public class MemberControllerTests {
     @WithUserDetails(value = "chasw@naver.com")
     void Should_isOk_WhenChangePicture() throws IOException {
 
+        AuthMemberDTO loggedUser = (AuthMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = loggedUser.getId();
         doNothing().when(mockArgumentCheckUtil).existByUsername("john");
 
         MultiValueMap<String, Object> multipartData = new LinkedMultiValueMap<>();
@@ -114,12 +118,12 @@ public class MemberControllerTests {
             }
         };
         multipartData.add("imgFile", imageResource);
-//        UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        given(mockMemberService.getMemberIdByUsername("john")).willReturn(223L);
-        doNothing().when(mockMemberService).changeProfilePicture(image, 223L);
 
-        webTestClient.post().uri("/user/changePicture/{username}", "john")
+        given(mockMemberService.getMemberIdByUsername(loggedUser.getUsername())).willReturn(userId);
+        doNothing().when(mockMemberService).changeProfilePicture(image, userId);
+
+        webTestClient.post().uri("/user/changePicture/{username}", loggedUser.getUsername())
                 .headers(http -> http.setBearerAuth(token))
                 .bodyValue(multipartData)
                 .exchange()
@@ -131,7 +135,9 @@ public class MemberControllerTests {
     @WithUserDetails(value = "chasw@naver.com")
     void Should_ThrowException_WhenChangePictureByStranger() throws IOException {
 
-        doNothing().when(mockArgumentCheckUtil).existByUsername("john");
+        AuthMemberDTO loggedUser = (AuthMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = loggedUser.getId();
+        doNothing().when(mockArgumentCheckUtil).existByUsername(loggedUser.getUsername());
 
         MultiValueMap<String, Object> multipartData = new LinkedMultiValueMap<>();
         MockMultipartFile image = new MockMultipartFile("image", "image.png", "image/png",
@@ -144,14 +150,14 @@ public class MemberControllerTests {
         };
         multipartData.add("imgFile", imageResource);
 
-        given(mockMemberService.getMemberIdByUsername("john")).willReturn(222L);
-        doNothing().when(mockMemberService).changeProfilePicture(image, 223L);
+        given(mockMemberService.getMemberIdByUsername(loggedUser.getUsername())).willReturn(199L);
+        doNothing().when(mockMemberService).changeProfilePicture(image, userId);
 
-        webTestClient.post().uri("/user/changePicture/{username}", "john")
+        webTestClient.post().uri("/user/changePicture/{username}", loggedUser.getUsername())
                 .headers(http -> http.setBearerAuth(token))
                 .bodyValue(multipartData)
                 .exchange()
-                .expectStatus().isForbidden();
+                .expectStatus().isUnauthorized();
     }
 
     @DisplayName("팔로워리스트 가져오기 [GET]/{username}/followerList")
