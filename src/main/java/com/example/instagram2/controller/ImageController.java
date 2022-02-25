@@ -13,9 +13,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -48,12 +50,14 @@ public class ImageController {
         return ResponseEntity.ok().body(dto);
     }
 
-    @PostMapping("/image/create/style")
-    public ResponseEntity<?> upload(@RequestBody @Valid ImageReqDTO imageReqDTO,
+    @PostMapping(value = "/image/create/style",
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> upload(@RequestPart MultipartFile imgFile,
+                                    @RequestPart @Valid ImageReqDTO imageReqDTO,
                                     @AuthenticationPrincipal AuthMemberDTO authMember) {
         log.info("upload");
-        Long ino = imageService.uploadPicture(imageReqDTO, authMember);
-        return ResponseEntity.ok().body("id: " + ino);
+        Long ino = imageService.uploadPicture(imgFile, imageReqDTO, authMember);
+        return ResponseEntity.ok().body("ImageId: " + ino);
 
     }
 

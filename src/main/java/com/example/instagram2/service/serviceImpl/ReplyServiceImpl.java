@@ -1,5 +1,6 @@
 package com.example.instagram2.service.serviceImpl;
 
+import com.example.instagram2.exception.myException.NoAuthorityException;
 import com.example.instagram2.security.dto.AuthMemberDTO;
 import com.example.instagram2.service.ReplyService;
 import com.example.instagram2.dto.ReplyReqDTO;
@@ -45,7 +46,7 @@ public class ReplyServiceImpl implements ReplyService {
 
         List<Reply> result = repository
                 .getRepliesByImageOrderByRegDate(Image.builder().ino(ino).build(),
-                                                pageable);
+                        pageable);
 
         log.info(result.toString());
 
@@ -54,19 +55,18 @@ public class ReplyServiceImpl implements ReplyService {
 
     @Override
     @Transactional
-    public void remove(Long rno, Long userId) {
+    public void remove(Long rno, Long userId) throws NoAuthorityException {
         try {
             Optional<Reply> result = repository.findById(userId);
             if (result.isPresent()) {
                 Reply reply = result.get();
-                log.info(reply);
                 if (reply.getMember().getMno().equals(userId)) {
                     repository.deleteById(rno);
                 }
             }
         } catch (Exception e) {
-            log.error("error deleting reply");
-            throw new RuntimeException("error deleting reply");
+            log.error("error deleting reply by userId: {}", userId);
+            throw new NoAuthorityException("userId: " + userId + " has no Authority to delete reply");
         }
     }
 

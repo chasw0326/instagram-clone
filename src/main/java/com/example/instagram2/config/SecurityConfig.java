@@ -10,7 +10,9 @@ import com.example.instagram2.service.serviceImpl.AuthUtil;
 import com.example.instagram2.security.util.JWTUtil;
 import com.example.instagram2.security.util.PasswordUtil;
 import lombok.extern.log4j.Log4j2;
+import org.apache.catalina.connector.Connector;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -21,6 +23,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.filter.HiddenHttpMethodFilter;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 
 
 @EnableWebSecurity
@@ -70,6 +78,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public LoginSuccessHandler successHandler() {
         return new LoginSuccessHandler(passwordEncoder());
     }
+
+//    @Bean
+//    public MultipartResolver multipartResolver() {
+//        return new StandardServletMultipartResolver() {
+//            @Override
+//            public boolean isMultipart(HttpServletRequest request) {
+//                String method = request.getMethod().toLowerCase();
+//                //By default, only POST is allowed. Since this is an 'update' we should accept PUT.
+//                if (!Arrays.asList("put", "post").contains(method)) {
+//                    return false;
+//                }
+//                String contentType = request.getContentType();
+//                return (contentType != null &&contentType.toLowerCase().startsWith("multipart/"));
+//            }
+//        };
+//    }
+//    @Bean
+//    public HiddenHttpMethodFilter hiddenHttpMethodFilter(){
+//        return new HiddenHttpMethodFilter();
+//    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

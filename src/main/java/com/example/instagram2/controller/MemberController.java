@@ -3,6 +3,7 @@ package com.example.instagram2.controller;
 
 import com.example.instagram2.dto.FollowRespDTO;
 import com.example.instagram2.dto.UserProfileRespDTO;
+import com.example.instagram2.exception.myException.NoAuthorityException;
 import com.example.instagram2.security.dto.AuthMemberDTO;
 import com.example.instagram2.exception.ArgumentCheckUtil;
 import com.example.instagram2.service.FollowService;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -43,18 +45,19 @@ public class MemberController {
     }
 
 
-    @PutMapping("{username}/changePicture")
+    @PostMapping(value = "/changePicture/{username}",
+            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> changeProfilePicture(@PathVariable String username,
-                                                  @RequestParam("image") MultipartFile imageFile,
-                                                  @AuthenticationPrincipal AuthMemberDTO authMember) {
+                                                  @RequestPart MultipartFile imgFile,
+                                                  @AuthenticationPrincipal AuthMemberDTO authMember) throws NoAuthorityException {
 
         argumentCheckUtil.existByUsername(username);
 
         Long mno = memberService.getMemberIdByUsername(username);
         if (!mno.equals(authMember.getId())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("no authority");
+            throw new NoAuthorityException("no authority to change profile-picture");
         }
-        memberService.changeProfilePicture(imageFile, authMember.getId());
+        memberService.changeProfilePicture(imgFile, authMember.getId());
         return ResponseEntity.ok().body("change");
     }
 

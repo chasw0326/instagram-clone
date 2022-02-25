@@ -38,15 +38,17 @@ public class ImageServiceImpl implements ImageService {
     private String uploadPath;
 
     @Transactional
-    public Long uploadPicture(ImageReqDTO imageDTO, AuthMemberDTO authMemberDTO) {
+    @Override
+    public Long uploadPicture(MultipartFile imgFile, ImageReqDTO imageDTO, AuthMemberDTO authMemberDTO) {
 
-        MultipartFile uploadFile = imageDTO.getUploadFile();
-        String imageUrl = uploadService.uploadFile(uploadFile, uploadPath);
+        String imageUrl = uploadService.uploadFile(imgFile, uploadPath);
         Image image = dtoToEntity(imageDTO, imageUrl,authMemberDTO);
         List<Tag> tags = makeTagList(imageDTO.getTags(), image);
 
         imageRepository.save(image);
-        tagRepository.saveAll(tags);
+        if(!tags.isEmpty()) {
+            tagRepository.saveAll(tags);
+        }
         return image.getIno();
     }
 

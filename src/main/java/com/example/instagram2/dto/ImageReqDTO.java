@@ -18,9 +18,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class ImageReqDTO implements Serializable {
 
-    @NotNull(message = "이미지 파일은 필수 입니다.")
-    private MultipartFile uploadFile;
-
+    @NotNull(message = "caption is null")
     private String caption;
 
     private String tags;

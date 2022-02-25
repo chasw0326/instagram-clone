@@ -2,6 +2,7 @@ package com.example.instagram2.controller;
 
 
 import com.example.instagram2.dto.ReplyReqDTO;
+import com.example.instagram2.exception.myException.NoAuthorityException;
 import com.example.instagram2.security.dto.AuthMemberDTO;
 import com.example.instagram2.exception.ArgumentCheckUtil;
 import com.example.instagram2.service.ReplyService;
@@ -15,6 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @Log4j2
@@ -28,37 +30,36 @@ public class ReplyController {
     @GetMapping("{imageId}")
     public ResponseEntity<?> getAllReply(@PathVariable Long imageId,
                                          @PageableDefault(
-                                                  size = 10,
-                                                  sort = "regDate",
-                                                  direction = Sort.Direction.DESC) Pageable pageable) {
+                                                 size = 10,
+                                                 sort = "regDate",
+                                                 direction = Sort.Direction.DESC) Pageable pageable) {
 
         log.info("----------getReplyList----------");
 
         argumentCheckUtil.existByImageId(imageId);
         log.info("imageId: {}", imageId);
-        return ResponseEntity.ok().body(replyService.getList(imageId, pageable));
+        List<ReplyReqDTO> dto = replyService.getList(imageId, pageable);
+        return ResponseEntity.ok().body(dto);
     }
 
-    @DeleteMapping("{imageId}")
+    @DeleteMapping("{imageId}/{replyId}")
     public ResponseEntity<?> remove(@PathVariable Long imageId,
-                                    @RequestParam Long rno,
-                                    @AuthenticationPrincipal AuthMemberDTO authMember) {
+                                    @PathVariable Long replyId,
+                                    @AuthenticationPrincipal AuthMemberDTO authMember) throws NoAuthorityException {
         log.info("----------remove----------");
-        log.info(rno);
+        log.info(replyId);
 
         argumentCheckUtil.existByImageId(imageId);
-        replyService.remove(rno, authMember.getId());
+        replyService.remove(replyId, authMember.getId());
         return ResponseEntity.ok().body("removed");
 
     }
 
-    @PostMapping("{username}/{imageId}")
-    public ResponseEntity<?> replyRegister(@PathVariable String username,
-                                           @PathVariable Long imageId,
+    @PostMapping("/{imageId}")
+    public ResponseEntity<?> replyRegister(@PathVariable Long imageId,
                                            @RequestBody @Valid ReplyReqDTO dto,
                                            @AuthenticationPrincipal AuthMemberDTO authMember) {
 
-        argumentCheckUtil.existByUsername(username);
         argumentCheckUtil.existByImageId(imageId);
         dto.setIno(imageId);
         Long rno = replyService.register(dto, authMember);

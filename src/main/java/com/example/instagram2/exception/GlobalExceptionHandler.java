@@ -2,6 +2,7 @@ package com.example.instagram2.exception;
 
 import com.example.instagram2.exception.myException.DuplicationException;
 import com.example.instagram2.exception.myException.IllegalFileException;
+import com.example.instagram2.exception.myException.NoAuthorityException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,23 +22,23 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler({DuplicationException.class})
-    public ResponseEntity<?> DuplicatedArgs(DuplicationException e) {
+    public ResponseEntity<?> DuplicatedArgsHandler(DuplicationException e) {
         log.error("DuplicationException: {}", e.getMessage());
         e.printStackTrace();
         ErrorRespDTO dto = errorToDTO(e);
         return new ResponseEntity<>(dto, HttpStatus.CONFLICT);
     }
 
-//    @ExceptionHandler({BadCredentialsException.class})
-//    public ResponseEntity<?> BadCredential(BadCredentialsException e){
-//        log.error("login error: {}", e.getMessage());
-//        e.printStackTrace();
-//        ErrorDTO dto = errorToDTO(e);
-//        return new ResponseEntity<>(dto, HttpStatus.UNAUTHORIZED);
-//    }
+    @ExceptionHandler({NoAuthorityException.class})
+    public ResponseEntity<?> NoAuthorityHandler(NoAuthorityException e) {
+        log.error("DuplicationException: {}", e.getMessage());
+        e.printStackTrace();
+        ErrorRespDTO dto = errorToDTO(e);
+        return new ResponseEntity<>(dto, HttpStatus.UNAUTHORIZED);
+    }
 
     @ExceptionHandler({IllegalFileException.class})
-    public ResponseEntity<?> IllegalFileType(IllegalFileException e) {
+    public ResponseEntity<?> IllegalFileTypeHandler(IllegalFileException e) {
         log.error("IllegalFileType: {}", e.getMessage());
         e.printStackTrace();
         ErrorRespDTO dto = errorToDTO(e);
@@ -64,7 +65,7 @@ public class GlobalExceptionHandler {
             MethodArgumentNotValidException.class,
             MethodArgumentTypeMismatchException.class,
             MethodArgumentConversionNotSupportedException.class})
-    public ResponseEntity<?> validException(BindException e) {
+    public ResponseEntity<?> validExceptionHandler(BindException e) {
         log.error("valid Error: {}", e.getMessage());
         e.printStackTrace();
         Map<String, String> errors = new HashMap<>();

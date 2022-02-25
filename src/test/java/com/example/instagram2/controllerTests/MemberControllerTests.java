@@ -1,7 +1,6 @@
 package com.example.instagram2.controllerTests;
 
 import com.example.instagram2.exception.ArgumentCheckUtil;
-import com.example.instagram2.security.dto.AuthMemberDTO;
 import com.example.instagram2.service.FollowService;
 import com.example.instagram2.service.MemberService;
 import org.json.JSONException;
@@ -16,17 +15,26 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.io.IOException;
+
+
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
+
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -75,7 +83,7 @@ public class MemberControllerTests {
     @DisplayName("존재하지 않는 username으로 요청")
     @Test
     @WithUserDetails(value = "chasw@naver.com")
-    void Should_ThrowException_WhenNotExistUsername(){
+    void Should_ThrowException_WhenNotExistUsername() {
         doThrow(new IllegalArgumentException("존재하지 않는 username 입니다. 입력한 값:" + "hotSix"))
                 .when(mockArgumentCheckUtil).existByUsername("hotSix");
 
@@ -89,28 +97,92 @@ public class MemberControllerTests {
                 .jsonPath("exception").isEqualTo("IllegalArgumentException");
     }
 
-    @DisplayName("존재하지 않는 username으로 요청")
+    @DisplayName("정상적인 changePicture, [POST]/changePicture/{username}")
     @Test
     @WithUserDetails(value = "chasw@naver.com")
-    void Should_ThrowException_WhenPrincipalIsNotMe(){
-        doThrow(new IllegalArgumentException("존재하지 않는 username 입니다. 입력한 값:" + "hotSix"))
-                .when(mockArgumentCheckUtil).existByUsername("hotSix");
+    void Should_isOk_WhenChangePicture() throws IOException {
 
-        UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        System.out.println(loggedUser);
+        doNothing().when(mockArgumentCheckUtil).existByUsername("john");
 
-        given(mockMemberService.getMemberIdByUsername("hotSix")).willReturn(201L);
+        MultiValueMap<String, Object> multipartData = new LinkedMultiValueMap<>();
+        MockMultipartFile image = new MockMultipartFile("image", "image.png", "image/png",
+                "<<png data>>".getBytes());
+        Resource imageResource = new ByteArrayResource(image.getBytes()) {
+            @Override
+            public String getFilename() {
+                return "image.png";
+            }
+        };
+        multipartData.add("imgFile", imageResource);
+//        UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-//        MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "excel.xlsx", "multipart/form-data", is);
+        given(mockMemberService.getMemberIdByUsername("john")).willReturn(223L);
+        doNothing().when(mockMemberService).changeProfilePicture(image, 223L);
 
-        webTestClient.put().uri("/user/hotSix/changePicture")
+        webTestClient.post().uri("/user/changePicture/{username}", "john")
                 .headers(http -> http.setBearerAuth(token))
-                .contentType(MULTIPART_FORM_DATA)
-                .accept(APPLICATION_JSON)
+                .bodyValue(multipartData)
                 .exchange()
-                .expectStatus().isBadRequest()
-                .expectHeader().valueEquals("Content-Type", "application/json")
-                .expectBody()
-                .jsonPath("exception").isEqualTo("IllegalArgumentException");
+                .expectStatus().isOk();
+    }
+
+    @DisplayName("다른사람이 changePicture 시도, [POST]/changePicture/{username}")
+    @Test
+    @WithUserDetails(value = "chasw@naver.com")
+    void Should_ThrowException_WhenChangePictureByStranger() throws IOException {
+
+        doNothing().when(mockArgumentCheckUtil).existByUsername("john");
+
+        MultiValueMap<String, Object> multipartData = new LinkedMultiValueMap<>();
+        MockMultipartFile image = new MockMultipartFile("image", "image.png", "image/png",
+                "<<png data>>".getBytes());
+        Resource imageResource = new ByteArrayResource(image.getBytes()) {
+            @Override
+            public String getFilename() {
+                return "image.png";
+            }
+        };
+        multipartData.add("imgFile", imageResource);
+
+        given(mockMemberService.getMemberIdByUsername("john")).willReturn(222L);
+        doNothing().when(mockMemberService).changeProfilePicture(image, 223L);
+
+        webTestClient.post().uri("/user/changePicture/{username}", "john")
+                .headers(http -> http.setBearerAuth(token))
+                .bodyValue(multipartData)
+                .exchange()
+                .expectStatus().isForbidden();
+    }
+
+    @DisplayName("팔로워리스트 가져오기 [GET]/{username}/followerList")
+    @Test
+    @WithUserDetails(value = "chasw@naver.com")
+    void Should_isOk_WhenGetFollowerList() {
+
+        doNothing().when(mockArgumentCheckUtil).existByUsername("john");
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("regDate").descending());
+        given(mockFollowService.getFollowList(223L, "john", pageable)).willReturn(null);
+
+        webTestClient.get().uri("/user/{username}/followerList", "john")
+                .headers(http -> http.setBearerAuth(token))
+                .exchange()
+                .expectStatus().isOk();
+
+    }
+
+    @DisplayName("팔로우리스트 가져오기 [GET]/{username}/followList")
+    @Test
+    @WithUserDetails(value = "chasw@naver.com")
+    void Should_isOk_WhenGetFollowList() {
+
+        doNothing().when(mockArgumentCheckUtil).existByUsername("john");
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("regDate").descending());
+        given(mockFollowService.getFollowList(223L, "john", pageable)).willReturn(null);
+
+        webTestClient.get().uri("/user/{username}/followerList", "john")
+                .headers(http -> http.setBearerAuth(token))
+                .exchange()
+                .expectStatus().isOk();
+
     }
 }

@@ -1,6 +1,7 @@
 package com.example.instagram2.controllerTests;
 
 
+import com.example.instagram2.controller.MemberController;
 import com.example.instagram2.dto.ImageReqDTO;
 import com.example.instagram2.entity.Image;
 import com.example.instagram2.exception.ArgumentCheckUtil;
@@ -32,6 +33,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -96,32 +98,26 @@ public class ImageControllerTests {
     @WithUserDetails(value = "chasw@naver.com")
     void should_getFeedDTO_When_Request() throws IOException {
         MultiValueMap<String, Object> multipartData = new LinkedMultiValueMap<>();
-        MockMultipartFile mockMultipartFile =
-                new MockMultipartFile("testImage",
-                        "testImg.png",
-                        "image/png",
-                        new FileInputStream("C:\\upload\\image_storage\\abc.png"));
-        Resource imageResource = new ByteArrayResource(mockMultipartFile.getBytes()) {
+        MockMultipartFile image = new MockMultipartFile("image", "image.png", "image/png",
+                "<<png data>>".getBytes());
+        Resource imageResource = new ByteArrayResource(image.getBytes()) {
             @Override
             public String getFilename() {
                 return "image.png";
             }
         };
-        multipartData.add("uploadFile", imageResource);
-        multipartData.add("tags", "#뮤지컬 #레베카");
-        multipartData.add("caption", "충무아트센터");
-        ImageReqDTO dto = ImageReqDTO.builder()
-                .uploadFile(mockMultipartFile)
-                .tags("#뮤지컬 #레베카")
-                .caption("충무아트센터")
-                .build();
+        ImageReqDTO dto = ImageReqDTO.builder().tags("#뮤지컬 #레베카").caption("충무아트센터").build();
+        multipartData.add("imgFile", imageResource);
+        multipartData.add("imageReqDTO", dto);
+
         UserDetails loggedUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        given(mockImageService.uploadPicture(dto, (AuthMemberDTO) loggedUser)).willReturn(33L);
+        given(mockImageService.uploadPicture(image, dto, (AuthMemberDTO) loggedUser)).willReturn(33L);
+
 
         webTestClient.post().uri("/image/create/style")
                 .headers(http -> http.setBearerAuth(token))
-                // 여길 bodyValue(dto)로 해도 안 됨 ㅠㅠ....
-                .body(BodyInserters.fromMultipartData(multipartData))
+                .contentType(MULTIPART_FORM_DATA)
+                .bodyValue(multipartData)
                 .exchange()
                 .expectStatus().isOk();
     }
