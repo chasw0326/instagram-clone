@@ -31,11 +31,10 @@ public class AuthUtil {
         this.passwordUtil = passwordUtil;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = {DuplicationException.class})
     public Member signup(final SignupDTO dto) {
         log.info("signup email: {}", dto.getEmail());
-        String rawPw = dto.getPassword();
-        String email = dto.getEmail();
+        log.info("signup username: {}", dto.getUsername());
 
         if (memberRepository.existsByUsername(dto.getUsername())) {
             throw new DuplicationException("Duplicated username");
@@ -45,11 +44,12 @@ public class AuthUtil {
         }
 
         Member newMember = Member.builder()
-                .email(email)
+                .email(dto.getEmail())
                 .name(dto.getName())
                 .username(dto.getUsername())
-                .password(passwordEncoder.encode(rawPw))
+                .password(passwordEncoder.encode(dto.getPassword()))
                 .build();
+
 
         newMember.addMemberRole(MemberRole.USER);
 
@@ -58,24 +58,15 @@ public class AuthUtil {
         return newMember;
     }
 
-    @Transactional
-    public SignupDTO entityToDTO(Member member){
-        return SignupDTO.builder()
-                .id(member.getMno())
-                .email(member.getEmail())
-                .name(member.getName())
-                .username(member.getUsername())
-                .build();
-    }
-
-
-    @Transactional
+    @Transactional(rollbackFor = {
+            IllegalArgumentException.class,
+            InvalidPasswordException.class})
     public void changePassword(final PasswordDTO dto) throws InvalidPasswordException {
         Long mno = dto.getMno();
         Optional<Member> result = memberRepository.findById(mno);
         if (!result.isPresent()) {
-            log.warn("result is empty");
-            throw new IllegalArgumentException("멤버id를 확인하세요.");
+            log.warn("result is empty, input: {}", dto.getMno());
+            throw new IllegalArgumentException("멤버id를 확인하세요. 입력한 값:" + dto.getMno());
         }
         Member member = result.get();
         if (!passwordEncoder.matches(dto.getOldPw(), member.getPassword())) {
@@ -89,5 +80,15 @@ public class AuthUtil {
         member.setPassword(passwordEncoder.encode(dto.getNewPw()));
         memberRepository.save(member);
         log.info("changePassword");
+    }
+
+    @Transactional
+    public SignupDTO entityToDTO(Member member) {
+        return SignupDTO.builder()
+                .id(member.getMno())
+                .email(member.getEmail())
+                .name(member.getName())
+                .username(member.getUsername())
+                .build();
     }
 }

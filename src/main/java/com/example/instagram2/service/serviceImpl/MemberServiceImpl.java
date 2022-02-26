@@ -36,49 +36,59 @@ public class MemberServiceImpl implements MemberService {
     @Value("${instagram.upload.path}")
     private String uploadPath;
 
+    @Override
     @Transactional
     public void changeProfilePicture(MultipartFile uploadFile, Long userId) {
 
-        if(uploadFile == null){
+        if (uploadFile == null) {
+            log.error("uploadFile is null");
             throw new IllegalFileException("uploadFile is null");
-        }
-        String fileUrl = uploadService.uploadFile(uploadFile, uploadPath);
+        } else {
+            String fileUrl = uploadService.uploadFile(uploadFile, uploadPath);
 
+            Optional<Member> result = memberRepository.findById(userId);
+            if (result.isPresent()) {
+                Member member = result.get();
+                member.setProfileImageUrl(fileUrl);
+                memberRepository.save(member);
+            }
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = {IllegalArgumentException.class})
+    public void deleteProfilePicture(Long userId) {
+        log.info("delete profile Picture by userId: {}", userId);
         Optional<Member> result = memberRepository.findById(userId);
         if (result.isPresent()) {
             Member member = result.get();
-            member.setProfileImageUrl(fileUrl);
-            memberRepository.save(member);
-        }
-    }
-
-    @Transactional
-    public void deleteProfilePicture(Long userId){
-        Optional<Member> result = memberRepository.findById(userId);
-        if(result.isPresent()){
-            Member member = result.get();
             member.setProfileImageUrl(null);
             memberRepository.save(member);
+        } else {
+            throw new IllegalArgumentException("no user by userId: " + userId);
         }
     }
 
-
-    @Transactional
+    @Override
+    @Transactional(rollbackFor = {IllegalArgumentException.class})
     public UserEditDTO getMemberInfo(Long userId) {
         Optional<Member> result = memberRepository.findById(userId);
         if (!result.isPresent()) {
-            throw new RuntimeException("no user");
+            throw new IllegalArgumentException("no user by userId: " + userId);
         }
         Member member = result.get();
+        log.info("get {}'s info", member.getUsername());
         UserEditDTO dto = entityToDto(member);
         return dto;
     }
 
+    @Override
     @Transactional
     public PasswordDTO getProfileImgUrlAndUsernameById(Long userId) {
         Object[] arr = (Object[]) memberRepository.getProfileImagAndUsernameById(userId);
         String profileImg = (String) arr[0];
         String username = (String) arr[1];
+        log.info("userId: {}'s profileImg: {}, username: {}", userId, profileImg, username);
         return PasswordDTO.builder()
                 .mno(userId)
                 .imgUrl(profileImg)
@@ -86,13 +96,15 @@ public class MemberServiceImpl implements MemberService {
                 .build();
     }
 
-    @Transactional
+    @Override
+    @Transactional(rollbackFor = DuplicationException.class)
     public void modifyMemberInfo(Long userId, UserEditDTO dto) {
         Optional<Member> result = memberRepository.findById(userId);
         if (result.isPresent()) {
             Member member = result.get();
             if (!member.getUsername().equals(dto.getUsername())) {
                 if (memberRepository.existsByUsername(dto.getUsername())) {
+                    log.warn("입력한 사용자 이름: {}", dto.getUsername());
                     throw new DuplicationException("중복된 사용자 이름 입니다.");
                 }
             }
@@ -102,13 +114,14 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
-    @Transactional(readOnly = true)
+    @Override
+    @Transactional(readOnly = true, rollbackFor = {IllegalArgumentException.class})
     public UserProfileRespDTO getUserProfile(String username, Long visitorId) throws IllegalArgumentException {
         UserProfileRespDTO userProfileRespDTO = new UserProfileRespDTO();
         Optional<Member> result = memberRepository.findByUsername(username);
 
         if (!result.isPresent()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("id에 맞는 멤버가 존재하지 않습니다.");
         }
         Member member = result.get();
         Long mno = member.getMno();
@@ -119,6 +132,7 @@ public class MemberServiceImpl implements MemberService {
         List<String> imageUrlList = imageRepository.getImageUrlList(mno);
 
 
+        // 본인이 본인 사이트 들어갔을 경우
         if (mno.equals(visitorId)) {
             userProfileRespDTO.setFollowState(false);
             userProfileRespDTO.setMyself(true);
@@ -137,20 +151,23 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    @Transactional
-    public String getProfileImg(Long mno){
+    @Transactional(readOnly = true)
+    public String getProfileImg(Long mno) {
+
         return memberRepository.getProfileImageById(mno);
+
     }
 
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true, rollbackFor = {IllegalArgumentException.class})
     public Long getMemberIdByUsername(String username) {
         Optional<Member> result = memberRepository.findByUsername(username);
         if (!result.isPresent()) {
-            throw new RuntimeException("can't find member");
+            throw new IllegalArgumentException("can't find username: " + username);
         }
         Member member = result.get();
+        log.info(member.toString());
         return member.getMno();
     }
 }

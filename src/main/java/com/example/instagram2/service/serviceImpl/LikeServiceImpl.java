@@ -17,8 +17,9 @@ public class LikeServiceImpl implements LikesService {
 
     private final LikesRepository repository;
 
+    @Override
     @Transactional
-    public void like(Long imageId, Long userId){
+    public void like(Long imageId, Long userId) {
 
         Image image = Image.builder()
                 .ino(imageId)
@@ -32,15 +33,18 @@ public class LikeServiceImpl implements LikesService {
                 .build();
 
         log.info("------------좋아요------------");
-        log.info(like);
+        log.info("imageId: {}", imageId);
+        log.info("userId: {}", userId);
+        log.info("-----------------------------");
         repository.save(like);
     }
 
+    @Override
     @Transactional
-    public void undoLike(Long imageId, Long userId){
+    public void undoLike(Long imageId, Long userId) {
         log.info("------------좋아요 취소------------");
-        log.info(imageId);
-        log.info(userId);
+        log.info("imageId: {}", imageId);
+        log.info("userId: {}", userId);
         repository.unlike(imageId, userId);
     }
 

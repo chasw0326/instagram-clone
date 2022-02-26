@@ -22,6 +22,5 @@ public class SearchServiceImpl {
     public void search(String keyword){
         List<Member> members = memberRepository.findMembersSearch(keyword);
 
-
     }
 }

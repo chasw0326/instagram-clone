@@ -32,8 +32,6 @@ public class SignupDTO {
 
     private String name;
 
-    private String token;
-
     private Long id;
 
     public SignupDTO entityToDTO(Member member){

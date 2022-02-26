@@ -28,33 +28,25 @@ public class ReplyServiceImpl implements ReplyService {
     @Override
     @Transactional
     public Long register(ReplyReqDTO dto, AuthMemberDTO authMember) {
-        log.info(dto);
-        try {
-            Reply reply = dtoToEntity(dto, authMember);
-            log.info(reply);
-            repository.save(reply);
-            return reply.getRno();
-        } catch (Exception e) {
-            log.error("error deleting reply");
-            throw new RuntimeException("error deleting reply");
-        }
+        log.info("{} try to register reply", authMember.getEmail());
+        Reply reply = dtoToEntity(dto, authMember);
+        repository.save(reply);
+        return reply.getRno();
     }
 
     @Override
     @Transactional
     public List<ReplyReqDTO> getList(Long ino, Pageable pageable) {
-
+        log.info("imageId: {}의 댓글들", ino);
         List<Reply> result = repository
                 .getRepliesByImageOrderByRegDate(Image.builder().ino(ino).build(),
                         pageable);
-
-        log.info(result.toString());
 
         return result.stream().map(reply -> entityToDTO(reply)).collect(Collectors.toList());
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = {NoAuthorityException.class})
     public void remove(Long rno, Long userId) throws NoAuthorityException {
         Optional<Reply> result = repository.findById(userId);
         if (result.isPresent()) {

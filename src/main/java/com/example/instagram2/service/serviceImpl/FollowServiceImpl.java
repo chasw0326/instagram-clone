@@ -32,7 +32,6 @@ public class FollowServiceImpl implements FollowService {
         log.info("VisitorId: {}", visitorId);
         log.info("PageMemberId: {}", pageMemberName);
 
-
         Page<Object[]> followerData = followRepository.getFollowerData(pageMemberName, pageable);
         List<Object[]> result = followerData.getContent();
 
@@ -45,16 +44,20 @@ public class FollowServiceImpl implements FollowService {
     public List<FollowRespDTO> getFollowList(Long visitorId,
                                              String pageMemberName,
                                              Pageable pageable) {
+        log.info("VisitorId: {}", visitorId);
+        log.info("PageMemberId: {}", pageMemberName);
         Page<Object[]> followData = followRepository.getFollowData(pageMemberName, pageable);
         List<Object[]> result = followData.getContent();
         return getEachFollowState(visitorId, result);
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<FollowRespDTO> getEachFollowState(Long visitorId, List<Object[]> followData) {
-        List<FollowRespDTO> result = new ArrayList<>();
 
+        log.info("VisitorId: {}", visitorId);
+
+        List<FollowRespDTO> result = new ArrayList<>();
         followData.forEach((data -> {
             Long userId = (Long) data[0];
             String username = (String) data[1];
@@ -80,6 +83,7 @@ public class FollowServiceImpl implements FollowService {
     @Override
     @Transactional
     public void follow(Long fromMemberId, Long toMemberId) {
+        log.info("{} follow {}", fromMemberId, toMemberId);
         Member fromMember = Member.builder()
                 .mno(fromMemberId)
                 .build();
@@ -97,6 +101,7 @@ public class FollowServiceImpl implements FollowService {
     @Override
     @Transactional
     public void unFollow(Long fromMemberId, Long toMemberId) {
+        log.info("{} unfollow {}", fromMemberId, toMemberId);
         followRepository.unFollow(fromMemberId, toMemberId);
     }
 }

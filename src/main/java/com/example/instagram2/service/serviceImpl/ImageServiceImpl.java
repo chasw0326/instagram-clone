@@ -37,23 +37,25 @@ public class ImageServiceImpl implements ImageService {
     @Value("${instagram.upload.path}")
     private String uploadPath;
 
-    @Transactional
     @Override
+    @Transactional
     public Long uploadPicture(MultipartFile imgFile, ImageReqDTO imageDTO, AuthMemberDTO authMemberDTO) {
 
         String imageUrl = uploadService.uploadFile(imgFile, uploadPath);
-        Image image = dtoToEntity(imageDTO, imageUrl,authMemberDTO);
+        log.info("imageUrl: {}", imageUrl);
+        Image image = dtoToEntity(imageDTO, imageUrl, authMemberDTO);
         List<Tag> tags = makeTagList(imageDTO.getTags(), image);
 
         imageRepository.save(image);
-        if(!tags.isEmpty()) {
+        if (!tags.isEmpty()) {
+            log.info("tags: {}", tags.toString());
             tagRepository.saveAll(tags);
         }
         return image.getIno();
     }
 
-    @Transactional
     @Override
+    @Transactional(readOnly = true)
     public Page<Image> getFeedImage(Long userId, Pageable pageable) {
         Page<Image> images = imageRepository.getFollowFeed(userId, pageable);
 
@@ -73,15 +75,15 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Image> getPopularImageList(String username) {
-
+        log.info("{}의 popualrImageList", username);
         Member member = memberRepository.getByUsername(username);
         Long userId = member.getMno();
         List<Image> images = imageRepository.getPopularPictureList(userId);
         return images;
     }
 
-    // 나중에 따로 분리해서 private으로 해야함
     @Override
     public List<Tag> makeTagList(String tags, Image image) {
         String[] splitTag = tags.split("#");
