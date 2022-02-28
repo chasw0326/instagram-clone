@@ -1,5 +1,6 @@
 package com.example.instagram2.service.serviceImpl;
 
+import com.example.instagram2.dto.ImagesAndTags;
 import com.example.instagram2.entity.Member;
 import com.example.instagram2.repository.LikesRepository;
 import com.example.instagram2.repository.MemberRepository;
@@ -45,7 +46,7 @@ public class ImageServiceImpl implements ImageService {
         log.info("imageUrl: {}", imageUrl);
         Image image = dtoToEntity(imageDTO, imageUrl, authMemberDTO);
         List<Tag> tags = makeTagList(imageDTO.getTags(), image);
-
+        image.setLikeCnt(0L);
         imageRepository.save(image);
         if (!tags.isEmpty()) {
             log.info("tags: {}", tags.toString());
@@ -56,9 +57,9 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Image> getFeedImage(Long userId, Pageable pageable) {
+    public List<ImagesAndTags> getFeedImage(Long userId, Pageable pageable) {
         Page<Image> images = imageRepository.getFollowFeed(userId, pageable);
-
+        List<ImagesAndTags> feedDTOS = new ArrayList<>();
         images.forEach((image -> {
             Long ino = image.getIno();
             Long likeCnt = likesRepository.getLikesCntByImageId(ino);
@@ -69,9 +70,14 @@ public class ImageServiceImpl implements ImageService {
                     image.setLikeState(true);
                 }
             }
+            List<Tag> tags = tagRepository.findTagByImage_InoOrderByTno(ino);
+            feedDTOS.add(ImagesAndTags.builder()
+                    .tags(tags)
+                    .images(image)
+                    .build());
         }));
 
-        return images;
+        return feedDTOS;
     }
 
     @Override

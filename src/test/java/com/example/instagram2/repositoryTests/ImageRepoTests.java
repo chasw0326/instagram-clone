@@ -45,7 +45,7 @@ public class ImageRepoTests {
 
     @Test
     public void getPopularImageTest() {
-        List<Image> popularImgList = repository.getPopularPictureList(11L);
+        List<Image> popularImgList = repository.getPopularPictureList(96L);
 
         for (Image img : popularImgList) {
             System.out.println(img);

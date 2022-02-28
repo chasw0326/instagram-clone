@@ -29,6 +29,8 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
             nativeQuery = true)
     List<Image> getPopularPictureList(@Param("memberId") Long memberId);
 
+//    List<Image> findTop3ByMember_MnoOrderByLikeCntDesc(Long memberId);
+
     @Query("SELECT i.ImageUrl FROM Image i WHERE i.member.mno =:memberId order by i.regDate")
     List<String> getImageUrlList(@Param("memberId") Long memberId);
 

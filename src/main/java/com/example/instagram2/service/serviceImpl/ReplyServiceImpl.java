@@ -9,7 +9,6 @@ import com.example.instagram2.entity.Reply;
 import com.example.instagram2.repository.ReplyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,7 +38,7 @@ public class ReplyServiceImpl implements ReplyService {
     public List<ReplyReqDTO> getList(Long ino, Pageable pageable) {
         log.info("imageId: {}의 댓글들", ino);
         List<Reply> result = repository
-                .getRepliesByImageOrderByRegDate(Image.builder().ino(ino).build(),
+                .getRepliesByImageOrderByRegDateAsc(Image.builder().ino(ino).build(),
                         pageable);
 
         return result.stream().map(reply -> entityToDTO(reply)).collect(Collectors.toList());
@@ -48,7 +47,7 @@ public class ReplyServiceImpl implements ReplyService {
     @Override
     @Transactional(rollbackFor = {NoAuthorityException.class})
     public void remove(Long rno, Long userId) throws NoAuthorityException {
-        Optional<Reply> result = repository.findById(userId);
+        Optional<Reply> result = repository.findById(rno);
         if (result.isPresent()) {
             Reply reply = result.get();
             if (!reply.getMember().getMno().equals(userId)) {

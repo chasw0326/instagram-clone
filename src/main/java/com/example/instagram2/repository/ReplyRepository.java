@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface ReplyRepository extends JpaRepository<Reply, Long> {
 
-    List<Reply> getRepliesByImageOrderByRegDate(Image image, Pageable pageable);
+    List<Reply> getRepliesByImageOrderByRegDateAsc(Image image, Pageable pageable);
 
 //    Optional<Reply> findByEmail(String email);
 }

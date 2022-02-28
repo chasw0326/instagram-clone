@@ -1,11 +1,11 @@
 package com.example.instagram2.service;
 
+import com.example.instagram2.dto.ImagesAndTags;
 import com.example.instagram2.dto.ImageReqDTO;
 import com.example.instagram2.entity.Image;
 import com.example.instagram2.entity.Member;
 import com.example.instagram2.entity.Tag;
 import com.example.instagram2.security.dto.AuthMemberDTO;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,7 +15,7 @@ public interface ImageService {
 
     Long uploadPicture(MultipartFile imgFile, ImageReqDTO imageDTO, AuthMemberDTO authMemberDTO);
 
-    Page<Image> getFeedImage(Long userId, Pageable pageable);
+    List<ImagesAndTags> getFeedImage(Long userId, Pageable pageable);
 
     List<Tag> makeTagList(String tags, Image image);
 
