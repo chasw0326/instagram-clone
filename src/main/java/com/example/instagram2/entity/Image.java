@@ -14,6 +14,7 @@ import java.util.List;
 @Setter
 @ToString(exclude = {"member"})
 @Entity
+@JsonIgnoreProperties({"member"})
 public class Image extends BaseEntity {
 
     @Id
@@ -24,7 +25,6 @@ public class Image extends BaseEntity {
 
     private String ImageUrl;
 
-    @JsonIgnoreProperties({"images"})
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member")
     private Member member;

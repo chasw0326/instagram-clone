@@ -12,9 +12,10 @@ import javax.persistence.*;
 @Getter
 @Entity
 @ToString
-@Table(uniqueConstraints = @UniqueConstraint(
+@Table(uniqueConstraints = {@UniqueConstraint(
         name = "follow_uk",
-        columnNames = {"fromMember", "toMember"}))
+        columnNames = {"fromMember", "toMember"}
+)})
 public class Follow extends BaseEntity {
 
     @Id

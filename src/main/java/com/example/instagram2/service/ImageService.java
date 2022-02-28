@@ -15,7 +15,7 @@ public interface ImageService {
 
     Long uploadPicture(MultipartFile imgFile, ImageReqDTO imageDTO, AuthMemberDTO authMemberDTO);
 
-    List<ImagesAndTags> getFeedImage(Long userId, Pageable pageable);
+    List<ImagesAndTags> getFeedImageData(Long userId, Pageable pageable);
 
     List<Tag> makeTagList(String tags, Image image);
 

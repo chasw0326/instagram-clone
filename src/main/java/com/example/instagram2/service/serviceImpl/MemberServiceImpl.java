@@ -6,7 +6,7 @@ import com.example.instagram2.dto.UserProfileRespDTO;
 import com.example.instagram2.dto.UserEditDTO;
 import com.example.instagram2.entity.Member;
 import com.example.instagram2.exception.myException.DuplicationException;
-import com.example.instagram2.exception.myException.IllegalFileException;
+import com.example.instagram2.exception.myException.InvalidFileException;
 import com.example.instagram2.repository.FollowRepository;
 import com.example.instagram2.repository.ImageRepository;
 import com.example.instagram2.repository.MemberRepository;
@@ -42,7 +42,7 @@ public class MemberServiceImpl implements MemberService {
 
         if (uploadFile == null) {
             log.error("uploadFile is null");
-            throw new IllegalFileException("uploadFile is null");
+            throw new InvalidFileException("uploadFile is null");
         } else {
             String fileUrl = uploadService.uploadFile(uploadFile, uploadPath);
 

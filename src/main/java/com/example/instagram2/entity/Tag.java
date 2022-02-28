@@ -1,5 +1,6 @@
 package com.example.instagram2.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import java.util.List;
 @Getter
 @Entity
 @ToString(exclude = "image")
+@JsonIgnoreProperties({"image"})
 public class Tag extends BaseEntity{
 
     @Id

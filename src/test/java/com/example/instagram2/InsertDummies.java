@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
@@ -98,6 +99,14 @@ public class InsertDummies {
     }
 
     @Test
+    void exex(){
+        Optional<Member> result = memberRepository.findById(96L);
+        Member member = result.get();
+        member.setUsername("96username");
+        memberRepository.save(member);
+    }
+
+    @Test
     public void insertDummyImages() {
         IntStream.rangeClosed(1, 90).forEach(i -> {
             Long rndMno = (long) (Math.random() * 100) + 1;
@@ -141,7 +150,7 @@ public class InsertDummies {
 
     @Test
     public void InsertDummyTags(){
-        IntStream.rangeClosed(1,50).forEach(i->{
+        IntStream.rangeClosed(1,200).forEach(i->{
             Long ino = (long)(Math.random()*150) + 1;
             Tag tag = Tag.builder()
                     .image(Image.builder()

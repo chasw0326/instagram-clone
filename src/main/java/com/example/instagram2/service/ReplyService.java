@@ -1,6 +1,7 @@
 package com.example.instagram2.service;
 
 
+import com.example.instagram2.dto.ImgReply;
 import com.example.instagram2.dto.ReplyReqDTO;
 import com.example.instagram2.entity.Image;
 import com.example.instagram2.entity.Member;
@@ -17,7 +18,7 @@ public interface ReplyService {
 
     List<ReplyReqDTO> getList(Long ino, Pageable pageable);
 
-//    void modify(ReplyReqDTO replyReqDTO, AuthMemberDTO authMember);
+    List<ImgReply> get3Replies(Long ino);
 
     void remove(Long rno, Long userId) throws NoAuthorityException;
 

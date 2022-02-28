@@ -27,4 +27,14 @@ public class ReplyRepoTests {
             System.out.println(r);
         }
     }
+
+    @Test
+    void ex(){
+        List<Reply> result = repository.getTop3ByImage_InoOrderByRegDate(4L);
+        for (Reply r : result){
+            System.out.println("----------------");
+            System.out.println(r.getMember().getUsername());
+            System.out.println(r);
+        }
+    }
 }

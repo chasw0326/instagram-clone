@@ -1,5 +1,6 @@
 package com.example.instagram2.service.serviceImpl;
 
+import com.example.instagram2.dto.ImgReply;
 import com.example.instagram2.exception.myException.NoAuthorityException;
 import com.example.instagram2.security.dto.AuthMemberDTO;
 import com.example.instagram2.service.ReplyService;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -56,6 +58,22 @@ public class ReplyServiceImpl implements ReplyService {
             }
             repository.deleteById(rno);
         }
+    }
+
+    @Override
+    @Transactional
+    public List<ImgReply> get3Replies(Long ino){
+        List<Reply> replies = repository.getTop3ByImage_InoOrderByRegDate(ino);
+        List<ImgReply> imgReplies = new ArrayList<>();
+        for(Reply r : replies){
+            ImgReply imgReply = ImgReply.builder()
+                    .reply(r)
+                    .username(r.getMember().getUsername())
+                    .userId(r.getMember().getMno())
+                    .build();
+            imgReplies.add(imgReply);
+        }
+        return imgReplies;
     }
 }
 

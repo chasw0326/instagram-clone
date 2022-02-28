@@ -31,7 +31,6 @@ public class AuthSvcTests {
     @Autowired
     private AuthUtil authService;
 
-
     @Autowired
     private MemberRepository repository;
 

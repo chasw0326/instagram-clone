@@ -1,6 +1,7 @@
 package com.example.instagram2.serviceTests;
 
 
+import com.example.instagram2.controller.ImageController;
 import com.example.instagram2.dto.ImageReqDTO;
 import com.example.instagram2.dto.ImagesAndTags;
 import com.example.instagram2.entity.Image;
@@ -43,7 +44,6 @@ public class ImageSvcTests {
     @Autowired
     private TagRepository tagRepository;
 
-
     MockMultipartFile file;
 
     @BeforeEach
@@ -75,14 +75,18 @@ public class ImageSvcTests {
         assertEquals("뮤탈리스크", tags.get(2).getName());
     }
 
+
     @Test
-    void ex(){
-        PageRequest pageRequest = PageRequest.of(0, 10);
-        // 35 52 58 77 96
-        List<ImagesAndTags> images = imageService.getFeedImage(63L, pageRequest);
-        for(ImagesAndTags i : images){
-            System.out.println(i);
-        }
+    void Should_Get3PopularPicture(){
+        String username = "96username";
+        List<Image> images = imageService.getPopularImageList(username);
+        System.out.println(images.toString());
+        //2 107 151
+        assertEquals(2,images.get(0).getIno());
+        assertEquals(107,images.get(1).getIno());
+        assertEquals(151,images.get(2).getIno());
     }
+
+
 }
 

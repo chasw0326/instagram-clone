@@ -1,16 +1,16 @@
 package com.example.instagram2.service.serviceImpl;
 
 import com.example.instagram2.dto.ImagesAndTags;
+import com.example.instagram2.dto.ImgReply;
 import com.example.instagram2.entity.Member;
-import com.example.instagram2.repository.LikesRepository;
-import com.example.instagram2.repository.MemberRepository;
+import com.example.instagram2.entity.Reply;
+import com.example.instagram2.repository.*;
 import com.example.instagram2.service.ImageService;
 import com.example.instagram2.dto.ImageReqDTO;
 import com.example.instagram2.entity.Image;
 import com.example.instagram2.entity.Tag;
-import com.example.instagram2.repository.ImageRepository;
-import com.example.instagram2.repository.TagRepository;
 import com.example.instagram2.security.dto.AuthMemberDTO;
+import com.example.instagram2.service.ReplyService;
 import com.example.instagram2.service.UploadService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -34,6 +34,7 @@ public class ImageServiceImpl implements ImageService {
     private final UploadService uploadService;
     private final LikesRepository likesRepository;
     private final MemberRepository memberRepository;
+    private final ReplyService replyService;
 
     @Value("${instagram.upload.path}")
     private String uploadPath;
@@ -57,7 +58,7 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ImagesAndTags> getFeedImage(Long userId, Pageable pageable) {
+    public List<ImagesAndTags> getFeedImageData(Long userId, Pageable pageable) {
         Page<Image> images = imageRepository.getFollowFeed(userId, pageable);
         List<ImagesAndTags> feedDTOS = new ArrayList<>();
         images.forEach((image -> {
@@ -71,8 +72,12 @@ public class ImageServiceImpl implements ImageService {
                 }
             }
             List<Tag> tags = tagRepository.findTagByImage_InoOrderByTno(ino);
+            List<ImgReply> imgReplies = replyService.get3Replies(ino);
             feedDTOS.add(ImagesAndTags.builder()
+                    .username(image.getMember().getUsername())
+                    .memberId(image.getMember().getMno())
                     .tags(tags)
+                    .replies(imgReplies)
                     .images(image)
                     .build());
         }));
@@ -86,7 +91,12 @@ public class ImageServiceImpl implements ImageService {
         log.info("{}의 popualrImageList", username);
         Member member = memberRepository.getByUsername(username);
         Long userId = member.getMno();
-        List<Image> images = imageRepository.getPopularPictureList(userId);
+        List<Image> images = imageRepository.get3PopularPictureList(userId);
+        images.forEach((image -> {
+            Long ino = image.getIno();
+            Long likeCnt = likesRepository.getLikesCntByImageId(ino);
+            image.setLikeCnt(likeCnt);
+        }));
         return images;
     }
 

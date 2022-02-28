@@ -11,6 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @ToString(exclude = {"image", "member"})
+@JsonIgnoreProperties({"image", "member"})
 public class Reply extends BaseEntity{
 
     @Id
@@ -24,7 +25,6 @@ public class Reply extends BaseEntity{
     @JoinColumn(name="image")
     private Image image;
 
-    @JsonIgnoreProperties({"images"})
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member")
     private Member member;

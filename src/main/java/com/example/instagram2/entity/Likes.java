@@ -11,9 +11,10 @@ import javax.persistence.*;
 @Getter
 @Entity
 @ToString(exclude = {"member", "image"})
-@Table(uniqueConstraints = @UniqueConstraint(
+@Table(uniqueConstraints = {@UniqueConstraint(
         name = "LIKES_UK",
-        columnNames = {"member", "image"}))
+        columnNames = {"member", "image"}
+)})
 public class Likes extends BaseEntity {
 
     @Id

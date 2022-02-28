@@ -1,13 +1,10 @@
 package com.example.instagram2.dto;
 
-import com.example.instagram2.entity.Image;
 import com.example.instagram2.entity.Reply;
-import com.example.instagram2.entity.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -15,16 +12,11 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Builder
-public class ImagesAndTags {
+public class ImgReply {
 
-    Long memberId;
+    Long userId;
 
     String username;
 
-    Image images;
-
-    List<Tag> tags;
-
-    List<ImgReply> replies;
-
+    Reply reply;
 }

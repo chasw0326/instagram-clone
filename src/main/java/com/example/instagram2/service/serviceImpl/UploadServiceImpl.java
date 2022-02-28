@@ -1,6 +1,6 @@
 package com.example.instagram2.service.serviceImpl;
 
-import com.example.instagram2.exception.myException.IllegalFileException;
+import com.example.instagram2.exception.myException.InvalidFileException;
 import com.example.instagram2.service.UploadService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -23,11 +23,12 @@ public class UploadServiceImpl implements UploadService {
     public String uploadFile(MultipartFile uploadFile, String uploadPath) {
 
         if (uploadFile == null) {
-            throw new IllegalFileException("uploadFile이 없습니다.");
+            log.warn("uploadFile이 없습니다.");
+            throw new InvalidFileException("uploadFile이 없습니다.");
         }
         if (!uploadFile.getContentType().startsWith("image")) {
-            log.warn("이 파일은 이미지 타입이 아닙니다.");
-            throw new IllegalFileException("이 파일은 이미지 타입이 아닙니다.");
+            log.warn("이 파일은 이미지 타입이 아닙니다. 현재 타입: {}", uploadFile.getContentType());
+            throw new InvalidFileException("이 파일은 이미지 타입이 아닙니다. 현재 타입: " + uploadFile.getContentType());
         }
 
         // 브라우저에서 전체 경로가 들어오므로, 실제파일 이름

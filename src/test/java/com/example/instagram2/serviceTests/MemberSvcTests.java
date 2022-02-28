@@ -7,7 +7,7 @@ import com.example.instagram2.dto.UserEditDTO;
 import com.example.instagram2.dto.UserProfileRespDTO;
 import com.example.instagram2.entity.Member;
 import com.example.instagram2.exception.myException.DuplicationException;
-import com.example.instagram2.exception.myException.IllegalFileException;
+import com.example.instagram2.exception.myException.InvalidFileException;
 import com.example.instagram2.repository.MemberRepository;
 import com.example.instagram2.service.MemberService;
 import com.example.instagram2.service.serviceImpl.AuthUtil;
@@ -17,10 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 
-import javax.swing.text.html.Option;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -44,7 +42,7 @@ public class MemberSvcTests {
     @Test
     void Should_ThrowException_WhenFileIsNull() {
         Long userId = 223L;
-        Throwable ex = assertThrows(IllegalFileException.class, () -> {
+        Throwable ex = assertThrows(InvalidFileException.class, () -> {
             memberService.changeProfilePicture(null, userId);
         });
         assertEquals("uploadFile is null", ex.getMessage());

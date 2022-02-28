@@ -84,18 +84,20 @@ public class FollowServiceImpl implements FollowService {
     @Transactional
     public void follow(Long fromMemberId, Long toMemberId) {
         log.info("{} follow {}", fromMemberId, toMemberId);
-        Member fromMember = Member.builder()
-                .mno(fromMemberId)
-                .build();
-        Member toMember = Member.builder()
-                .mno(toMemberId)
-                .build();
-        Follow follow = Follow.builder()
-                .fromMember(fromMember)
-                .toMember(toMember)
-                .build();
+        if (!fromMemberId.equals(toMemberId)) {
+            Member fromMember = Member.builder()
+                    .mno(fromMemberId)
+                    .build();
+            Member toMember = Member.builder()
+                    .mno(toMemberId)
+                    .build();
+            Follow follow = Follow.builder()
+                    .fromMember(fromMember)
+                    .toMember(toMember)
+                    .build();
 
-        followRepository.save(follow);
+            followRepository.save(follow);
+        }
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.example.instagram2.controllerTests;
 
 
 import com.example.instagram2.controller.MemberController;
+import com.example.instagram2.dto.FeedDTO;
 import com.example.instagram2.dto.ImageReqDTO;
 import com.example.instagram2.entity.Image;
 import com.example.instagram2.exception.ArgumentCheckUtil;
@@ -96,7 +97,7 @@ public class ImageControllerTests {
     @DisplayName("[Post]/image/create/style")
     @Test
     @WithUserDetails(value = "chasw@naver.com")
-    void should_getFeedDTO_When_Request() throws IOException {
+    void should_NormalUpload_When_Request() throws IOException {
         MultiValueMap<String, Object> multipartData = new LinkedMultiValueMap<>();
         MockMultipartFile image = new MockMultipartFile("image", "image.png", "image/png",
                 "<<png data>>".getBytes());
@@ -121,4 +122,27 @@ public class ImageControllerTests {
                 .exchange()
                 .expectStatus().isOk();
     }
+
+    @DisplayName("[Post]/image/")
+    @Test
+    @WithUserDetails(value = "chasw@naver.com")
+    void Should_GetFeedImages_WhenNormalRequest(){
+//        webClient.get().uri("/image/")
+//                .headers(http -> http.setBearerAuth(token))
+//                .contentType(APPLICATION_JSON)
+//                .exchange()
+//                .expectStatus().isOk();
+
+        FeedDTO dto = WebClient.create()
+                .get()
+                .uri("localhost:" + port + "/image")
+                .headers(http -> http.setBearerAuth(token))
+                .accept(APPLICATION_JSON)
+                .retrieve()
+                .bodyToMono(FeedDTO.class)
+                .block();
+
+        System.out.println(dto.toString());
+    }
+
 }

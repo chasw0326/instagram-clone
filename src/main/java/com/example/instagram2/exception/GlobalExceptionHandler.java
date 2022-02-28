@@ -1,10 +1,11 @@
 package com.example.instagram2.exception;
 
 import com.example.instagram2.exception.myException.DuplicationException;
-import com.example.instagram2.exception.myException.IllegalFileException;
+import com.example.instagram2.exception.myException.InvalidFileException;
 import com.example.instagram2.exception.myException.InvalidPasswordException;
 import com.example.instagram2.exception.myException.NoAuthorityException;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -38,6 +39,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(dto, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler({DataIntegrityViolationException.class})
+    public ResponseEntity<?> SQLErrorHandler(DataIntegrityViolationException e){
+        log.error("DuplicationException: {}", e.getMessage());
+        e.printStackTrace();
+        ErrorRespDTO dto = errorToDTO(e);
+        return new ResponseEntity<>(dto, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler({NoAuthorityException.class})
     public ResponseEntity<?> NoAuthorityHandler(NoAuthorityException e) {
         log.error("DuplicationException: {}", e.getMessage());
@@ -46,8 +55,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(dto, HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler({IllegalFileException.class})
-    public ResponseEntity<?> IllegalFileTypeHandler(IllegalFileException e) {
+    @ExceptionHandler({InvalidFileException.class})
+    public ResponseEntity<?> IllegalFileTypeHandler(InvalidFileException e) {
         log.error("IllegalFileType: {}", e.getMessage());
         e.printStackTrace();
         ErrorRespDTO dto = errorToDTO(e);

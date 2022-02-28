@@ -65,7 +65,7 @@ public class ReplySvcTests {
 
     @DisplayName("댓글 삭제, remove")
     @Test
-    void Sholud_Delete_WhenMe() throws NoAuthorityException {
+    void Should_Delete_WhenMyReply() throws NoAuthorityException {
         Long rno = 81L;
         Long userId = 121L;
         replyService.remove(rno, userId);

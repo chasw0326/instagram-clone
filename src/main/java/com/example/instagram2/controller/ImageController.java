@@ -8,7 +8,6 @@ import com.example.instagram2.exception.ArgumentCheckUtil;
 import com.example.instagram2.security.dto.AuthMemberDTO;
 import com.example.instagram2.service.ImageService;
 import com.example.instagram2.service.MemberService;
-import com.example.instagram2.service.TagService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +29,6 @@ public class ImageController {
 
     private final ImageService imageService;
     private final MemberService memberService;
-    private final TagService tagService;
     private final ArgumentCheckUtil argumentCheckUtil;
 
     @GetMapping({"/", "/image"})
@@ -41,7 +39,7 @@ public class ImageController {
                                                    direction = Sort.Direction.DESC) Pageable pageable) {
 
         String userProfileImg = memberService.getProfileImg(authMember.getId());
-        List<ImagesAndTags> imagesAndTags = imageService.getFeedImage(authMember.getId(), pageable);
+        List<ImagesAndTags> imagesAndTags = imageService.getFeedImageData(authMember.getId(), pageable);
         FeedDTO feedDTOS = FeedDTO.builder()
                 .myPicture(userProfileImg)
                 .imagesAndTags(imagesAndTags)

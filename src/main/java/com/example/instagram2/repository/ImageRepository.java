@@ -27,7 +27,7 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
             "WHERE member =:memberId " +
             "ORDER BY like_Cnt DESC LIMIT 3",
             nativeQuery = true)
-    List<Image> getPopularPictureList(@Param("memberId") Long memberId);
+    List<Image> get3PopularPictureList(@Param("memberId") Long memberId);
 
 //    List<Image> findTop3ByMember_MnoOrderByLikeCntDesc(Long memberId);
 
