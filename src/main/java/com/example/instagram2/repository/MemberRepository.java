@@ -39,7 +39,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByEmail(@Param("email") String email);
 
     @Query("SELECT m.profileImageUrl FROM Member m WHERE m.mno=:id")
-    String getProfileImageById(Long id);
+    String getProfileImageById(@Param("id") Long id);
 
     Boolean existsByEmail(String email);
 

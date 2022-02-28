@@ -96,6 +96,7 @@ public class MemberServiceImpl implements MemberService {
                 .build();
     }
 
+    // 이메일은 readOnly로 해주세요
     @Override
     @Transactional(rollbackFor = DuplicationException.class)
     public void modifyMemberInfo(Long userId, UserEditDTO dto) {
@@ -117,7 +118,6 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional(readOnly = true, rollbackFor = {IllegalArgumentException.class})
     public UserProfileRespDTO getUserProfile(String username, Long visitorId) throws IllegalArgumentException {
-        UserProfileRespDTO userProfileRespDTO = new UserProfileRespDTO();
         Optional<Member> result = memberRepository.findByUsername(username);
 
         if (!result.isPresent()) {
@@ -130,32 +130,41 @@ public class MemberServiceImpl implements MemberService {
         Long followCount = followRepository.getFollowCount(mno);
         Long imgCnt = imageRepository.getImageCount(mno);
         List<String> imageUrlList = imageRepository.getImageUrlList(mno);
+        boolean dtoFollowState;
+        boolean myself;
 
-
+//        UserProfileRespDTO userProfileRespDTO = new UserProfileRespDTO();
         // 본인이 본인 사이트 들어갔을 경우
         if (mno.equals(visitorId)) {
-            userProfileRespDTO.setFollowState(false);
-            userProfileRespDTO.setMyself(true);
+            dtoFollowState = false;
+            myself = true;
         } else {
-            userProfileRespDTO.setFollowState(followState == 1);
-            userProfileRespDTO.setMyself(false);
+            dtoFollowState = (followState == 1);
+            myself = false;
         }
-        userProfileRespDTO.setFollowCount(followCount);
-        userProfileRespDTO.setFollowerCount(followerCount);
-        userProfileRespDTO.setImageCount(imgCnt);
-        userProfileRespDTO.setMember(member);
-        userProfileRespDTO.setImgUrlList(imageUrlList);
+        UserProfileRespDTO dto = UserProfileRespDTO.builder()
+                .followState(dtoFollowState)
+                .myself(myself)
+                .followCount(followCount)
+                .followerCount(followerCount)
+                .imageCount(imgCnt)
+                .member(Member.builder()
+                        .mno(mno)
+                        .username(member.getUsername())
+                        .name(member.getName())
+                        .intro(member.getIntro())
+                        .profileImageUrl(member.getProfileImageUrl())
+                        .build())
+                .imgUrlList(imageUrlList)
+                .build();
 
-
-        return userProfileRespDTO;
+        return dto;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public String getProfileImg(Long mno) {
-
-        return memberRepository.getProfileImageById(mno);
-
+    public String getProfileImg(Long userId) {
+        return memberRepository.getProfileImageById(userId);
     }
 
 

@@ -32,7 +32,7 @@ public class ReplyController {
                                          @PageableDefault(
                                                  size = 10,
                                                  sort = "regDate",
-                                                 direction = Sort.Direction.DESC) Pageable pageable) {
+                                                 direction = Sort.Direction.ASC) Pageable pageable) {
 
         log.info("----------getReplyList----------");
 

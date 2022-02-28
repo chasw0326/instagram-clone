@@ -13,14 +13,6 @@ public class ArgumentCheckUtil {
     private MemberRepository memberRepository;
     @Autowired
     private ImageRepository imageRepository;
-    @Autowired
-    private LikesRepository likesRepository;
-    @Autowired
-    private FollowRepository followRepository;
-    @Autowired
-    private ReplyRepository replyRepository;
-    @Autowired
-    private TagRepository tagRepository;
 
     public void existByUsername(String username) {
         if (username == null || !memberRepository.existsByUsername(username)) {
