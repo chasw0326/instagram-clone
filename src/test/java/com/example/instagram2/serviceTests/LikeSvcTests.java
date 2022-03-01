@@ -23,9 +23,7 @@ public class LikeSvcTests {
     @Autowired
     private LikesRepository likesRepository;
 
-    @Autowired
-    private ImageRepository imageRepository;
-
+    @DisplayName("좋아요테이블에 좋아요 하나 추가 되는지")
     @Test
     void Should_LikeCntPlusOne_WhenLike(){
         Long imageId = 2L;

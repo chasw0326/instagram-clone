@@ -3,6 +3,8 @@ package com.example.instagram2.repositoryTests;
 
 import com.example.instagram2.entity.Member;
 import com.example.instagram2.repository.FollowRepository;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,8 +26,11 @@ public class FollowRepoTests {
     @Autowired
     private FollowRepository repository;
 
+
+    @Disabled
+    @DisplayName("getFollowCount")
     @Test
-    public void followCount() {
+    void verifyFollowCount() {
         Long fromMemberId = 9L;
         while (true) {
             if (repository.existsByFromMember(
@@ -58,8 +63,10 @@ public class FollowRepoTests {
         }
     }
 
+    @Disabled
+    @DisplayName("getFollowerTest")
     @Test
-    public void followerCount() {
+    void veryfiFollowerCount() {
         Long toMemberId = 70L;
         while (true) {
             if (repository.existsByToMember(
@@ -95,6 +102,8 @@ public class FollowRepoTests {
         }
     }
 
+    @Disabled
+    @DisplayName("follow")
     @Test
     public void followTest() {
         int count = (int) (Math.random() * 3) + 1;
@@ -108,6 +117,8 @@ public class FollowRepoTests {
         }
     }
 
+    @Disabled
+    @DisplayName("unfollow")
     @Test
     public void unFollowTest() {
         Long followerId = 65L;
@@ -116,6 +127,8 @@ public class FollowRepoTests {
         repository.unFollow(followerId, followeeId);
     }
 
+    @Disabled
+    @DisplayName("followState")
     @Test
     public void followState() {
         Long existFromMemberId = 3L;
@@ -128,6 +141,8 @@ public class FollowRepoTests {
                 notExistFromMemberId, notExistToMemberId), "팔로우 상태 아님");
     }
 
+    @Disabled
+    @DisplayName("existsTest")
     @Test
     public void existByToMemberTest() {
         Member existMember = Member.builder()
@@ -142,6 +157,8 @@ public class FollowRepoTests {
         assertEquals(false, repository.existsByToMember(notExistMember));
     }
 
+    @Disabled
+    @DisplayName("getFollowerData")
     @Test
     public void followerListTest(){
         Pageable pageable = PageRequest.of(0,10, Sort.by("regDate").descending());
@@ -153,6 +170,8 @@ public class FollowRepoTests {
         }
     }
 
+    @Disabled
+    @DisplayName("getFollowData")
     @Test
     public void followeeListTest(){
         Pageable pageable = PageRequest.of(0,10, Sort.by("regDate").descending());
@@ -164,6 +183,7 @@ public class FollowRepoTests {
         }
     }
 
+    @Disabled("실험용 테스트...")
     @Test
     public void dummyTest(){
 //        repository.follow(1L, 6L);

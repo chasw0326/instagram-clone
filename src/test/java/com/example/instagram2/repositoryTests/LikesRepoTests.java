@@ -4,6 +4,8 @@ import com.example.instagram2.entity.Image;
 import com.example.instagram2.entity.Likes;
 import com.example.instagram2.entity.Member;
 import com.example.instagram2.repository.LikesRepository;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,15 +21,19 @@ public class LikesRepoTests {
     @Autowired
     private LikesRepository repository;
 
+    @Disabled
+    @DisplayName("unlike")
     @Test
-    public void unlikeTest(){
+    public void unlikeTest() {
         Long tempImageId = 10L;
         Long tempMemberId = 10L;
         repository.unlike(tempImageId, tempMemberId);
     }
 
+    @Disabled
+    @DisplayName("getMemberIdByImageId")
     @Test
-    public void getMemberIdByImageId(){
+    public void getMemberIdByImageId() {
         List<Long> expList = new ArrayList<>(Arrays.asList(50L, 34L, 3L));
         Collections.sort(expList);
         List<Long> result = repository.getMemberIdByImageId(2L);
@@ -35,13 +41,26 @@ public class LikesRepoTests {
         assertEquals(expList, result);
     }
 
+    @Disabled
+    @DisplayName("getLikesCntByImageId")
     @Test
-    public void getLikesByImageIdTest(){
-        assertEquals(2L,repository.getLikesCntByImageId(7L));
+    public void getLikesByImageIdTest() {
+        assertEquals(2L, repository.getLikesCntByImageId(7L));
     }
 
+    @Disabled
+    @DisplayName("getMemberIdByImageId")
     @Test
-    public void dummyTest(){
+    void getMemberId() {
+        List<Long> expected = new ArrayList<>();
+        expected.add(223L);
+        assertEquals(expected, repository.getMemberIdByImageId(2L));
+    }
+
+    @Disabled
+    @DisplayName("실험용 테스트")
+    @Test
+    public void dummyTest() {
         Likes likes = Likes.builder()
                 .member(Member.builder()
                         .mno(3L)

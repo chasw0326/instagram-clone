@@ -65,10 +65,12 @@ public class ImageServiceImpl implements ImageService {
             Long ino = image.getIno();
             Long likeCnt = likesRepository.getLikesCntByImageId(ino);
             image.setLikeCnt(likeCnt);
+            image.setLikeState(false);
             List<Long> mnoList = likesRepository.getMemberIdByImageId(ino);
             for (Long mno : mnoList) {
                 if (mno.equals(userId)) {
                     image.setLikeState(true);
+                    break;
                 }
             }
             List<Tag> tags = tagRepository.findTagByImage_InoOrderByTno(ino);

@@ -30,10 +30,4 @@ public interface LikesRepository extends JpaRepository<Likes, Long> {
     @Query("SELECT l.member.mno FROM Likes l WHERE l.image.ino =:imageId")
     List<Long> getMemberIdByImageId(@Param("imageId") Long imageId);
 
-    @Transactional
-    @Query("SELECT l.member.email FROM Likes l WHERE l.member.email =:email")
-    Object findByEmail(String email);
-
-
-
 }

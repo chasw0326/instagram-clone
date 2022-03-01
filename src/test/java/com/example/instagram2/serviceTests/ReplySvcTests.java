@@ -1,5 +1,6 @@
 package com.example.instagram2.serviceTests;
 
+import com.example.instagram2.dto.ImgReply;
 import com.example.instagram2.dto.ReplyReqDTO;
 import com.example.instagram2.entity.Reply;
 import com.example.instagram2.exception.myException.NoAuthorityException;
@@ -82,6 +83,28 @@ public class ReplySvcTests {
         for(ReplyReqDTO dto : reqDTOS){
             System.out.println(dto);
         }
+        assertEquals(87L, reqDTOS.get(0).getRno());
+        assertEquals(137L, reqDTOS.get(1).getRno());
+        assertEquals(190L, reqDTOS.get(2).getRno());
+        assertEquals(200L, reqDTOS.get(3).getRno());
+        assertEquals(201L, reqDTOS.get(4).getRno());
+        assertEquals(202L, reqDTOS.get(5).getRno());
+        assertEquals(203L, reqDTOS.get(6).getRno());
+    }
+
+    @DisplayName("댓글 3개 가져오기")
+    @Test
+    void Should_Get3Replies(){
+        List<ImgReply> imgReplies = replyService.get3Replies(4L);
+        for(ImgReply r : imgReplies){
+            System.out.println(r);
+        }
+        assertEquals(87L, imgReplies.get(0).getReply().getRno());
+        assertEquals(32L, imgReplies.get(0).getUserId());
+        assertEquals(137L, imgReplies.get(1).getReply().getRno());
+        assertEquals(120L, imgReplies.get(1).getUserId());
+        assertEquals(190L, imgReplies.get(2).getReply().getRno());
+        assertEquals(192L, imgReplies.get(2).getUserId());
     }
 
 

@@ -3,9 +3,12 @@ package com.example.instagram2.repositoryTests;
 
 import com.example.instagram2.entity.Member;
 import com.example.instagram2.repository.MemberRepository;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
@@ -17,31 +20,31 @@ public class MemberRepoTests {
     @Autowired
     private MemberRepository repository;
 
+    @Disabled
+    @DisplayName("findByEmailAndSocial")
     @Test
-    public void findByUserNameTest(){
-        String username= "1번이름";
+    public void findByUserNameTest() {
+        String username = "1번이름";
         Optional<Member> result = repository.findByEmailAndSocial(username, false);
-        if(result.isPresent()){
+        if (result.isPresent()) {
             Member member = result.get();
             System.out.println("member = " + member.toString());
         }
     }
 
-//    @Test
-//    public void getProfileImgAndUsername(){
-//        Object result = repository.getUsernameById(1L);
-//
-//        Object[] arr = (Object[]) result;
-//        System.out.println((String)arr[0]);
-//        System.out.println((String)arr[1]);
-//        assertEquals("aa3670f2-7c01-485d-a19a-5e65bfdcfc39", (String)arr[0]);
-//        assertEquals("1번이름", (String)arr[1]);
-//    }
+    @Test
+    void findByUsername() {
+        Optional<Member> result = repository.findByUsername("john");
+        if (result.isPresent()) {
+            Member member = result.get();
+            assertEquals(223L, member.getMno());
+        }
+    }
 
     @Test
-    public void findByEmail(){
+    public void findByEmail() {
         Optional<Member> result = repository.findByEmail("bcaaeaa@naver.com");
-        if(result.isPresent()){
+        if (result.isPresent()) {
             Member member = result.get();
             System.out.println("member= " + member);
             assertEquals(215, member.getMno());
@@ -49,12 +52,26 @@ public class MemberRepoTests {
     }
 
     @Test
-    public void findByEmailAndSocial(){
+    public void findByEmailAndSocial() {
         Optional<Member> result = repository.findByEmailAndSocial("bcaa@naver.com", false);
-        if(result.isPresent()){
+        if (result.isPresent()) {
             Member member = result.get();
             System.out.println("member= " + member);
         }
     }
 
+    @Test
+    void getProfileImageAndUsernameById() {
+        Object[] arr = (Object[]) repository.getProfileImagAndUsernameById(219L);
+        String profileImg = (String) arr[0];
+        String username = (String) arr[1];
+        assertEquals("hehe", username);
+        assertEquals("imgUrlsfjkslfsdkfjl", profileImg);
+    }
+
+    @Test
+    void getProfileImageById() {
+        //imgUrlsfjkslfsdkfjl
+        assertEquals("imgUrlsfjkslfsdkfjl", repository.getProfileImageById(219L));
+    }
 }
