@@ -48,6 +48,7 @@ public class ImageServiceImpl implements ImageService {
         Image image = dtoToEntity(imageDTO, imageUrl, authMemberDTO);
         List<Tag> tags = makeTagList(imageDTO.getTags(), image);
         image.setLikeCnt(0L);
+
         imageRepository.save(image);
         if (!tags.isEmpty()) {
             log.info("tags: {}", tags.toString());
@@ -64,9 +65,9 @@ public class ImageServiceImpl implements ImageService {
         images.forEach((image -> {
             Long ino = image.getIno();
             Long likeCnt = likesRepository.getLikesCntByImageId(ino);
+            List<Long> mnoList = likesRepository.getMemberIdByImageId(ino);
             image.setLikeCnt(likeCnt);
             image.setLikeState(false);
-            List<Long> mnoList = likesRepository.getMemberIdByImageId(ino);
             for (Long mno : mnoList) {
                 if (mno.equals(userId)) {
                     image.setLikeState(true);

@@ -148,10 +148,13 @@ public class MemberSvcTests {
     @DisplayName("중복된 사용자 이름으로 회원 정보 수정, modifyMemberInfo")
     @Test
     void Should_ThrowException_WhenModifyWithDuplicatedUsername() {
+        Member member = memberRepository.findById(215L).orElse(null);
+        String username = member.getUsername();
+
         UserEditDTO dto = UserEditDTO.builder()
                 .email("3F3074W0PK@naver.com")
                 .name("핫식스")
-                .username("danxiya")
+                .username(username)
                 .build();
 
         Throwable ex = assertThrows(DuplicationException.class, () -> {
@@ -163,14 +166,15 @@ public class MemberSvcTests {
     @DisplayName("팔로우 안한사람이 회원페이지 들어갔을때, getUserProfile")
     @Test
     void Should_GetUserProfile() {
-        String username = "100번이름";
-        Long userId = 227L;
-
+        String username = "23번이름";
+        Long userId = 77L;
         UserProfileRespDTO dto = memberService.getUserProfile(username, userId);
         System.out.println(dto);
+
         assertFalse(dto.isFollowState());
         assertFalse(dto.isMyself());
-        assertEquals(0, dto.getFollowCount());
+        assertEquals(3, dto.getFollowCount());
+        assertEquals(2, dto.getFollowerCount());
         assertEquals(3, dto.getImageCount());
         assertEquals(username, dto.getMember().getUsername());
     }

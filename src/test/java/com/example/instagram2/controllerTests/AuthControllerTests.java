@@ -5,6 +5,7 @@ import com.example.instagram2.dto.PasswordDTO;
 import com.example.instagram2.dto.SignupDTO;
 import com.example.instagram2.dto.UserEditDTO;
 import com.example.instagram2.entity.Member;
+import com.example.instagram2.exception.myException.InvalidPasswordException;
 import com.example.instagram2.service.MemberService;
 import com.example.instagram2.service.serviceImpl.AuthUtil;
 import org.json.JSONException;
@@ -25,6 +26,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import java.time.LocalTime;
+import java.util.UUID;
 
 import static org.mockito.BDDMockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -116,6 +120,26 @@ public class AuthControllerTests {
                     .expectStatus().isOk()
                     .expectHeader().valueEquals("Content-Type", "application/json");
 
+        }
+
+        @DisplayName("비밀번호 변경 테스트")
+        @Test
+        @WithUserDetails(value = "whoamI@naver.com")
+        void Should_ChangePassword() throws InvalidPasswordException {
+            PasswordDTO passwordDTO = PasswordDTO.builder()
+                    .oldPw("abcABC123!@#")
+                    .checkNewPw("abcABC123!@")
+                    .newPw("abcABC123!@")
+                    .build();
+            doNothing().when(mockAuthUtil).changePassword(passwordDTO);
+
+            webTestClient.post().uri("/accounts/password/change")
+                    .headers(http -> http.setBearerAuth(token))
+                    .contentType(APPLICATION_JSON)
+                    .accept(APPLICATION_JSON)
+                    .bodyValue(passwordDTO)
+                    .exchange()
+                    .expectStatus().isOk();
         }
 
         @DisplayName("유저정보 수정 테스트 [Put]/accounts/edit")
@@ -242,21 +266,25 @@ public class AuthControllerTests {
 
             @DisplayName("정상값으로 회원가입, [Post]/accounts/signup")
             @Test
-            @WithUserDetails(value = "chasw@naver.com")
             void should_isOk_When_SignupWithValidArgs() {
                 PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+                LocalTime now = LocalTime.now();
+                int hour = now.getHour();
+                int minute = now.getMinute();
+                int second = now.getSecond();
+                String timeStr = "member" + hour + minute + second;
                 Member member = Member.builder()
-                        .mno(100L)
-                        .email("ctrlTest@naver.com")
+                        .mno(1000000000L)
+                        .email(timeStr + "@naver.com")
                         .password(passwordEncoder.encode("abcABC123"))
                         .name(null)
-                        .username("ctrlTest")
+                        .username(timeStr)
                         .build();
 
                 SignupDTO dto = SignupDTO.builder()
-                        .email("ctrlTest@naver.com")
+                        .email(timeStr + "@naver.com")
                         .name(null)
-                        .username("ctrlTest")
+                        .username(timeStr)
                         .password("abcABC123!@#")
                         .build();
 
@@ -275,12 +303,7 @@ public class AuthControllerTests {
                         .accept(APPLICATION_JSON)
                         .bodyValue(dto)
                         .exchange()
-                        .expectStatus().isOk()
-                        .expectHeader().valueEquals("Content-Type", "application/json")
-                        .expectBody()
-                        .jsonPath("username").isEqualTo("ctrlTest")
-                        .jsonPath("id").isEqualTo(100L)
-                        .jsonPath("email").isEqualTo("ctrlTest@naver.com");
+                        .expectStatus().isOk();
             }
 
             @DisplayName("틀린 비밀번호로 로그인시도, [Post]/login")
@@ -301,6 +324,7 @@ public class AuthControllerTests {
                         .expectBody()
                         .jsonPath("message").isEqualTo("Bad credentials");
             }
+
         }
     }
 }

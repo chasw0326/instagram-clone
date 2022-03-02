@@ -26,13 +26,19 @@ public class LikeSvcTests {
     @DisplayName("좋아요테이블에 좋아요 하나 추가 되는지")
     @Test
     void Should_LikeCntPlusOne_WhenLike(){
-        Long imageId = 2L;
-        Long userId = 223L;
+        Long imageId = 5L;
+        Long userId = 219L;
+
+        // 좋아요 한뒤 좋아요 개수
         Long pastLikeCnt = likesRepository.getLikesCntByImageId(imageId);
-        System.out.println("likeCnt: " + pastLikeCnt);
         likesService.like(imageId, userId);
         Long currentLikeCnt = likesRepository.getLikesCntByImageId(imageId);
         assertEquals(currentLikeCnt, pastLikeCnt + 1);
+
+        // 좋아요 취소한뒤 좋아요 개수
+        likesService.undoLike(imageId, userId);
+        Long likeCntAfterUndoLike = likesRepository.getLikesCntByImageId(imageId);
+        assertEquals(likeCntAfterUndoLike, pastLikeCnt);
     }
 
     @DisplayName("Likes 테이블의 UK 잘 작동하는지")

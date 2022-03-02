@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -73,10 +74,10 @@ public class ImageSvcTests {
 
             AuthMemberDTO loggedUser = (AuthMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Long ino = imageService.uploadPicture(file, dto, loggedUser);
-            Optional<Image> result = imageRepository.findById(ino);
+            Image image = imageRepository.findById(ino).orElse(null);
             List<Tag> tags = tagRepository.findTagByImage_InoOrderByTno(ino);
-            Image image = result.get();
             System.out.println(image);
+
             assertEquals("new Caption", image.getCaption());
             assertEquals("저글링", tags.get(0).getName());
             assertEquals("히드라", tags.get(1).getName());
@@ -87,32 +88,44 @@ public class ImageSvcTests {
     @DisplayName("피드 이미지 가져오기")
     @Test
     void Should_GetFeedImageData(){
-        PageRequest pageRequest = PageRequest.of(0,10);
+        PageRequest pageRequest = PageRequest.of(0,10, Sort.by("regDate").descending());
         List<ImagesAndTags> imagesAndTags = imageService.getFeedImageData(63L, pageRequest);
         for(ImagesAndTags iat : imagesAndTags){
             System.out.println(iat);
         }
-        assertEquals(96, imagesAndTags.get(0).getMemberId());
-        assertEquals(96, imagesAndTags.get(1).getMemberId());
-        assertEquals(35, imagesAndTags.get(2).getMemberId());
-        assertEquals(58, imagesAndTags.get(3).getMemberId());
-        assertEquals(96, imagesAndTags.get(4).getMemberId());
-        assertEquals(96, imagesAndTags.get(5).getMemberId());
-        assertEquals(52, imagesAndTags.get(6).getMemberId());
-        assertEquals(77, imagesAndTags.get(7).getMemberId());
+        assertEquals(6, imagesAndTags.size());
+
+        assertEquals(77L, imagesAndTags.get(0).getMemberId());
+        assertEquals(185L, imagesAndTags.get(0).getImages().getIno());
+
+        assertEquals(96L, imagesAndTags.get(1).getMemberId());
+        assertEquals(151L, imagesAndTags.get(1).getImages().getIno());
+
+        assertEquals(96L, imagesAndTags.get(2).getMemberId());
+        assertEquals(107L, imagesAndTags.get(2).getImages().getIno());
+
+        assertEquals(77L, imagesAndTags.get(3).getMemberId());
+        assertEquals(75L, imagesAndTags.get(3).getImages().getIno());
+
+        assertEquals(35L, imagesAndTags.get(4).getMemberId());
+        assertEquals(58L, imagesAndTags.get(4).getImages().getIno());
+
+        assertEquals(52L, imagesAndTags.get(5).getMemberId());
+        assertEquals(5L, imagesAndTags.get(5).getImages().getIno());
     }
 
 
     @DisplayName("좋아요 많은순으로 사진3개 가져오기")
     @Test
     void Should_Get3PopularPicture() {
-        String username = "96username";
+        String username = "87번이름";
         List<Image> images = imageService.getPopularImageList(username);
         System.out.println(images.toString());
-        //2 107 151
-        assertEquals(2, images.get(0).getIno());
-        assertEquals(107, images.get(1).getIno());
-        assertEquals(151, images.get(2).getIno());
+        // 177 154 54
+        assertEquals(3, images.size());
+        assertEquals(177, images.get(0).getIno());
+        assertEquals(154, images.get(1).getIno());
+        assertEquals(54, images.get(2).getIno());
     }
 }
 

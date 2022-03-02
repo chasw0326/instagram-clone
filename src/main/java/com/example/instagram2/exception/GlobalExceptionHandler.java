@@ -24,7 +24,7 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler({DuplicationException.class})
-    public ResponseEntity<?> DuplicatedArgsHandler(DuplicationException e) {
+    public ResponseEntity<?> duplicatedArgsHandler(DuplicationException e) {
         log.error("DuplicationException: {}", e.getMessage());
         e.printStackTrace();
         ErrorRespDTO dto = errorToDTO(e);
@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({InvalidPasswordException.class})
-    public ResponseEntity<?> PasswordHandler(InvalidPasswordException e){
+    public ResponseEntity<?> passwordHandler(InvalidPasswordException e){
         log.error("DuplicationException: {}", e.getMessage());
         e.printStackTrace();
         ErrorRespDTO dto = errorToDTO(e);
@@ -40,7 +40,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({DataIntegrityViolationException.class})
-    public ResponseEntity<?> SQLErrorHandler(DataIntegrityViolationException e){
+    public ResponseEntity<?> sqlErrorhandler(DataIntegrityViolationException e){
         log.error("DuplicationException: {}", e.getMessage());
         e.printStackTrace();
         ErrorRespDTO dto = errorToDTO(e);
@@ -48,15 +48,15 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({NoAuthorityException.class})
-    public ResponseEntity<?> NoAuthorityHandler(NoAuthorityException e) {
-        log.error("DuplicationException: {}", e.getMessage());
+    public ResponseEntity<?> noAuthorityHandler(NoAuthorityException e) {
+        log.error("NoAuthorityHandler: {}", e.getMessage());
         e.printStackTrace();
         ErrorRespDTO dto = errorToDTO(e);
         return new ResponseEntity<>(dto, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler({InvalidFileException.class})
-    public ResponseEntity<?> IllegalFileTypeHandler(InvalidFileException e) {
+    public ResponseEntity<?> illegalFileTypeHandler(InvalidFileException e) {
         log.error("IllegalFileType: {}", e.getMessage());
         e.printStackTrace();
         ErrorRespDTO dto = errorToDTO(e);
@@ -64,7 +64,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({IllegalArgumentException.class})
-    public ResponseEntity<?> IllegalArgumentHandler(IllegalArgumentException e) {
+    public ResponseEntity<?> illegalArgumentHandler(IllegalArgumentException e) {
         log.error("IllegalArgumentException: {}", e.getMessage());
         e.printStackTrace();
         ErrorRespDTO dto = errorToDTO(e);
@@ -72,7 +72,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({RuntimeException.class})
-    public ResponseEntity<?> RuntimeHandler(RuntimeException e) {
+    public ResponseEntity<?> runtimeHandler(RuntimeException e) {
         log.error("RuntimeException: {}", e.getMessage());
         e.printStackTrace();
         ErrorRespDTO dto = errorToDTO(e);

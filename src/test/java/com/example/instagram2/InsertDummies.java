@@ -2,6 +2,7 @@ package com.example.instagram2;
 
 import com.example.instagram2.entity.*;
 import com.example.instagram2.repository.*;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,6 +38,7 @@ public class InsertDummies {
     @Autowired
     private TagRepository tagRepository;
 
+    @Disabled
     @Test
     public void insertMember() {
         IntStream.rangeClosed(1, 200).forEach(i -> {
@@ -62,6 +64,7 @@ public class InsertDummies {
         });
     }
 
+    @Disabled
     @Test
     public void insertDummyReplies() {
         IntStream.rangeClosed(1, 200).forEach(i -> {
@@ -82,6 +85,7 @@ public class InsertDummies {
         });
     }
 
+    @Disabled
     @Test
     public void insertFollowRelation() {
         IntStream.rangeClosed(1, 50).forEach(i -> {
@@ -98,6 +102,8 @@ public class InsertDummies {
 
     }
 
+
+    @Disabled
     @Test
     void exex(){
         Optional<Member> result = memberRepository.findById(96L);
@@ -106,6 +112,7 @@ public class InsertDummies {
         memberRepository.save(member);
     }
 
+    @Disabled
     @Test
     public void insertDummyImages() {
         IntStream.rangeClosed(1, 90).forEach(i -> {
@@ -125,6 +132,7 @@ public class InsertDummies {
         });
     }
 
+    @Disabled
     @Test
     public void like() {
         IntStream.rangeClosed(1, 10).forEach(i -> {
@@ -135,6 +143,7 @@ public class InsertDummies {
 
     }
 
+    @Disabled
     @Test
     public void likes() {
         IntStream.rangeClosed(1, 10).forEach(i -> {
@@ -148,6 +157,7 @@ public class InsertDummies {
         });
     }
 
+    @Disabled
     @Test
     public void InsertDummyTags(){
         IntStream.rangeClosed(1,200).forEach(i->{
@@ -163,6 +173,7 @@ public class InsertDummies {
 
     }
 
+    @Disabled
     @Test
     public void insertDummyMember(){
         Member member = Member.builder()
@@ -175,6 +186,7 @@ public class InsertDummies {
         memberRepository.save(member);
     }
 
+    @Disabled
     @Test
     public void garbage(){
         Member member = Member.builder()

@@ -28,8 +28,10 @@ public class FollowSvcTests {
         PageRequest pageRequest = PageRequest.of(0, 10);
         //63 91
         List<FollowRespDTO> result = followService.getFollowerList(100L, "96username", pageRequest);
+        System.out.println(result.toString());
+        assertEquals(2, result.size());
         assertEquals(63L, result.get(0).getUserId());
-        assertEquals(91L, result.get(0).getUserId());
+        assertEquals(91L, result.get(1).getUserId());
     }
 
     @Test

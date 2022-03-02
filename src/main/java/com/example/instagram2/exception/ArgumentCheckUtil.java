@@ -24,21 +24,21 @@ public class ArgumentCheckUtil {
     public void existByImageId(Long ino) {
         if (ino == null || !imageRepository.existsByIno(ino)) {
             log.warn("Invalid imageId: {}", ino);
-            throw new IllegalArgumentException("존재하지 않는 imageId 입니다. 입력한 값:" + ino);
+            throw new IllegalArgumentException("존재하지 않는 imageId 입니다. 입력한 값: " + ino);
         }
     }
 
     public void existByMemberId(Long memberId) {
         if (memberId == null || !memberRepository.existsById(memberId)) {
             log.warn("Invalid memberId: {}", memberId);
-            throw new IllegalArgumentException("존재하지 않는 memberId 입니다. 입력한 값:" + memberId);
+            throw new IllegalArgumentException("존재하지 않는 memberId 입니다. 입력한 값: " + memberId);
         }
     }
 
-    public void checkDuplicatedUsername(String username){
-        if(memberRepository.existsByUsername(username)){
-            log.warn("Duplicated username: {}", username);
-            throw new DuplicationException("중복된 사용자 이름 입니다. 입력한 값:" + username);
-        }
-    }
+//    public void checkDuplicatedUsername(String username){
+//        if(memberRepository.existsByUsername(username)){
+//            log.warn("Duplicated username: {}", username);
+//            throw new DuplicationException("중복된 사용자 이름 입니다. 입력한 값:" + username);
+//        }
+//    }
 }

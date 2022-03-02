@@ -39,9 +39,10 @@ public class ReplyServiceImpl implements ReplyService {
     @Transactional
     public List<ReplyReqDTO> getList(Long ino, Pageable pageable) {
         log.info("imageId: {}의 댓글들", ino);
-        List<Reply> result = repository
-                .getRepliesByImageOrderByRegDateAsc(Image.builder().ino(ino).build(),
-                        pageable);
+        Image image = Image.builder()
+                .ino(ino)
+                .build();
+        List<Reply> result = repository.getRepliesByImageOrderByRegDateAsc(image, pageable);
 
         return result.stream().map(reply -> entityToDTO(reply)).collect(Collectors.toList());
     }

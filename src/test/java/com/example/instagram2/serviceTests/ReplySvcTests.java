@@ -34,7 +34,7 @@ public class ReplySvcTests {
     @Test
     @WithUserDetails(value = "chasw@naver.com")
     void Should_RegisterReply_WhenNormalSituation() {
-        Long ino = 4L;
+        Long ino = 99L;
         AuthMemberDTO loggedUser = (AuthMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         ReplyReqDTO replyReqDTO = ReplyReqDTO.builder()
@@ -79,17 +79,17 @@ public class ReplySvcTests {
     void Should_GetReplyList(){
         PageRequest pageRequest = PageRequest.of(0, 10);
 
-        List<ReplyReqDTO> reqDTOS = replyService.getList(4L, pageRequest);
+        List<ReplyReqDTO> reqDTOS = replyService.getList(8L, pageRequest);
         for(ReplyReqDTO dto : reqDTOS){
             System.out.println(dto);
         }
-        assertEquals(87L, reqDTOS.get(0).getRno());
-        assertEquals(137L, reqDTOS.get(1).getRno());
-        assertEquals(190L, reqDTOS.get(2).getRno());
-        assertEquals(200L, reqDTOS.get(3).getRno());
-        assertEquals(201L, reqDTOS.get(4).getRno());
-        assertEquals(202L, reqDTOS.get(5).getRno());
-        assertEquals(203L, reqDTOS.get(6).getRno());
+        assertEquals(6L, reqDTOS.get(0).getRno());
+        assertEquals(93L, reqDTOS.get(1).getRno());
+        assertEquals(118L, reqDTOS.get(2).getRno());
+        assertEquals(258L, reqDTOS.get(3).getRno());
+        assertEquals(313L, reqDTOS.get(4).getRno());
+        assertEquals(328L, reqDTOS.get(5).getRno());
+        assertEquals(403L, reqDTOS.get(6).getRno());
     }
 
     @DisplayName("댓글 3개 가져오기")

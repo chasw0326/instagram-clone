@@ -3,17 +3,16 @@ package com.example.instagram2.dto;
 
 import com.example.instagram2.entity.Image;
 import com.example.instagram2.entity.Member;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
+@ToString
 public class UserProfileRespDTO {
 
     private boolean followState;
