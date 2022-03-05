@@ -7,6 +7,7 @@ import com.example.instagram2.dto.ImagesAndTags;
 import com.example.instagram2.entity.Image;
 import com.example.instagram2.entity.Member;
 import com.example.instagram2.entity.Tag;
+import com.example.instagram2.exception.myException.NoAuthorityException;
 import com.example.instagram2.repository.ImageRepository;
 import com.example.instagram2.repository.MemberRepository;
 import com.example.instagram2.repository.TagRepository;
@@ -82,6 +83,13 @@ public class ImageSvcTests {
             assertEquals("저글링", tags.get(0).getName());
             assertEquals("히드라", tags.get(1).getName());
             assertEquals("뮤탈리스크", tags.get(2).getName());
+        }
+
+        @Test
+        @WithUserDetails(value = "chasw@naver.com")
+        void Should_delete() throws NoAuthorityException {
+            AuthMemberDTO loggedUser = (AuthMemberDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            imageService.delete(208L, loggedUser.getId());
         }
     }
 

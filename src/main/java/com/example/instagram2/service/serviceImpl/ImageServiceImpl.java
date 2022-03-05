@@ -4,6 +4,7 @@ import com.example.instagram2.dto.ImagesAndTags;
 import com.example.instagram2.dto.ImgReply;
 import com.example.instagram2.entity.Member;
 import com.example.instagram2.entity.Reply;
+import com.example.instagram2.exception.myException.NoAuthorityException;
 import com.example.instagram2.repository.*;
 import com.example.instagram2.service.ImageService;
 import com.example.instagram2.dto.ImageReqDTO;
@@ -23,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -101,6 +103,22 @@ public class ImageServiceImpl implements ImageService {
             image.setLikeCnt(likeCnt);
         }));
         return images;
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long ino, Long principalId) throws NoAuthorityException {
+        Optional<Image> result = imageRepository.findById(ino);
+        if(!result.isPresent()){
+            return;
+        }
+        Image image = result.get();
+        if(image.getMember().getMno().equals(principalId)){
+            imageRepository.delete(image);
+        }else{
+            throw new NoAuthorityException("권한이 없습니다.");
+        }
+
     }
 
     @Override

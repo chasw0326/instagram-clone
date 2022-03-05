@@ -5,6 +5,7 @@ import com.example.instagram2.dto.ImagesAndTags;
 import com.example.instagram2.dto.ImageReqDTO;
 import com.example.instagram2.entity.Image;
 import com.example.instagram2.exception.ArgumentCheckUtil;
+import com.example.instagram2.exception.myException.NoAuthorityException;
 import com.example.instagram2.security.dto.AuthMemberDTO;
 import com.example.instagram2.service.ImageService;
 import com.example.instagram2.service.MemberService;
@@ -66,6 +67,12 @@ public class ImageController {
         argumentCheckUtil.existByUsername(username);
         List<Image> images = imageService.getPopularImageList(username);
         return ResponseEntity.ok().body(images);
+    }
+
+    @DeleteMapping("/image/")
+    public ResponseEntity<?> deletePicture(Long ino, @AuthenticationPrincipal AuthMemberDTO authMemberDTO) throws NoAuthorityException {
+        imageService.delete(ino, authMemberDTO.getId());
+        return ResponseEntity.ok().body("delete");
     }
 }
 

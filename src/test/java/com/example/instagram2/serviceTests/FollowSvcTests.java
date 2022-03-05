@@ -46,6 +46,7 @@ public class FollowSvcTests {
     @Test
     public void unfollowTest() {
         followService.unFollow(223L, 1L);
+
         assertEquals(0, followRepository.followState(223L, 1L));
     }
 

@@ -5,6 +5,7 @@ import com.example.instagram2.dto.ImageReqDTO;
 import com.example.instagram2.entity.Image;
 import com.example.instagram2.entity.Member;
 import com.example.instagram2.entity.Tag;
+import com.example.instagram2.exception.myException.NoAuthorityException;
 import com.example.instagram2.security.dto.AuthMemberDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +17,8 @@ public interface ImageService {
     Long uploadPicture(MultipartFile imgFile, ImageReqDTO imageDTO, AuthMemberDTO authMemberDTO);
 
     List<ImagesAndTags> getFeedImageData(Long userId, Pageable pageable);
+
+    void delete(Long ino, Long principalId) throws NoAuthorityException;
 
     List<Tag> makeTagList(String tags, Image image);
 

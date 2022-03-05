@@ -2,6 +2,8 @@ package com.example.instagram2.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
@@ -24,9 +26,11 @@ public class Likes extends BaseEntity {
     @JsonIgnoreProperties({"images"})
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
     @ManyToOne
     @JoinColumn(name = "image")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Image image;
 }
