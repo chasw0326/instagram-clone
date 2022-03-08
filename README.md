@@ -1,9 +1,9 @@
 # instagram-clone
 
 # 사용한 기술들
-spring boot, jpa, mariaDB, swagger, jwt
+## spring boot, jpa, mariaDB, swagger, jwt
 
-# -----------------------------------------
+-----------------------------------------
  /swagger-ui/index.html로 문서화 볼 수 있습니다.
 
  AWS로 배포 했다가 KEY를 노출해 버려서 내림...
