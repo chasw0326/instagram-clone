@@ -1,7 +1,7 @@
 # instagram-clone
 
 # 기술스택
-Spring Boot, JPA, AWS, SWAGGER
+# Spring Boot, JPA, AWS, SWAGGER
 
  /swagger-ui/index.html로 문서화 볼 수 있습니다.
 
