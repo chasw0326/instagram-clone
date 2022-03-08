@@ -11,13 +11,17 @@ import com.example.instagram2.repository.FollowRepository;
 import com.example.instagram2.repository.ImageRepository;
 import com.example.instagram2.repository.MemberRepository;
 import com.example.instagram2.service.MemberService;
+import com.example.instagram2.util.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,20 +35,25 @@ public class MemberServiceImpl implements MemberService {
     private final FollowRepository followRepository;
     private final ImageRepository imageRepository;
     private final UploadServiceImpl uploadService;
+    private final S3Uploader uploader;
 
-
-    @Value("${instagram.upload.path}")
-    private String uploadPath;
+//    @Value("${instagram.upload.path}")
+//    private String uploadPath;
 
     @Override
     @Transactional
-    public void changeProfilePicture(MultipartFile uploadFile, Long userId) {
+    public void changeProfilePicture(MultipartFile uploadFile, Long userId) throws IOException {
+
+        String str = LocalDate.now().format(
+                DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+
+        String folderPath = str.replace("/", File.separator);
 
         if (uploadFile == null) {
             log.error("uploadFile is null");
             throw new InvalidFileException("uploadFile is null");
         } else {
-            String fileUrl = uploadService.uploadFile(uploadFile, uploadPath);
+            String fileUrl = uploader.upload(uploadFile, folderPath);
 
             Optional<Member> result = memberRepository.findById(userId);
             if (result.isPresent()) {
@@ -62,6 +71,7 @@ public class MemberServiceImpl implements MemberService {
         Optional<Member> result = memberRepository.findById(userId);
         if (result.isPresent()) {
             Member member = result.get();
+            uploader.delete(member.getProfileImageUrl());
             member.setProfileImageUrl(null);
             memberRepository.save(member);
         } else {

@@ -1,4 +1,4 @@
-package com.example.instagram2.service.serviceImpl;
+package com.example.instagram2.util;
 
 import com.example.instagram2.dto.PasswordDTO;
 import com.example.instagram2.dto.SignupDTO;

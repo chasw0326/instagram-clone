@@ -4,6 +4,9 @@ package com.example.instagram2.controller;
 import com.example.instagram2.security.dto.AuthMemberDTO;
 import com.example.instagram2.exception.ArgumentCheckUtil;
 import com.example.instagram2.service.FollowService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotEmpty;
 
+@Api(tags = "팔로우 컨트롤러")
 @RestController
 @Log4j2
 @RequestMapping("/follow/")
@@ -21,18 +25,20 @@ public class FollowController {
     private final FollowService followService;
     private final ArgumentCheckUtil argumentCheckUtil;
 
+    @ApiOperation(value = "팔로우")
     @PostMapping("{toMemberId}")
     public ResponseEntity<?> follow(@AuthenticationPrincipal AuthMemberDTO authMember,
-                                    @PathVariable Long toMemberId) {
+                                    @ApiParam(value = "팔로우할 사람")@PathVariable Long toMemberId) {
         log.info("follow");
         argumentCheckUtil.existByMemberId(toMemberId);
         followService.follow(authMember.getId(), toMemberId);
         return ResponseEntity.ok().body("follow");
     }
 
+    @ApiOperation(value = "언팔로우")
     @DeleteMapping("{toMemberId}")
     public ResponseEntity<?> unfollow(@AuthenticationPrincipal AuthMemberDTO authMember,
-                                      @PathVariable Long toMemberId){
+                                      @ApiParam(value = "언팔로우할 사람")@PathVariable Long toMemberId){
 
         log.info("unfollow");
         argumentCheckUtil.existByMemberId(toMemberId);

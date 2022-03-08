@@ -8,6 +8,9 @@ import com.example.instagram2.security.dto.AuthMemberDTO;
 import com.example.instagram2.exception.ArgumentCheckUtil;
 import com.example.instagram2.service.FollowService;
 import com.example.instagram2.service.MemberService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Pageable;
@@ -21,9 +24,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 
+import java.io.IOException;
 import java.util.List;
 
 
+@Api(tags = "유저 프로필, 수정 API")
 @RestController
 @Log4j2
 @RequestMapping("/user/")
@@ -34,6 +39,8 @@ public class MemberController {
     private final FollowService followService;
     private final ArgumentCheckUtil argumentCheckUtil;
 
+
+    @ApiOperation(value = "프로필 가져오기")
     @GetMapping("{username}")
     public ResponseEntity<?> getProfile(@PathVariable String username,
                                         @AuthenticationPrincipal AuthMemberDTO authMember) {
@@ -45,11 +52,12 @@ public class MemberController {
     }
 
 
+    @ApiOperation(value = "프로필 사진 변경")
     @PostMapping(value = "/changePicture/{username}",
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> changeProfilePicture(@PathVariable String username,
                                                   @RequestPart MultipartFile imgFile,
-                                                  @AuthenticationPrincipal AuthMemberDTO authMember) throws NoAuthorityException {
+                                                  @AuthenticationPrincipal AuthMemberDTO authMember) throws NoAuthorityException, IOException {
 
         argumentCheckUtil.existByUsername(username);
 
@@ -61,8 +69,10 @@ public class MemberController {
         return ResponseEntity.ok().body("change");
     }
 
+
+    @ApiOperation(value = "프로필 사진 삭제")
     @GetMapping("/deletePicture/{username}")
-    public ResponseEntity<?> delteProfilePicture(@PathVariable String username,
+    public ResponseEntity<?> delteProfilePicture(@ApiParam(value = "사용자이름")@PathVariable String username,
                                                  @AuthenticationPrincipal AuthMemberDTO authMember) throws NoAuthorityException {
 
         argumentCheckUtil.existByUsername(username);
@@ -76,9 +86,10 @@ public class MemberController {
     }
 
 
+    @ApiOperation(value = "팔로워 리스트 가져오기")
     @GetMapping("{username}/followerList")
     public ResponseEntity<?> getFollowerList(@AuthenticationPrincipal AuthMemberDTO authMember,
-                                             @PathVariable String username,
+                                             @ApiParam(value = "사용자이름")@PathVariable String username,
                                              @PageableDefault(
                                                      size = 10,
                                                      sort = "regDate",
@@ -90,9 +101,10 @@ public class MemberController {
 
     }
 
+    @ApiOperation(value = "팔로우 리스트 가져오기")
     @GetMapping("{username}/followList")
     public ResponseEntity<?> getFollowList(@AuthenticationPrincipal AuthMemberDTO authMember,
-                                           @PathVariable String username,
+                                           @ApiParam(value = "사용자 이름")@PathVariable String username,
                                            @PageableDefault(
                                                    size = 10,
                                                    sort = "regDate",

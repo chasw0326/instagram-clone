@@ -157,6 +157,12 @@ public class InsertDummies {
         });
     }
 
+    @Test
+    void du(){
+        Member member = memberRepository.getById(1L);
+        memberRepository.delete(member);
+    }
+
     @Disabled
     @Test
     public void InsertDummyTags(){

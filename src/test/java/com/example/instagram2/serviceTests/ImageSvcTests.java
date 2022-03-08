@@ -28,6 +28,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithUserDetails;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -66,7 +67,7 @@ public class ImageSvcTests {
         @DisplayName("정상적인 사진업로드")
         @Test
         @WithUserDetails(value = "chasw@naver.com")
-        void Should_UploadPicture() {
+        void Should_UploadPicture() throws IOException {
 
             ImageReqDTO dto = ImageReqDTO.builder()
                     .caption("new Caption")

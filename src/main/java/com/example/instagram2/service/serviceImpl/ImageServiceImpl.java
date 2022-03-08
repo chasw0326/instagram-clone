@@ -3,7 +3,6 @@ package com.example.instagram2.service.serviceImpl;
 import com.example.instagram2.dto.ImagesAndTags;
 import com.example.instagram2.dto.ImgReply;
 import com.example.instagram2.entity.Member;
-import com.example.instagram2.entity.Reply;
 import com.example.instagram2.exception.myException.NoAuthorityException;
 import com.example.instagram2.repository.*;
 import com.example.instagram2.service.ImageService;
@@ -13,15 +12,19 @@ import com.example.instagram2.entity.Tag;
 import com.example.instagram2.security.dto.AuthMemberDTO;
 import com.example.instagram2.service.ReplyService;
 import com.example.instagram2.service.UploadService;
+import com.example.instagram2.util.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -37,15 +40,21 @@ public class ImageServiceImpl implements ImageService {
     private final LikesRepository likesRepository;
     private final MemberRepository memberRepository;
     private final ReplyService replyService;
+    private final S3Uploader uploader;
 
-    @Value("${instagram.upload.path}")
-    private String uploadPath;
+//    @Value("${instagram.upload.path}")
+//    private String uploadPath;
 
     @Override
     @Transactional
-    public Long uploadPicture(MultipartFile imgFile, ImageReqDTO imageDTO, AuthMemberDTO authMemberDTO) {
+    public Long uploadPicture(MultipartFile imgFile, ImageReqDTO imageDTO, AuthMemberDTO authMemberDTO) throws IOException {
 
-        String imageUrl = uploadService.uploadFile(imgFile, uploadPath);
+        String str = LocalDate.now().format(
+                DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+
+        String folderPath = str.replace("/", File.separator);
+
+        String imageUrl = uploader.upload(imgFile, folderPath);
         log.info("imageUrl: {}", imageUrl);
         Image image = dtoToEntity(imageDTO, imageUrl, authMemberDTO);
         List<Tag> tags = makeTagList(imageDTO.getTags(), image);
@@ -114,6 +123,7 @@ public class ImageServiceImpl implements ImageService {
         }
         Image image = result.get();
         if(image.getMember().getMno().equals(principalId)){
+            uploader.delete(image.getImageUrl());
             imageRepository.delete(image);
         }else{
             throw new NoAuthorityException("권한이 없습니다.");
@@ -136,5 +146,6 @@ public class ImageServiceImpl implements ImageService {
         }
         return tagList;
     }
+
 
 }

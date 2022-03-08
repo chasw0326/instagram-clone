@@ -7,9 +7,11 @@ import com.example.instagram2.dto.UserEditDTO;
 import com.example.instagram2.entity.Member;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 public interface MemberService {
 
-    void changeProfilePicture(MultipartFile uploadFile, Long userId);
+    void changeProfilePicture(MultipartFile uploadFile, Long userId) throws IOException;
 
     UserProfileRespDTO getUserProfile(String username, Long visitorId) throws IllegalArgumentException;
 

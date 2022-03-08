@@ -10,11 +10,12 @@ import com.example.instagram2.security.dto.AuthMemberDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface ImageService {
 
-    Long uploadPicture(MultipartFile imgFile, ImageReqDTO imageDTO, AuthMemberDTO authMemberDTO);
+    Long uploadPicture(MultipartFile imgFile, ImageReqDTO imageDTO, AuthMemberDTO authMemberDTO) throws IOException;
 
     List<ImagesAndTags> getFeedImageData(Long userId, Pageable pageable);
 

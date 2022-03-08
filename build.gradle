@@ -27,12 +27,16 @@ dependencies {
     // https://mvnrepository.com/artifact/org.qlrm/qlrm
     implementation group: 'org.qlrm', name: 'qlrm', version: '3.0.1'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-    // https://mvnrepository.com/artifact/javax.validation/validation-api
-    //implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.6.3'
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-webflux
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: '2.6.3'
+    // https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui
+    implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'
+    // https://mvnrepository.com/artifact/io.springfox/springfox-boot-starter
+    implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
+    // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-aws
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.5.RELEASE'
     // https://mvnrepository.com/artifact/org.mockito/mockito-core
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.3.1'
     // https://mvnrepository.com/artifact/org.springframework.security/spring-security-test

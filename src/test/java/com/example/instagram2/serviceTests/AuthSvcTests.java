@@ -7,21 +7,13 @@ import com.example.instagram2.entity.Member;
 import com.example.instagram2.exception.myException.DuplicationException;
 import com.example.instagram2.exception.myException.InvalidPasswordException;
 import com.example.instagram2.repository.MemberRepository;
-import com.example.instagram2.service.MemberService;
-import com.example.instagram2.service.serviceImpl.AuthUtil;
+import com.example.instagram2.util.AuthUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Random;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 

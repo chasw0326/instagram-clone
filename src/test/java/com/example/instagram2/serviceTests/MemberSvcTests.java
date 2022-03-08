@@ -10,7 +10,7 @@ import com.example.instagram2.exception.myException.DuplicationException;
 import com.example.instagram2.exception.myException.InvalidFileException;
 import com.example.instagram2.repository.MemberRepository;
 import com.example.instagram2.service.MemberService;
-import com.example.instagram2.service.serviceImpl.AuthUtil;
+import com.example.instagram2.util.AuthUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

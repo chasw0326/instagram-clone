@@ -6,6 +6,9 @@ import com.example.instagram2.exception.myException.NoAuthorityException;
 import com.example.instagram2.security.dto.AuthMemberDTO;
 import com.example.instagram2.exception.ArgumentCheckUtil;
 import com.example.instagram2.service.ReplyService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+
+@Api(tags = "댓글 API")
 @RestController
 @Log4j2
 @RequestMapping("/reply/")
@@ -27,8 +32,10 @@ public class ReplyController {
     private final ReplyService replyService;
     private final ArgumentCheckUtil argumentCheckUtil;
 
+
+    @ApiOperation(value = "모든 댓글 가져오기")
     @GetMapping("{imageId}")
-    public ResponseEntity<?> getAllReply(@PathVariable Long imageId,
+    public ResponseEntity<?> getAllReply(@ApiParam(value = "이미지 id")@PathVariable Long imageId,
                                          @PageableDefault(
                                                  size = 10,
                                                  sort = "regDate",
@@ -42,9 +49,10 @@ public class ReplyController {
         return ResponseEntity.ok().body(dto);
     }
 
+    @ApiOperation(value = "댓글 삭제")
     @DeleteMapping("{imageId}/{replyId}")
-    public ResponseEntity<?> remove(@PathVariable Long imageId,
-                                    @PathVariable Long replyId,
+    public ResponseEntity<?> remove(@ApiParam(value = "이미지 id")@PathVariable Long imageId,
+                                    @ApiParam(value = "댓글 id")@PathVariable Long replyId,
                                     @AuthenticationPrincipal AuthMemberDTO authMember) throws NoAuthorityException {
         log.info("----------remove----------");
         log.info(replyId);
@@ -55,9 +63,10 @@ public class ReplyController {
 
     }
 
+    @ApiOperation(value = "댓글 등록")
     @PostMapping("{imageId}")
-    public ResponseEntity<?> replyRegister(@PathVariable Long imageId,
-                                           @RequestBody @Valid ReplyReqDTO dto,
+    public ResponseEntity<?> replyRegister(@ApiParam(value = "이미지 id")@PathVariable Long imageId,
+                                           @ApiParam(value = "댓글 dto")@RequestBody @Valid ReplyReqDTO dto,
                                            @AuthenticationPrincipal AuthMemberDTO authMember) {
 
         argumentCheckUtil.existByImageId(imageId);

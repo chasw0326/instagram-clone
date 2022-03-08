@@ -7,7 +7,7 @@ import com.example.instagram2.dto.UserEditDTO;
 import com.example.instagram2.entity.Member;
 import com.example.instagram2.exception.myException.InvalidPasswordException;
 import com.example.instagram2.service.MemberService;
-import com.example.instagram2.service.serviceImpl.AuthUtil;
+import com.example.instagram2.util.AuthUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +28,6 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalTime;
-import java.util.UUID;
 
 import static org.mockito.BDDMockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
