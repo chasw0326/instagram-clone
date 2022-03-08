@@ -1,10 +1,9 @@
 # instagram-clone
 
 # 사용한 기술들
-## spring boot, jpa, mariaDB, swagger, jwt
+## spring boot, jpa, mariaDB, swagger, jwt, H2
 
 -----------------------------------------
- /swagger-ui/index.html로 문서화 볼 수 있습니다.
 
  AWS로 배포 했다가 KEY를 노출해 버려서 내림...
 
@@ -18,20 +17,14 @@ Image가 곧 글인데 웹버전 인스타그램에서는 한장씩만 업로드
 
 리소스 파일은
 application.yml 과 aws.yml 두개로 구성했고
-메인함수에 
+배포용인 prod와 개발용인 dev 두개의 profiles.group으로 되어있고 상황에 맞는 것을 사용하시면 됩니다.
 
-@SpringBootApplication
-@EnableJpaAuditing
-public class Instagram2Application {
+- 3/8
+S3 버킷등의 키값들을 올리지 않아서 배포용으로 프로파일을 설정하고 실행하면 실행이되지 않아서
+지금은 로컬용으로 구성되어있습니다.
+S3을 사용하시고 싶으시면 본인의 버킷 키값등을 application.yml에 입력한 뒤 util에서 S3Uploader 주석을 푸시고의 
+MemberServiceImpl 에서 49~52번째, 58, 77번째줄 주석을 푸시고 59번째줄(로컬에 저장하는 코드)를 주석처리 하시면 됩니다.
+ImageServiceImpl 에서도 마찬가지로 53~57번째 , 127번줄 주석을 푸시고 58번째 줄을 주석처리 하시면 됩니다.
 
-    public static final String APPLICATION_LOCATIONS = "spring.config.location="
-            + "classpath:application.yml,"
-            + "classpath:aws.yml";
-
-    public static void main(String[] args) {
-        new SpringApplicationBuilder(Instagram2Application.class)
-                .properties(APPLICATION_LOCATIONS)
-                .run(args);
-    }
-    
-   다음과 같이 추가하셔야 합니다.
+mariaDB로 개발했지만 누군가 파일을 받고 실행하면 제 db아이디가 제공되지 않기 때문에 실행이 안 돼서, H2로 변경했습니다.
+다운받고 localhost:8080/swagger-ui/index.html에서 문서화 볼 수 있습니다.
