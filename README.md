@@ -1,8 +1,9 @@
 # instagram-clone
 
-# 기술스택
-# Spring Boot, JPA, AWS, SWAGGER
+# 사용한 기술들
+spring boot, jpa, mariaDB, swagger, jwt
 
+# -----------------------------------------
  /swagger-ui/index.html로 문서화 볼 수 있습니다.
 
  AWS로 배포 했다가 KEY를 노출해 버려서 내림...
@@ -12,6 +13,8 @@ Image가 곧 글인데 웹버전 인스타그램에서는 한장씩만 업로드
 저도 사진 한장씩만 업로드 가능하게 했습니다.
 
 로그인은 컨트롤러가 아니라 필터에 만들었습니다.
+
+인증은 jwt를 사용합니다.
 
 리소스 파일은
 application.yml 과 aws.yml 두개로 구성했고
