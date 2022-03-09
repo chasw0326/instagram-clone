@@ -12,11 +12,14 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
+/**<strong>구현클래스에 문서화</strong><br>
+ * {@link com.example.instagram2.service.serviceImpl.ReplyServiceImpl}
+ */
 public interface ReplyService {
 
     Long register(ReplyReqDTO replyReqDTO, AuthMemberDTO authMember);
 
-    List<ReplyReqDTO> getList(Long ino, Pageable pageable);
+    List<ReplyReqDTO> getReplyList(Long ino, Pageable pageable);
 
     List<ImgReply> get3Replies(Long ino);
 

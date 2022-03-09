@@ -11,6 +11,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+
+/**
+ * <code>TagService</code><br>
+ * 태그에 관련된 서비스
+ *
+ * @author chasw326
+ */
 @Service
 @Log4j2
 @RequiredArgsConstructor
@@ -18,6 +25,11 @@ public class TagServiceImpl implements TagService {
 
     private final TagRepository tagRepository;
 
+    /**
+     * 태그 리스트를 가져옴
+     * @param imageId
+     * @return
+     */
     @Override
     @Transactional
     public List<Tag> getTags(Long imageId){

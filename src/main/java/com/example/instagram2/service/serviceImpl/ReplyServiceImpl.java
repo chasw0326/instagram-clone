@@ -19,6 +19,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * <code>ReplyService</code><br>
+ * 멤버에 관련된 서비스
+ *
+ * @author chasw326
+ */
 @Service
 @Log4j2
 @RequiredArgsConstructor
@@ -26,6 +32,13 @@ public class ReplyServiceImpl implements ReplyService {
 
     private final ReplyRepository repository;
 
+    /**
+     * 댓글 등록
+     * @param dto (dto with 댓글 내용)
+     * @see com.example.instagram2.dto.ReplyReqDTO
+     * @param authMember (로그인한 유저)
+     * @return 댓글id
+     */
     @Override
     @Transactional
     public Long register(ReplyReqDTO dto, AuthMemberDTO authMember) {
@@ -35,9 +48,16 @@ public class ReplyServiceImpl implements ReplyService {
         return reply.getRno();
     }
 
+    /**
+     * 글에 등록된 댓글 리스트들 가져오기<br>
+     * 등록시간기준 오름차순으로
+     * @param ino
+     * @param pageable
+     * @return
+     */
     @Override
     @Transactional
-    public List<ReplyReqDTO> getList(Long ino, Pageable pageable) {
+    public List<ReplyReqDTO> getReplyList(Long ino, Pageable pageable) {
         log.info("imageId: {}의 댓글들", ino);
         Image image = Image.builder()
                 .ino(ino)
@@ -47,6 +67,13 @@ public class ReplyServiceImpl implements ReplyService {
         return result.stream().map(reply -> entityToDTO(reply)).collect(Collectors.toList());
     }
 
+    /**
+     * 댓글 지우기
+     * @param rno
+     * @param userId
+     * 본인이 아니면 예외던짐
+     * @throws NoAuthorityException
+     */
     @Override
     @Transactional(rollbackFor = {NoAuthorityException.class})
     public void remove(Long rno, Long userId) throws NoAuthorityException {
@@ -61,6 +88,14 @@ public class ReplyServiceImpl implements ReplyService {
         }
     }
 
+    /**
+     * 피드에서는 전체 댓글 가져오기엔 너무 리소스가 크기때문에<br>
+     * 최근에 등록된 댓글 3개를 가져온다.<br>
+     * 댓글 전체를 보려면 댓글 더보기를 통해 나머지 댓글들도 가져온다.
+     * @see com.example.instagram2.controller.ReplyController#getAllReply(Long, Pageable)
+     * @param ino
+     * @return
+     */
     @Override
     @Transactional
     public List<ImgReply> get3Replies(Long ino){

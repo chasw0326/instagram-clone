@@ -21,7 +21,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-
+/**
+ * <code>AuthController</code><br>
+ * 회원가입, 비밀번호 변경등 중요한 정보들 처리
+ * @author chasw326
+ */
 @Api(tags = "댓글 API")
 @RestController
 @Log4j2
@@ -33,6 +37,12 @@ public class ReplyController {
     private final ArgumentCheckUtil argumentCheckUtil;
 
 
+    /**
+     * 댓글 더보기 누르면 모든 댓글 가져옴
+     * @param imageId
+     * @param pageable
+     * @return
+     */
     @ApiOperation(value = "모든 댓글 가져오기")
     @GetMapping("{imageId}")
     public ResponseEntity<?> getAllReply(@ApiParam(value = "이미지 id")@PathVariable Long imageId,
@@ -45,7 +55,7 @@ public class ReplyController {
 
         argumentCheckUtil.existByImageId(imageId);
         log.info("imageId: {}", imageId);
-        List<ReplyReqDTO> dto = replyService.getList(imageId, pageable);
+        List<ReplyReqDTO> dto = replyService.getReplyList(imageId, pageable);
         return ResponseEntity.ok().body(dto);
     }
 

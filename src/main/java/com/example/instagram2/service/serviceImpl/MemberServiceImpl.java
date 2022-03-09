@@ -11,9 +11,11 @@ import com.example.instagram2.repository.FollowRepository;
 import com.example.instagram2.repository.ImageRepository;
 import com.example.instagram2.repository.MemberRepository;
 import com.example.instagram2.service.MemberService;
+import com.example.instagram2.service.UploadService;
 import com.example.instagram2.util.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,36 +27,61 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
-
+/**
+ * <code>MemberService</code><br>
+ * 멤버에 관련된 서비스
+ *
+ * @author chasw326
+ */
 @Service
 @Log4j2
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
+    /**
+     * 현재는 로컬에 저장하게 코드가 구성되어 있고, <br>
+     * <Strong>S3Uploader</Strong>를 사용하고 싶으면 아래 주석들을 풀어주셔야 합니다. <br>
+     * S3을 사용하기 위한건 'S3' 주석으로 <br>
+     * 로컬을 사용하기 위한건 'local' 주석으로 표기하겠습니다.
+     *
+     * @see com.example.instagram2.util.S3Uploader
+     */
     private final MemberRepository memberRepository;
     private final FollowRepository followRepository;
     private final ImageRepository imageRepository;
-    private final UploadServiceImpl uploadService;
-    private final S3Uploader uploader;
+    private final UploadService uploadService;
+    // s3
+//    private final S3Uploader uploader;
 
-//    @Value("${instagram.upload.path}")
-//    private String uploadPath;
+    // local
+    @Value("${instagram.upload.path}")
+    private String uploadPath;
 
+    /**
+     * 프로필 사진 변경<br>
+     * 현재는 로컬에 저장하는 방식이고 S3을 사용하기 위해선 <br>
+     * S3주석을 푸시고 local에 저장하는 코드를 주석처리 해주셔야 합니다.
+     * @param uploadFile (업로드 파일)
+     * @param userId (프로필 사진 변경할 유저id)
+     * @throws IOException
+     */
     @Override
     @Transactional
     public void changeProfilePicture(MultipartFile uploadFile, Long userId) throws IOException {
-
-        String str = LocalDate.now().format(
-                DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-
-        String folderPath = str.replace("/", File.separator);
-
+// -------------------------------- s3 ---------------------------------------
+//        String str = LocalDate.now().format(
+//                DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+//
+//        String folderPath = str.replace("/", File.separator);
+// -------------------------------- s3 ---------------------------------------
         if (uploadFile == null) {
             log.error("uploadFile is null");
             throw new InvalidFileException("uploadFile is null");
         } else {
-            String fileUrl = uploader.upload(uploadFile, folderPath);
-
+            // -------------------------------- s3 ---------------------------------------
+//            String fileUrl = uploader.upload(uploadFile, folderPath);
+            String fileUrl = uploadService.uploadFile(uploadFile, uploadPath);
+            // -------------------------------- s3 ---------------------------------------
             Optional<Member> result = memberRepository.findById(userId);
             if (result.isPresent()) {
                 Member member = result.get();
@@ -64,6 +91,11 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+    /**
+     * 프로필사진 삭제
+     * @param userId
+     * S3을 사용하기 위해선 s3 주석을 풀어주세요
+     */
     @Override
     @Transactional(rollbackFor = {IllegalArgumentException.class})
     public void deleteProfilePicture(Long userId) {
@@ -71,7 +103,8 @@ public class MemberServiceImpl implements MemberService {
         Optional<Member> result = memberRepository.findById(userId);
         if (result.isPresent()) {
             Member member = result.get();
-            uploader.delete(member.getProfileImageUrl());
+
+//            uploader.delete(member.getProfileImageUrl());         // s3
             member.setProfileImageUrl(null);
             memberRepository.save(member);
         } else {
@@ -79,6 +112,12 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+    /**
+     * 유저info 가져오기
+     * @param userId
+     * @return
+     * @see com.example.instagram2.dto.UserEditDTO
+     */
     @Override
     @Transactional(rollbackFor = {IllegalArgumentException.class})
     public UserEditDTO getMemberInfo(Long userId) {
@@ -92,6 +131,12 @@ public class MemberServiceImpl implements MemberService {
         return dto;
     }
 
+    /**
+     * 비밀번호 변경 GET으로 요청하면<br>
+     * 사용자 이름과 프로필사진을 보내준다.
+     * @param userId
+     * @return
+     */
     @Override
     @Transactional
     public PasswordDTO getProfileImgUrlAndUsernameById(Long userId) {
@@ -106,6 +151,14 @@ public class MemberServiceImpl implements MemberService {
                 .build();
     }
 
+    /**
+     * 유저정보 수정<br>
+     * <strong>이메일은 ReadOnly로 처리해 주세요</strong><br>
+     * 사용자이름을 변경한다면 중복체크를 합니다. (바꾸지 않으면 하지 않음)
+     * @param userId
+     * @param dto
+     * @see com.example.instagram2.dto.UserEditDTO
+     */
     // 이메일은 readOnly로 해주세요
     @Override
     @Transactional(rollbackFor = DuplicationException.class)
@@ -125,6 +178,16 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+    /**
+     * 방문하는 페이지 멤버의 정보를 가져온다.<br>
+     * 나랑 팔로우했는지 누굴 팔로우 했는지 누가 팔로우 했는지<br>
+     * 본인이 본인 페이지 들어갔는지 이미지갯수는 몇개인지 이미지리스트 url 등등
+     * @param username (페이지 멤버)
+     * @param visitorId (방문자)
+     * @return
+     * @see com.example.instagram2.dto.UserProfileRespDTO
+     * @throws IllegalArgumentException
+     */
     @Override
     @Transactional(readOnly = true, rollbackFor = {IllegalArgumentException.class})
     public UserProfileRespDTO getUserProfile(String username, Long visitorId) throws IllegalArgumentException {
@@ -143,7 +206,6 @@ public class MemberServiceImpl implements MemberService {
         boolean dtoFollowState;
         boolean myself;
 
-//        UserProfileRespDTO userProfileRespDTO = new UserProfileRespDTO();
         // 본인이 본인 사이트 들어갔을 경우
         if (mno.equals(visitorId)) {
             dtoFollowState = false;
@@ -171,6 +233,11 @@ public class MemberServiceImpl implements MemberService {
         return dto;
     }
 
+    /**
+     * 프로필 이미지 가져오기
+     * @param userId
+     * @return
+     */
     @Override
     @Transactional(readOnly = true)
     public String getProfileImg(Long userId) {
@@ -178,6 +245,11 @@ public class MemberServiceImpl implements MemberService {
     }
 
 
+    /**
+     * 유저네임으로 멤버 아이디 가져오기
+     * @param username
+     * @return 멤버id
+     */
     @Override
     @Transactional(readOnly = true, rollbackFor = {IllegalArgumentException.class})
     public Long getMemberIdByUsername(String username) {

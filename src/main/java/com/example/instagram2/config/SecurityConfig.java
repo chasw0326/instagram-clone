@@ -59,20 +59,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final String[] excludePaths =
             new String[]{
-                    "/accounts/signup", "/login", "/v2/api-docs",
-                    "/configuration/ui", "/swagger-resources",
-                    "/configuration/security", "/swagger-ui.html",
+                    "/accounts/signup", "/login", "/v3/api-docs",
+                    "/configuration/ui", "/swagger-resources/**",
+                    "/configuration/security", "/swagger-ui/**",
                     "/webjars/**", "/swagger/**",
-                    "/static/css/**, /static/js/**, *.ico"};
+                    "/static/css/**", "/static/js/**", "/favicon.ico"};
 
     @Bean
     public ApiCheckFilter apiCheckFilter() {
-        return new ApiCheckFilter("/**", new String[]{
-                "/accounts/signup", "/login", "/v3/api-docs",
-                "/configuration/ui", "/swagger-resources/**",
-                "/configuration/security", "/swagger-ui/**",
-                "/webjars/**", "/swagger/**",
-                "/static/css/**", "/static/js/**", "/favicon.ico"}, jwtUtil());
+        return new ApiCheckFilter("/**", excludePaths, jwtUtil());
     }
 
     @Bean

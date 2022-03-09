@@ -16,6 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * <code>FollowService</code><br>
+ * 팔로우에 관련된 서비스
+ * @author chasw326
+ */
 @Service
 @Log4j2
 @RequiredArgsConstructor
@@ -24,6 +30,13 @@ public class FollowServiceImpl implements FollowService {
     private final FollowRepository followRepository;
     private final MemberRepository memberRepository;
 
+    /**
+     * 내가 방문한 페이지 멤버의 팔로워리스트를 가져온다.
+     * @param visitorId (방문자 아이디)
+     * @param pageMemberName (방문한 페이지의 소유자)
+     * @param pageable
+     * @return 팔로워정보들(사진, 사용자이름, 나와의 팔로우관계)
+     */
     @Override
     @Transactional(readOnly = true)
     public List<FollowRespDTO> getFollowerList(Long visitorId,
@@ -39,6 +52,13 @@ public class FollowServiceImpl implements FollowService {
 
     }
 
+    /**
+     * 내가 방문한 페이지 멤버의 팔로우리스트를 가져온다.
+     * @param visitorId (방문자 아이디)
+     * @param pageMemberName (방문한 페이지의 소유자)
+     * @param pageable
+     * @return 팔로우정보들(사진, 사용자이름, 나와의 팔로우관계)
+     */
     @Override
     @Transactional(readOnly = true)
     public List<FollowRespDTO> getFollowList(Long visitorId,
@@ -51,6 +71,13 @@ public class FollowServiceImpl implements FollowService {
         return getEachFollowState(visitorId, result);
     }
 
+    /**
+     * 페이지 멤버의 팔로워리스트와 팔로우리스트의 목록에서 <br>
+     * 나와의 팔로우 관계를 파악한다.
+     * @param visitorId (방문자 아이디)
+     * @param followData (팔로우 데이터; 유저pk, 사용자이름, 프로필사진)
+     * @return 팔로우정보들(사진, 사용자이름, 나와의 팔로우관계)
+     */
     @Override
     @Transactional(readOnly = true)
     public List<FollowRespDTO> getEachFollowState(Long visitorId, List<Object[]> followData) {
@@ -80,6 +107,11 @@ public class FollowServiceImpl implements FollowService {
     }
 
 
+    /**
+     * 팔로우 하기
+     * @param fromMemberId (팔로우 하는 사람)
+     * @param toMemberId (팔로우 당하는 사람)
+     */
     @Override
     @Transactional
     public void follow(Long fromMemberId, Long toMemberId) {
@@ -100,6 +132,11 @@ public class FollowServiceImpl implements FollowService {
         }
     }
 
+    /**
+     * 언팔로우 하기
+     * @param fromMemberId (팔로우 하는 사람)
+     * @param toMemberId (팔로우 당하는 사람)
+     */
     @Override
     @Transactional
     public void unFollow(Long fromMemberId, Long toMemberId) {

@@ -10,13 +10,32 @@ import lombok.extern.log4j.Log4j2;
 import java.time.ZonedDateTime;
 import java.util.Date;
 
+/**
+ * <code>JWTUtil</code><br>
+ * json web token 발급, 검증
+ * @author chasw326
+ */
 @Log4j2
 public class JWTUtil {
 
+    /**
+     * 임의의 비밀키
+     */
     private final String SECRET_KEY = "q1!w2@e3#r4$t5%";
 
+    /**
+     * 유효기간 (30일)
+     */
     private final long EXPIRE = 60 * 24 * 30;
 
+    /**
+     * 토큰 발급
+     * username은 변경가능 하기 때문에 적합하지 않다 생각했고<br>
+     * 변하지 않는 email로 토큰을 생성합니다.
+     * @param content 이메일
+     * @return jwt
+     * @throws Exception
+     */
     public String generateToken(String content) throws Exception {
 
         return Jwts.builder()
@@ -27,6 +46,11 @@ public class JWTUtil {
                 .compact();
     }
 
+    /**
+     * @param tokenStr (토큰)
+     * 검증하고 추출합니다.
+     * @return email
+     */
     public String validateAndExtract(String tokenStr) throws Exception {
 
         String contentValue = null;

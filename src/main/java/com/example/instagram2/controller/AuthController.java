@@ -20,6 +20,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+/**
+ * <code>AuthController</code><br>
+ * 회원가입, 비밀번호 변경등 중요한 정보들 처리
+ * @author chasw326
+ */
 @Api(tags = "회원정보 API")
 @RestController
 @Log4j2
@@ -31,6 +36,12 @@ public class AuthController {
     private final MemberService memberService;
     private final ArgumentCheckUtil argumentCheckUtil;
 
+    /**
+     * 이메일, 사용자이름, 비밀번호를 보내주세요. <br>
+     * valid로 유효한지 체크합니다.
+     * @param signUpDTO
+     * @return
+     */
     @ApiOperation(value = "회원가입")
     @PostMapping("signup")
     public ResponseEntity<?> registerUser(@ApiParam(value = "가입할때 보내줄 정보") @RequestBody @Valid SignupDTO signUpDTO) {
@@ -40,6 +51,11 @@ public class AuthController {
         return ResponseEntity.ok().body(respUserDTO);
     }
 
+    /**
+     * 비밀번호 변경화면에 필요한 정보들을 보내줍니다.
+     * @param authMember
+     * @return
+     */
     @ApiOperation(value = "비밀번호 변경화면 정보")
     @GetMapping("password/change")
     public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal AuthMemberDTO authMember) {
@@ -48,6 +64,14 @@ public class AuthController {
         return ResponseEntity.ok().body(dto);
     }
 
+    /**
+     * 현재비밀번호, 바꿀비밀번호, 체크비밀번호를 보내주세요.
+     * 비밀번호 강도를 체크합니다.
+     * @param passwordDTO
+     * @param authMember
+     * @return
+     * @throws InvalidPasswordException
+     */
     @ApiOperation(value = "비밀번호 변경")
     @PostMapping("password/change")
     public ResponseEntity<?> changePassword(@ApiParam(value = "비밀번호 변경값들")@RequestBody @Valid PasswordDTO passwordDTO,
@@ -59,6 +83,12 @@ public class AuthController {
 
     }
 
+    /**
+     * 유저정보 변경화면에 필요한 값들을 보내줍니다.<br>
+     * <strong>중요! 받은 값들 중에 email은 ReadOnly로 해주세요.</strong>
+     * @param authMember
+     * @return
+     */
     @ApiOperation(value = "유저 정보 변경화면")
     @GetMapping("edit")
     public ResponseEntity<?> edit(@AuthenticationPrincipal AuthMemberDTO authMember) {
@@ -66,7 +96,14 @@ public class AuthController {
         return ResponseEntity.ok().body(dto);
     }
 
-
+    /**
+     * UserEditDTO를 참조해서 유저 정보 변경값들을 보내주세요.
+     * @param dto
+     * @param authMember
+     * @return
+     * @see com.example.instagram2.dto.UserEditDTO
+     *
+     */
     @ApiOperation(value = "유저 정보 변경")
     @PutMapping("edit")
     public ResponseEntity<?> modifyProfile(@ApiParam(value = "유저 정보 변경 값")@RequestBody @Valid UserEditDTO dto,
@@ -76,6 +113,11 @@ public class AuthController {
         return ResponseEntity.ok().body("modify");
     }
 
+    /**
+     * 중복로그인을 방지합니다.
+     * @param authMember
+     * @return
+     */
     @ApiOperation(value = "중복로그인 방지")
     @GetMapping("login")
     public ResponseEntity<?> login(@AuthenticationPrincipal AuthMemberDTO authMember) {

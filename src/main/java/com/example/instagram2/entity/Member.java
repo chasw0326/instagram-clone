@@ -15,13 +15,14 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@ToString //(exclude = {"roleSet"})
+@ToString
 public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long mno;
 
+    // 중복 허용 x
     @Column(length = 40, unique = true)
     private String username;
 
@@ -32,6 +33,7 @@ public class Member extends BaseEntity {
 
     private String website;
 
+    // 자기소개
     private String intro;
 
     @Column(unique = true)
@@ -40,6 +42,7 @@ public class Member extends BaseEntity {
     @Column(unique = true)
     private String phoneNum;
 
+    // 남성 or 여성
     private String gender;
 
     private String profileImageUrl;
@@ -51,6 +54,10 @@ public class Member extends BaseEntity {
     @JsonIgnore
     private Set<MemberRole> roleSet = new HashSet<>();
 
+    /**
+     * 역할을 변경하는 것이 아니라 추가하는 식으로 구현
+     * @param memberRole
+     */
     public void addMemberRole(MemberRole memberRole) {
         roleSet.add(memberRole);
     }

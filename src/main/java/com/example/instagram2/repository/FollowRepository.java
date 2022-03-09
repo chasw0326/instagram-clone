@@ -12,6 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface FollowRepository extends JpaRepository<Follow, Long> {
 
+
+    /**
+     * 팔로워 pk, 팔로워이름, 팔로워 사진 페이징처리 후 가져옵니다.
+     * @param toUsername
+     * @param pageable
+     * @return
+     */
     @Transactional
     @Query(value ="SELECT m.mno, m.username, m.profileImageUrl " +
             "FROM Member m " +
@@ -21,6 +28,12 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
             countQuery = "SELECT COUNT(m) FROM Member m")
     Page<Object[]> getFollowerData(@Param("toUsername") String toUsername, Pageable pageable);
 
+    /**
+     * 팔로우 pk, 팔로우이름, 팔로우 사진 페이징처리 후 가져옵니다.
+     * @param username
+     * @param pageable
+     * @return
+     */
     @Transactional
     @Query(value ="SELECT m.mno, m.username, m.profileImageUrl " +
             "FROM Member m " +

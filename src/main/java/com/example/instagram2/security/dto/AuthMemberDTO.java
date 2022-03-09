@@ -17,12 +17,18 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * <code>AuthMemberDTO</code><br>
+ * jwt확인 후 인증유저로 바꿔줍니다.
+ * @author chasw326
+ */
 @Log4j2
 @Getter
 @Setter
 @ToString
 public class AuthMemberDTO extends User implements OAuth2User {
 
+    // User, OAuth2User의 username 으로 email을 사용한다.
     private String email;
 
     private String password;
@@ -35,6 +41,15 @@ public class AuthMemberDTO extends User implements OAuth2User {
 
     private Map<String, Object> attr;
 
+    /**
+     * 소셜로그인 -> 인증유저
+     * @param username email
+     * @param password
+     * @param fromSocial
+     * @param authorities
+     * @param id
+     * @param attr 소셜로그인 정보들
+     */
     public AuthMemberDTO(
             String username,
             String password,
@@ -47,6 +62,14 @@ public class AuthMemberDTO extends User implements OAuth2User {
         this.attr = attr;
     }
 
+    /**
+     * 일반로그인 -> 인증유저
+     * @param username email
+     * @param password
+     * @param fromSocial
+     * @param authorities
+     * @param id
+     */
     public AuthMemberDTO(
             String username,
             String password,
@@ -61,18 +84,10 @@ public class AuthMemberDTO extends User implements OAuth2User {
         this.id = id;
     }
 
-//    public AuthMemberDTO(
-//            Member member,
-//            String username,
-//            String password,
-//            boolean fromSocial,
-//            Collection<? extends GrantedAuthority> authorities,) {
-//
-//        super(username, password, authorities);
-//        this.member = member;
-//        this.fromSocial = fromSocial;
-//    }
-
+    /**
+     * 소셜 로그인 정보들
+     * @return
+     */
     @Override
     public Map<String, Object> getAttributes() {
         return this.attr;

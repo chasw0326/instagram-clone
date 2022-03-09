@@ -14,6 +14,11 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * <code>InstaUserDetailsService</code><br>
+ * 인증받은 유저를 만들어 줍니다.
+ * @author chasw326
+ */
 @Service
 @Log4j2
 @RequiredArgsConstructor
@@ -21,6 +26,13 @@ public class InstaUserDetailsService implements UserDetailsService {
 
     private final MemberRepository repository;
 
+    /**
+     * AuthMemberDTO로 변환합니다.
+     * @param username email
+     * @return AuthMemberDTO
+     * @see com.example.instagram2.security.dto.AuthMemberDTO
+     * @throws UsernameNotFoundException
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
         log.info("Login in progress..................");

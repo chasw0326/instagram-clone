@@ -14,6 +14,12 @@ import java.util.List;
 
 public interface ImageRepository extends JpaRepository<Image, Long> {
 
+    /**
+     * 페이징 처리해서 피드 이미지들을 가져온다
+     * @param userId
+     * @param pageable
+     * @return
+     */
     @EntityGraph(attributePaths = {"member"}, type = EntityGraph.EntityGraphType.LOAD)
     @Query("SELECT i FROM Image i WHERE i.member.mno " +
             "IN (SELECT f.toMember.mno FROM Follow f WHERE f.fromMember.mno = :userId) " +

@@ -78,7 +78,7 @@ public class ReplyControllerTests {
         Long imageId = 100L;
         Pageable pageable = PageRequest.of(0, 10, Sort.by("regDate").descending());
         doNothing().when(mockArgumentCheckUtil).existByImageId(imageId);
-        given(mockReplyService.getList(imageId, pageable)).willReturn(null);
+        given(mockReplyService.getReplyList(imageId, pageable)).willReturn(null);
 
         webTestClient.get().uri("/reply/{imageId}", imageId)
                 .headers(http -> http.setBearerAuth(token))

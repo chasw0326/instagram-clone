@@ -7,7 +7,6 @@ import com.example.instagram2.exception.myException.NoAuthorityException;
 import com.example.instagram2.repository.ReplyRepository;
 import com.example.instagram2.security.dto.AuthMemberDTO;
 import com.example.instagram2.service.ReplyService;
-import com.example.instagram2.service.serviceImpl.ReplyServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,7 +78,7 @@ public class ReplySvcTests {
     void Should_GetReplyList(){
         PageRequest pageRequest = PageRequest.of(0, 10);
 
-        List<ReplyReqDTO> reqDTOS = replyService.getList(8L, pageRequest);
+        List<ReplyReqDTO> reqDTOS = replyService.getReplyList(8L, pageRequest);
         for(ReplyReqDTO dto : reqDTOS){
             System.out.println(dto);
         }

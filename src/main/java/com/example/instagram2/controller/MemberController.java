@@ -27,7 +27,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
-
+/**
+ * <code>AuthController</code><br>
+ * 회원가입, 비밀번호 변경등 중요한 정보들 처리
+ * @author chasw326
+ */
 @Api(tags = "유저 프로필, 수정 API")
 @RestController
 @Log4j2

@@ -32,9 +32,11 @@ public class Image extends BaseEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
+    // 필요할때 likes 에서 값을 가져와서 넣어줌
     @Transient
     private Long likeCnt;
 
+    // 내가 좋아요를 했는지 안 했는지 알려줌
     @Transient
     private boolean likeState;
 

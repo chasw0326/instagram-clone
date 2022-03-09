@@ -9,6 +9,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+/**<strong>구현클래스에 문서화</strong><br>
+ * {@link com.example.instagram2.service.serviceImpl.MemberServiceImpl}
+ */
 public interface MemberService {
 
     void changeProfilePicture(MultipartFile uploadFile, Long userId) throws IOException;

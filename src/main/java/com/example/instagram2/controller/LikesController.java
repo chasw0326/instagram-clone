@@ -12,6 +12,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * <code>AuthController</code><br>
+ * 회원가입, 비밀번호 변경등 중요한 정보들 처리
+ * @author chasw326
+ */
 @Api(tags = "좋아요 API")
 @RestController
 @Log4j2

@@ -13,7 +13,8 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Entity
-@ToString
+@ToString(exclude = {"fromMember", "toMember"})
+// UK 제약조건을 추가해서 한 번만 팔로우 가능하게...
 @Table(uniqueConstraints = {@UniqueConstraint(
         name = "follow_uk",
         columnNames = {"fromMember", "toMember"}

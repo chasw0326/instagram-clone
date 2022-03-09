@@ -20,6 +20,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+
+/**
+ * <code>ApiCheckFilter</code><br>
+ * jwt를 체크하는 필터입니다.
+ * @author chasw326
+ */
 @Log4j2
 public class ApiCheckFilter extends OncePerRequestFilter {
 
@@ -31,6 +37,12 @@ public class ApiCheckFilter extends OncePerRequestFilter {
     @Autowired
     private InstaUserDetailsService userDetailsService;
 
+    /**
+     * 체크할 경로와 제외할 경로를 지정할 수 있습니다.
+     * @param pattern jwt체크할 경로패턴
+     * @param excludes jwt체크제외할 경로패턴
+     * @param jwtUtil
+     */
     public ApiCheckFilter(String pattern, String[] excludes, JWTUtil jwtUtil) {
         this.antPathMatcher = new AntPathMatcher();
         this.pattern = pattern;
@@ -38,6 +50,15 @@ public class ApiCheckFilter extends OncePerRequestFilter {
         this.excludes = excludes;
     }
 
+    /**
+     * 토큰 확인후 SecurityContextHolder에 담습니다.<br>
+     * 실패하면 에러 메세지를 보내줍니다. (403, FAIL CHECK API TOKEN)
+     * @param request
+     * @param response
+     * @param filterChain
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -65,6 +86,7 @@ public class ApiCheckFilter extends OncePerRequestFilter {
 
             String email = checkAuthHeader(request);
 
+            // 올바른 jwt
             if (email.length() > 0) {
                 UserDetails principal = userDetailsService.loadUserByUsername(email);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
@@ -73,7 +95,7 @@ public class ApiCheckFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 filterChain.doFilter(request, response);
                 return;
-            } else {
+            } else { // 올바르지 않은 jwt
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 response.setContentType("application/json;charset=utf-8");
                 JSONObject json = new JSONObject();
@@ -89,6 +111,11 @@ public class ApiCheckFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    /**
+     * 헤더의 jwt를 체크합니다.
+     * @param request
+     * @return
+     */
     private String checkAuthHeader(HttpServletRequest request) {
 
         String email = "";

@@ -11,6 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * <code>ReplyService</code><br>
+ * 멤버에 관련된 서비스
+ *
+ * @author chasw326
+ */
 @Service
 @Log4j2
 @RequiredArgsConstructor
@@ -18,6 +24,11 @@ public class SearchServiceImpl {
 
     private final MemberRepository memberRepository;
 
+    /**
+     * 아직 미구현<br>
+     * 사용자이름이나 자기소개에서 검색합니다.
+     * @param keyword (검색키워드)
+     */
     @Transactional
     public void search(String keyword){
         List<Member> members = memberRepository.findMembersSearch(keyword);

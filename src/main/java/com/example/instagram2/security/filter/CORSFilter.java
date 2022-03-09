@@ -11,11 +11,24 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-
+/**
+ * <code>CORSFilter</code><br>
+ * 가장 우선순위로 작동하는 필터
+ * @author chasw326
+ */
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class CORSFilter extends OncePerRequestFilter {
 
+    /**
+     * 현재는 모든 경로 허용<br>
+     * 모든 메서드 허용
+     * @param request
+     * @param response
+     * @param filterChain
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,

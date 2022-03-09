@@ -18,6 +18,11 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * <code>InstaOAuth2UserDetailsService</code><br>
+ * 인증받은 소셜로그인 유저를 만들어 줍니다.
+ * @author chasw326
+ */
 @Service
 @Log4j2
 @RequiredArgsConstructor
@@ -27,6 +32,14 @@ public class InstaOAuth2UserDetailsService extends DefaultOAuth2UserService {
 
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * 현재는 구글만 지원합니다.<br>
+     * AuthMemberDTO로 변환합니다.
+     * @param userRequest
+     * @return AuthMemberDTO
+     * @see com.example.instagram2.security.dto.AuthMemberDTO
+     * @throws OAuth2AuthenticationException
+     */
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         log.info("------------------------------------");
@@ -69,6 +82,13 @@ public class InstaOAuth2UserDetailsService extends DefaultOAuth2UserService {
         return authMember;
     }
 
+    /**
+     * 이미 존재하면 존재하는 값을 가져옵니다.<br>
+     * 비밀번호 1111로 가입하고, LoginSuccessHandler에서<br>
+     * 회원정보 및 비밀번호 수정 화면으로 redirect 할 것입니다.
+     * @param email
+     * @return Member
+     */
     private Member saveSocialMember(String email) {
         Optional<Member> result = repository.findByEmailAndSocial(email, true);
 
@@ -77,6 +97,7 @@ public class InstaOAuth2UserDetailsService extends DefaultOAuth2UserService {
         }
 
         String uuid = UUID.randomUUID().toString();
+        uuid = uuid.substring(1,15);
         Member member = Member.builder()
                 .email(email)
                 .username(uuid)

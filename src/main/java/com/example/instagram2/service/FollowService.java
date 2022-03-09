@@ -7,6 +7,9 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
+/**<strong>구현클래스에 문서화</strong><br>
+ * {@link com.example.instagram2.service.serviceImpl.FollowServiceImpl}
+ */
 public interface FollowService {
 
     List<FollowRespDTO> getFollowList(Long visitorId,

@@ -15,6 +15,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotEmpty;
 
+/**
+ * <code>FollowController</code><br>
+ * 팔로우에 대한 컨트롤러
+ * @author chasw326
+ */
 @Api(tags = "팔로우 컨트롤러")
 @RestController
 @Log4j2
@@ -25,6 +30,14 @@ public class FollowController {
     private final FollowService followService;
     private final ArgumentCheckUtil argumentCheckUtil;
 
+    /**
+     * 팔로우할 멤버가 존재하는지 확인하고, <br>
+     * 팔로우를 합니다.
+     * @param authMember
+     * @param toMemberId
+     * @return 200 or 400 <br>
+     * 400은 exceptionHandler에서 보냅니다.
+     */
     @ApiOperation(value = "팔로우")
     @PostMapping("{toMemberId}")
     public ResponseEntity<?> follow(@AuthenticationPrincipal AuthMemberDTO authMember,
@@ -35,6 +48,14 @@ public class FollowController {
         return ResponseEntity.ok().body("follow");
     }
 
+    /**
+     * 언팔로우할 멤버가 존재하는지 확인하고, <br>
+     * 언팔로우를 합니다.
+     * @param authMember
+     * @param toMemberId
+     * @return 200 or 400 <br>
+     * 400은 exceptionHandler에서 보냅니다.
+     */
     @ApiOperation(value = "언팔로우")
     @DeleteMapping("{toMemberId}")
     public ResponseEntity<?> unfollow(@AuthenticationPrincipal AuthMemberDTO authMember,

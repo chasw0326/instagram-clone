@@ -15,7 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-
+/**
+ * <code>AuthUtil</code><br>
+ * 비밀번호, 회원가입등 중요한 서비스들 <br>
+ * 설정파일에 bean으로 등록함
+ * @author chasw326
+ */
 @Log4j2
 public class AuthUtil {
 
@@ -31,6 +36,13 @@ public class AuthUtil {
         this.passwordUtil = passwordUtil;
     }
 
+    /**
+     * 회원가입<br>
+     * 중복체크 한다.<br>
+     * Role_User로 가입된다.
+     * @param dto 이메일, 비밀번호, 사용자이름
+     * @return Member
+     */
     @Transactional(rollbackFor = {DuplicationException.class})
     public Member signup(final SignupDTO dto) {
         log.info("signup email: {}", dto.getEmail());
@@ -58,6 +70,15 @@ public class AuthUtil {
         return newMember;
     }
 
+    /**
+     * 비밀번호 변경<br>
+     * 비밀번호 강도는 dto에서 정규표현식으로 체크한다.<br>
+     * 입력한 비밀번호들이 올바른지 체크한다.
+     * @param dto
+     * 예외메시지 보다 예외자체를 프론트에서 파싱하기 위해 <br>
+     * 새로 커스텀예외를 만들었다.
+     * @throws InvalidPasswordException
+     */
     @Transactional(rollbackFor = {
             IllegalArgumentException.class,
             InvalidPasswordException.class})

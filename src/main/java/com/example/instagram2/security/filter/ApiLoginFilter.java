@@ -20,6 +20,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * <code>ApiLoginFilter</code><br>
+ * 로그인을 컨트롤러가 아닌 필터로 합니다.
+ * @author chasw326
+ */
 @Log4j2
 public class ApiLoginFilter extends AbstractAuthenticationProcessingFilter {
 
@@ -30,6 +35,16 @@ public class ApiLoginFilter extends AbstractAuthenticationProcessingFilter {
         this.jwtUtil = jwtUtil;
     }
 
+    /**
+     * email, password를 json[POST]으로 보내주세요<br>
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws AuthenticationException
+     * @throws IOException
+     * @throws ServletException
+     */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response)
@@ -58,6 +73,15 @@ public class ApiLoginFilter extends AbstractAuthenticationProcessingFilter {
         return getAuthenticationManager().authenticate(authToken);
     }
 
+    /**
+     * 로그인이 성공하면 이메일을 payload로 해서 jwt를 발급합니다.
+     * @param request
+     * @param response
+     * @param chain
+     * @param authentication
+     * @throws IOException
+     * @throws ServletException
+     */
     @Override
     protected void successfulAuthentication(HttpServletRequest request,
                                             HttpServletResponse response,

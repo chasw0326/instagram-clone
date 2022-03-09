@@ -11,9 +11,25 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * <code>LoginSuccessHandler</code><br>
+ * 로그인 실패했을때 작동합니다.
+ * @author chasw326
+ */
 @Log4j2
 public class LoginFailHandler implements AuthenticationFailureHandler {
 
+    /**
+     * 로그일 실패 했을때 <br>
+     * code : 401 <br>
+     * message : Api token Fail <br>
+     * 보내줌
+     * @param request
+     * @param response
+     * @param ex
+     * @throws IOException
+     * @throws ServletException
+     */
     @Override
     public void onAuthenticationFailure(HttpServletRequest request,
                                        HttpServletResponse response,

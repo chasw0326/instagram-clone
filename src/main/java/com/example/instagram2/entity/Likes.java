@@ -13,6 +13,7 @@ import javax.persistence.*;
 @Getter
 @Entity
 @ToString(exclude = {"member", "image"})
+// UK를 추가해서 같은 사람이 같은 사진에 좋아요를 두 번 할수 없음
 @Table(uniqueConstraints = {@UniqueConstraint(
         name = "LIKES_UK",
         columnNames = {"member", "image"}

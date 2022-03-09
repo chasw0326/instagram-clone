@@ -3,7 +3,10 @@ package com.example.instagram2.security.util;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
-
+/**
+ * Valid 정규표현식을 사용해서
+ * 현재 이 클래스는 사용하지 안음
+ */
 @Log4j2
 public class PasswordUtil {
 

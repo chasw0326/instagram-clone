@@ -19,10 +19,20 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * <code>GlobalExceptionHandler</code><br>
+ * 예외를 글로벌하게 잡는 핸들러
+ * @author chasw326
+ */
 @Log4j2
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    /**
+     * 중복예외
+     * @param e exception
+     * @return CONFLICT
+     */
     @ExceptionHandler({DuplicationException.class})
     public ResponseEntity<?> duplicatedArgsHandler(DuplicationException e) {
         log.error("DuplicationException: {}", e.getMessage());
@@ -39,6 +49,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(dto, HttpStatus.BAD_REQUEST);
     }
 
+    /**
+     * DB제약조건 위반했을 때
+     * @param e
+     * @return
+     */
     @ExceptionHandler({DataIntegrityViolationException.class})
     public ResponseEntity<?> sqlErrorhandler(DataIntegrityViolationException e){
         log.error("DuplicationException: {}", e.getMessage());
@@ -79,6 +94,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(dto, HttpStatus.BAD_REQUEST);
     }
 
+    /**
+     * 유효성 검사틀렸을때 핸들러
+     * @param e
+     * @return
+     */
     @ExceptionHandler({MethodArgumentNotValidException.class,
             MethodArgumentTypeMismatchException.class,
             MethodArgumentConversionNotSupportedException.class})
