@@ -9,10 +9,10 @@ import javax.persistence.*;
 import java.util.List;
 
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(exclude = "image")
 @JsonIgnoreProperties({"image"})
 public class Tag extends BaseEntity{

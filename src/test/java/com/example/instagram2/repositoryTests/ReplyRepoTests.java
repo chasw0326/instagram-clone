@@ -19,10 +19,7 @@ public class ReplyRepoTests {
 
     @Test
     public void getRepliesByImageOrderByRnoTest() {
-        List<Reply> result = repository.getRepliesByImageOrderByRegDateAsc(
-                Image.builder()
-                        .ino(2L)
-                        .build(), Pageable.unpaged());
+        List<Reply> result = repository.getRepliesByImage_InoOrderByRegDateAsc(2L, Pageable.unpaged());
         for (Reply r : result){
             System.out.println(r);
         }

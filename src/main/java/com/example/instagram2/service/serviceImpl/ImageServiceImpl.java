@@ -63,12 +63,6 @@ public class ImageServiceImpl implements ImageService {
     // s3
 //    private final S3Uploader uploader;
 
-    /**
-     * local
-     */
-    @Value("${instagram.upload.path}")
-    private String uploadPath;
-
 
     /**
      * 사진 업로드<br>
@@ -90,6 +84,11 @@ public class ImageServiceImpl implements ImageService {
 //
 //        String folderPath = str.replace("/", File.separator);
 //        String imageUrl = uploader.upload(imgFile, folderPath);
+        /**
+         * local
+         */
+        //    @Value("${instagram.upload.path}")
+        String uploadPath = "C:\\upload\\image_storage";
         String imageUrl = uploadService.uploadFile(imgFile, uploadPath);
         log.info("imageUrl: {}", imageUrl);
         Image image = dtoToEntity(imageDTO, imageUrl, authMemberDTO);

@@ -30,10 +30,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     List<Member> findMembersSearch(@Param("keyword") String keyword);
 
     @EntityGraph(attributePaths = {"roleSet"}, type= EntityGraph.EntityGraphType.LOAD)
-    @Query("SELECT m FROM Member m WHERE m.email =:email")
-    Member getByEmail(@Param("email") String email);
-
-    @EntityGraph(attributePaths = {"roleSet"}, type= EntityGraph.EntityGraphType.LOAD)
     @Query("SELECT m FROM Member m WHERE m.username =:username")
     Member getByUsername(@Param("username") String username);
 

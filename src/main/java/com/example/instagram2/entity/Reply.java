@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Entity
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @ToString(exclude = {"image", "member"})
 //따로 dto로 보낼것이므로 jackson을 사용해서 응답보낼 때 제외함

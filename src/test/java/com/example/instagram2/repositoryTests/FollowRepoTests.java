@@ -33,10 +33,7 @@ public class FollowRepoTests {
     void verifyFollowCount() {
         Long fromMemberId = 9L;
         while (true) {
-            if (repository.existsByFromMember(
-                    Member.builder()
-                            .mno(fromMemberId)
-                            .build()))
+            if (repository.existsByFromMember_Mno(fromMemberId))
                 fromMemberId = (long) (Math.random() * 100) + 1;
             else
                 break;
@@ -69,10 +66,7 @@ public class FollowRepoTests {
     void veryfiFollowerCount() {
         Long toMemberId = 70L;
         while (true) {
-            if (repository.existsByToMember(
-                    Member.builder()
-                            .mno(toMemberId)
-                            .build()))
+            if (repository.existsByToMember_Mno(toMemberId))
                 toMemberId = (long) (Math.random() * 100) + 1;
             else
                 break;
@@ -145,16 +139,13 @@ public class FollowRepoTests {
     @DisplayName("existsTest")
     @Test
     public void existByToMemberTest() {
-        Member existMember = Member.builder()
-                .mno(4L)
-                .build();
-        Member notExistMember = Member.builder()
-                .mno(10L)
-                .build();
-        System.out.println(repository.existsByToMember(existMember));
-        assertEquals(true, repository.existsByToMember(existMember));
-        System.out.println(repository.existsByToMember(existMember));
-        assertEquals(false, repository.existsByToMember(notExistMember));
+        Long existMemberId = 4L;
+        Long notExistMemberId = 10L;
+
+        System.out.println(repository.existsByToMember_Mno(existMemberId));
+        assertEquals(true, repository.existsByToMember_Mno(existMemberId));
+        System.out.println(repository.existsByToMember_Mno(existMemberId));
+        assertEquals(false, repository.existsByToMember_Mno(notExistMemberId));
     }
 
     @Disabled

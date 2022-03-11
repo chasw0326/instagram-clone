@@ -11,10 +11,19 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+/**
+ * <code>SwaggerConfig</code><br>
+ * 스웨거 설정
+ * @author chasw326
+ */
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
 
+    /**
+     * 스웨거 2.0이 아니라 3.0이기 때문에<br>
+     * http://localhost:8080/swagger-ui/index.html 링크로 접속해야 합니다.
+     */
     @Bean
     public Docket api(){
         return new Docket(DocumentationType.OAS_30)
@@ -26,6 +35,9 @@ public class SwaggerConfig {
                 .apiInfo(apiInfo());
     }
 
+    /**
+     * 스웨거 설정입니다.
+     */
     private ApiInfo apiInfo(){
         return new ApiInfoBuilder()
                 .title("Instagram2 Swagger")

@@ -53,7 +53,7 @@ public class FollowSvcTests {
     @Test
     public void follow() {
 
-        followService.follow(1L, 2L);
-        assertTrue(followRepository.followState(1L, 2L) > 0);
+        followService.follow(1L, 200L);
+        assertTrue(followRepository.followState(1L, 200L) > 0);
     }
 }

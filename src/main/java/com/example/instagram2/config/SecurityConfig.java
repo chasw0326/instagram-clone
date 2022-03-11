@@ -23,6 +23,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
+/**
+ * <code>SecurityConfig</code><br>
+ *
+ * @author chasw326
+ */
 @EnableWebSecurity
 @Configuration
 @Log4j2
@@ -42,6 +47,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new JWTUtil();
     }
 
+    /**
+     * 서비스넘어가기 전에 컨트롤러에서 예외검사 등을 하려고 만들었습니다.
+     */
     @Bean
     public ArgumentCheckUtil argumentCheckUtil() {
         return new ArgumentCheckUtil();
@@ -65,11 +73,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     "/webjars/**", "/swagger/**",
                     "/static/css/**", "/static/js/**", "/favicon.ico"};
 
+    /**
+     * 모든 경로에 대해 jwt체크를 하고,<br>
+     * excludesPaths로 체크하지 않을 경로들을 제외합니다.
+     */
     @Bean
     public ApiCheckFilter apiCheckFilter() {
         return new ApiCheckFilter("/**", excludePaths, jwtUtil());
     }
 
+    /**
+     * 모든 경로에 대해 jwt체크를 할것임으로<br>
+     * 체크가 필요없는 login은 필터로 합니다.
+     */
     @Bean
     public ApiLoginFilter apiLoginFilter() throws Exception {
         ApiLoginFilter apiLoginFilter = new ApiLoginFilter
@@ -80,11 +96,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return apiLoginFilter;
     }
 
+    /**
+     * 로그인 성공했을때 소셜유저를 구분하기 위한 클래스입니다.
+     */
     @Bean
     public LoginSuccessHandler successHandler() {
         return new LoginSuccessHandler(passwordEncoder());
     }
 
+    /**
+     *
+     * 세션이 아니라 jwt로 인증을 하기때문에 세션을 제외합니다.<br>
+     * cors 필터 -> apiCheck 필터 -> apiLogin 필터 순으로 작동합니다.
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 

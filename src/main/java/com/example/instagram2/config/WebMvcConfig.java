@@ -7,12 +7,21 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+
+/**
+ * <code>WebMvcConfig</code><br>
+ * cors, interceptor 설정
+ * @author chasw326
+ */
 @Configuration
 @RequiredArgsConstructor
 public class WebMvcConfig implements WebMvcConfigurer {
 
     private final HandlerInterceptor interceptor;
 
+    /**
+     * Origins에 허용할 uri를 지정할수 있습니다.
+     */
     @Override
     public void addCorsMappings(CorsRegistry registry){
         final long MAX_AGE_SECS = 3600;
@@ -24,6 +33,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .maxAge(MAX_AGE_SECS);
     }
 
+    /**
+     * 인터셉터를 추가했습니다.
+     */
     @Override
     public void addInterceptors(InterceptorRegistry registry){
         registry.addInterceptor(interceptor)

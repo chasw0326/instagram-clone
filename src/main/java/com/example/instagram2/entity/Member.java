@@ -11,9 +11,8 @@ import java.util.Set;
 
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Setter
 @Entity
 @ToString
 public class Member extends BaseEntity {
@@ -23,28 +22,33 @@ public class Member extends BaseEntity {
     private Long mno;
 
     // 중복 허용 x
-    @Column(length = 40, unique = true)
+    @Column(nullable = false, length = 40, unique = true)
     private String username;
 
     @JsonIgnore
+    @Setter
+    @Column(nullable = false, length = 80)
     private String password;
 
+    @Column(length = 40)
     private String name;
 
     private String website;
 
     // 자기소개
+    @Column(length = 500)
     private String intro;
 
-    @Column(unique = true)
+    @Column(nullable = false, length = 60 ,unique = true)
     private String email;
 
-    @Column(unique = true)
+    @Column(unique = true, length = 60)
     private String phoneNum;
 
     // 남성 or 여성
     private String gender;
 
+    @Setter
     private String profileImageUrl;
 
     private boolean fromSocial;

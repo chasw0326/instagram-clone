@@ -29,6 +29,8 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
     @Query("SELECT COUNT(i) FROM Image i LEFT JOIN Tag t ON t.image.ino = i.ino WHERE t.name LIKE %:keyword%")
     Long findTagsSearch(@Param("keyword") String keyword);
 
+    Long findByImageUrl(String url);
+
     @Query(value = "SELECT * FROM Image " +
             "WHERE member =:memberId " +
             "ORDER BY like_Cnt DESC LIMIT 3",
@@ -42,6 +44,8 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
 
     @Query("SELECT COUNT(i) FROM Image i WHERE i.member.mno =:memberId")
     Long getImageCount(@Param("memberId") Long memberId);
+
+    void deleteByImageUrl(String url);
 
     boolean existsByIno(Long ino);
 }

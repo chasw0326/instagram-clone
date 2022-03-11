@@ -53,10 +53,6 @@ public class MemberServiceImpl implements MemberService {
     // s3
 //    private final S3Uploader uploader;
 
-    // local
-    @Value("${instagram.upload.path}")
-    private String uploadPath;
-
     /**
      * 프로필 사진 변경<br>
      * 현재는 로컬에 저장하는 방식이고 S3을 사용하기 위해선 <br>
@@ -80,6 +76,9 @@ public class MemberServiceImpl implements MemberService {
         } else {
             // -------------------------------- s3 ---------------------------------------
 //            String fileUrl = uploader.upload(uploadFile, folderPath);
+            // local
+            //    @Value("${instagram.upload.path}")
+            String uploadPath = "C:\\upload\\image_storage";
             String fileUrl = uploadService.uploadFile(uploadFile, uploadPath);
             // -------------------------------- s3 ---------------------------------------
             Optional<Member> result = memberRepository.findById(userId);

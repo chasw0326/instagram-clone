@@ -103,7 +103,6 @@ public class AuthUtil {
         log.info("changePassword");
     }
 
-    @Transactional
     public SignupDTO entityToDTO(Member member) {
         return SignupDTO.builder()
                 .id(member.getMno())

@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "instagram.upload.path",
+      "type": "java.lang.String",
+      "description": "Description for instagram.upload.path."
+  }
+] }

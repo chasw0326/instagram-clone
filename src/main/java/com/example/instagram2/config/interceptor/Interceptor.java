@@ -8,6 +8,13 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+
+/**
+ * <code>Interceptor</code><br>
+ * 나중에 접근에 대한 통계 같은것을 내기 위해 인터셉터로 <br>
+ * 컨트롤러 값들을 확인합니다.
+ * @author chasw326
+ */
 @Component
 @Log4j2
 public class Interceptor implements HandlerInterceptor {

@@ -9,7 +9,7 @@ import javax.persistence.*;
 
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
 @ToString(exclude = {"member", "image"})

@@ -63,8 +63,8 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
     @Query(value = "INSERT INTO follow(from_Member, to_Member) VALUES(:fromMemberId, :toMemberId)", nativeQuery = true)
     void follow(@Param("fromMemberId") Long fromMemberId, @Param("toMemberId") Long toMemberId);
 
-    Boolean existsByFromMember(Member fromMember);
+    Boolean existsByFromMember_Mno(Long fromMemberId);
 
-    Boolean existsByToMember(Member toMember);
+    Boolean existsByToMember_Mno(Long toMember);
 
 }

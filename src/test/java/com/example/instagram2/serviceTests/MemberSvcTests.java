@@ -68,7 +68,7 @@ public class MemberSvcTests {
     @DisplayName("회원사진 삭제 , deleteProfilePicture")
     @Test
     void Should_DeletePicture() {
-        Long userId = 223L;
+        Long userId = 200L;
         memberService.deleteProfilePicture(userId);
         Optional<Member> result = memberRepository.findById(userId);
         if (result.isPresent()) {

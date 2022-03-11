@@ -117,18 +117,13 @@ public class FollowServiceImpl implements FollowService {
     public void follow(Long fromMemberId, Long toMemberId) {
         log.info("{} follow {}", fromMemberId, toMemberId);
         if (!fromMemberId.equals(toMemberId)) {
-            Member fromMember = Member.builder()
-                    .mno(fromMemberId)
-                    .build();
-            Member toMember = Member.builder()
-                    .mno(toMemberId)
-                    .build();
             Follow follow = Follow.builder()
-                    .fromMember(fromMember)
-                    .toMember(toMember)
+                    .fromMember(memberRepository.getById(fromMemberId))
+                    .toMember(memberRepository.getById(toMemberId))
                     .build();
-
             followRepository.save(follow);
+        } else{
+            throw new IllegalArgumentException("본인을 팔로우 할 수 없습니다.");
         }
     }
 

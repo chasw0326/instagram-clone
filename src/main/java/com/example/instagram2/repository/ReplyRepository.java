@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public interface ReplyRepository extends JpaRepository<Reply, Long> {
 
-    List<Reply> getRepliesByImageOrderByRegDateAsc(Image image, Pageable pageable);
+    List<Reply> getRepliesByImage_InoOrderByRegDateAsc(Long ino, Pageable pageable);
 
     @EntityGraph(attributePaths = {"member.mno", "member.username"}, type = EntityGraph.EntityGraphType.LOAD)
     List<Reply> getTop3ByImage_InoOrderByRegDate(Long imageId);
