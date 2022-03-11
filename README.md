@@ -15,7 +15,7 @@ Image가 곧 글인데 웹버전 인스타그램에서는 한장씩만 업로드
 
 인증은 jwt를 사용합니다.
 
-리소스 파일은 개발용, 배포용, oauth 세개 만들어 주시면 됩니다. (실수로 aws키와 구글키를 노출해 버려서 일단 내렸습니다.
+리소스 파일은 개발용, 배포용, oauth 세개 만들어 주시면 됩니다. (실수로 aws키와 구글키를 노출해 버려서 설정파일을 급하게 내렸습니다....
 oauth는 현재 구글만 되어있으며 id, secret, scope=email을 적어주세요
 
 
@@ -35,23 +35,4 @@ mariaDB로 개발했지만 누군가 파일을 받고 실행하면 제 db아이�
 테스트코드는 h2로 실행해도 전부 적용가능하게 차차 수정해 나가겠습니다.
 테스트 커버리지는 73%까지 진행했습니다. (dto getter setter에 대한 테스트도 점차 추가하겠습니다.)
 
-3/11 추가
-설정에 어려움이 있으실거같아 추가합니다.
-배포용 yml은 이런형식으로 진행되고 버킷에 대한 정보는 따로 추가해주셔야 합니다. 
-spring:
-  profiles:
-    include: oauth
-  jpa:
-    database: mysql
-    show-sql: true
-    database-platform: org.hibernate.dialect.MariaDB103Dialect
-    hibernate:
-      ddl-auto: update
-  datasource:
-    url: jdbc:mariadb://${rds.hostname}:${rds.port}/${rds.db.name}
-    username: ${rds.username}
-    password: ${rds.password}
-
-server:
-  port: 5000
 
