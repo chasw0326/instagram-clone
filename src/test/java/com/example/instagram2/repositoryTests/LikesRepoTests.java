@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -22,6 +23,7 @@ public class LikesRepoTests {
     private LikesRepository repository;
 
     @Disabled
+    @Transactional
     @DisplayName("unlike")
     @Test
     public void unlikeTest() {
@@ -31,6 +33,7 @@ public class LikesRepoTests {
     }
 
     @Disabled
+    @Transactional
     @DisplayName("getMemberIdByImageId")
     @Test
     public void getMemberIdByImageId() {
@@ -42,6 +45,7 @@ public class LikesRepoTests {
     }
 
     @Disabled
+    @Transactional
     @DisplayName("getLikesCntByImageId")
     @Test
     public void getLikesByImageIdTest() {

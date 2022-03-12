@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -105,15 +106,6 @@ public class InsertDummies {
 
     @Disabled
     @Test
-    void exex(){
-        Optional<Member> result = memberRepository.findById(96L);
-        Member member = result.get();
-        member.setUsername("96username");
-        memberRepository.save(member);
-    }
-
-    @Disabled
-    @Test
     public void insertDummyImages() {
         IntStream.rangeClosed(1, 90).forEach(i -> {
             Long rndMno = (long) (Math.random() * 100) + 1;
@@ -133,6 +125,7 @@ public class InsertDummies {
     }
 
     @Disabled
+    @Transactional
     @Test
     public void like() {
         IntStream.rangeClosed(1, 10).forEach(i -> {
